@@ -31,7 +31,23 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Intentional slowness**: Identify the deliberately bad query behavior and the
+  learning objective it exposes. The baseline MUST be reproducible and
+  measurable.
+- **Scenario contract**: Confirm the plan includes bad SQL, business task, seed
+  data, expected result, baseline `EXPLAIN (ANALYZE, BUFFERS)`, hints, and a
+  reference optimization.
+- **PostgreSQL-first scope**: Confirm the optimization path uses PostgreSQL,
+  SQL, indexes, query plans, statistics, or related database behavior rather
+  than hiding the issue with application-level caching.
+- **Docker Compose reproducibility**: List the local Docker Compose commands for
+  starting PostgreSQL, loading seeds, running tests, capturing plans, and running
+  benchmarks.
+- **Correctness and evidence**: Define automated correctness tests and before/
+  after benchmark commands. Optimized artifacts MUST be separate from the bad
+  starting state.
+- **Trade-off review**: Document expected costs of the reference optimization,
+  including storage, write overhead, maintainability, and workload specificity.
 
 ## Project Structure
 

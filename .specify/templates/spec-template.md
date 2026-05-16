@@ -100,6 +100,18 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+### Training Scenario Contract *(mandatory for PostgreSQL optimization scenarios)*
+
+- **Business Task**: [Plain-language job the bad query is supposed to answer]
+- **Bad Query**: [Location or description of the intentionally inefficient SQL]
+- **Seed Data**: [Data volume, shape, generation/loading approach, and required determinism]
+- **Expected Result**: [Observable output or fixture that proves correctness]
+- **Baseline Plan**: [Required `EXPLAIN (ANALYZE, BUFFERS)` capture and notable plan symptoms]
+- **Hints**: [Learner-facing hints that guide investigation without revealing the full solution]
+- **Reference Optimization**: [Expected separate solution artifact: indexes, rewrites, statistics, or schema changes]
+- **Benchmark Evidence**: [Before/after benchmark metric and minimum improvement expectation]
+- **Trade-offs**: [Costs or limitations the reference optimization must explain]
+
 ## Success Criteria *(mandatory)*
 
 <!--
