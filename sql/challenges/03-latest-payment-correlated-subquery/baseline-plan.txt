@@ -1,1 +1,38 @@
-Regenerate with: make explain CHALLENGE=03-latest-payment-correlated-subquery
+Limit  (cost=5347.96..6193.58 rows=50 width=64) (actual time=13.976..14.219 rows=50.00 loops=1)
+  Buffers: shared hit=1233 read=26
+  ->  Result  (cost=5347.96..1657411.70 rows=97683 width=64) (actual time=13.975..14.215 rows=50.00 loops=1)
+        Buffers: shared hit=1233 read=26
+        ->  Sort  (cost=5347.96..5592.17 rows=97683 width=24) (actual time=13.925..13.927 rows=50.00 loops=1)
+              Sort Key: o.created_at DESC, o.id DESC
+              Sort Method: top-N heapsort  Memory: 32kB
+              Buffers: shared hit=859
+              ->  Seq Scan on orders o  (cost=0.00..2103.00 rows=97683 width=24) (actual time=0.006..7.740 rows=97618.00 loops=1)
+                    Filter: (status <> 'cancelled'::text)
+                    Rows Removed by Filter: 2382
+                    Buffers: shared hit=853
+        SubPlan 1
+          ->  Limit  (cost=8.45..8.45 rows=1 width=21) (actual time=0.004..0.004 rows=1.00 loops=50)
+                Buffers: shared hit=174 read=26
+                ->  Sort  (cost=8.45..8.45 rows=1 width=21) (actual time=0.003..0.003 rows=1.00 loops=50)
+                      Sort Key: p.created_at DESC, p.id DESC
+                      Sort Method: quicksort  Memory: 25kB
+                      Buffers: shared hit=174 read=26
+                      ->  Index Scan using idx_payments_order_id_basic on payments p  (cost=0.42..8.44 rows=1 width=21) (actual time=0.003..0.003 rows=1.00 loops=50)
+                            Index Cond: (order_id = o.id)
+                            Index Searches: 50
+                            Buffers: shared hit=174 read=26
+        SubPlan 2
+          ->  Limit  (cost=8.45..8.45 rows=1 width=16) (actual time=0.002..0.002 rows=1.00 loops=50)
+                Buffers: shared hit=200
+                ->  Sort  (cost=8.45..8.45 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=50)
+                      Sort Key: p_1.created_at DESC, p_1.id DESC
+                      Sort Method: quicksort  Memory: 25kB
+                      Buffers: shared hit=200
+                      ->  Index Scan using idx_payments_order_id_basic on payments p_1  (cost=0.42..8.44 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=50)
+                            Index Cond: (order_id = o.id)
+                            Index Searches: 50
+                            Buffers: shared hit=200
+Planning:
+  Buffers: shared hit=99 read=2
+Planning Time: 0.221 ms
+Execution Time: 14.243 ms

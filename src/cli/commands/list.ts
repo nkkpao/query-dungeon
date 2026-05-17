@@ -7,7 +7,7 @@ export function listCommand(): Command {
     .action(function (this: Command) {
       const options = this.parent?.opts() ?? {};
       if (options.json) {
-        console.log(JSON.stringify(challenges, null, 2));
+        console.log(JSON.stringify(challenges.map(({solutionIndexes, ...challenge}) => challenge), null, 2));
         return;
       }
       for (const challenge of challenges) {

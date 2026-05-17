@@ -55,6 +55,15 @@ SELECT id,
        created_at + INTERVAL '5 minutes'
 FROM orders;
 
+INSERT INTO payments (order_id, status, provider, amount_cents, created_at)
+SELECT id,
+       CASE WHEN id % 8 = 0 THEN 'refunded' WHEN id % 5 = 0 THEN 'failed' ELSE 'paid' END,
+       (ARRAY['stripe','paypal','adyen'])[1 + ((id + 1) % 3)],
+       total_cents,
+       created_at + INTERVAL '2 days'
+FROM orders
+WHERE id % 4 = 0;
+
 INSERT INTO reviews (user_id, product_id, rating, body, created_at)
 SELECT 1 + (gs % 1000), 1 + (gs % 500), 1 + (gs % 5), 'Review ' || gs,
        TIMESTAMPTZ '2024-07-01' + (gs % 120) * INTERVAL '1 day'

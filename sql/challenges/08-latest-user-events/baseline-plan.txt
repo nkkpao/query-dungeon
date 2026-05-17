@@ -1,1 +1,20 @@
-Regenerate with: make explain CHALLENGE=08-latest-user-events
+Limit  (cost=6558.30..6561.80 rows=30 width=79) (actual time=7.207..8.329 rows=30.00 loops=1)
+  Buffers: shared hit=3563
+  ->  Gather Merge  (cost=6558.30..13970.58 rows=63643 width=79) (actual time=7.206..8.326 rows=30.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=3563
+        ->  Sort  (cost=5558.28..5624.57 rows=26518 width=79) (actual time=5.547..5.548 rows=24.33 loops=3)
+              Sort Key: created_at DESC, id DESC
+              Sort Method: top-N heapsort  Memory: 32kB
+              Buffers: shared hit=3563
+              Worker 0:  Sort Method: top-N heapsort  Memory: 31kB
+              Worker 1:  Sort Method: top-N heapsort  Memory: 32kB
+              ->  Parallel Seq Scan on user_events  (cost=0.00..4775.08 rows=26518 width=79) (actual time=0.005..4.201 rows=20845.00 loops=3)
+                    Filter: (user_id = 42)
+                    Rows Removed by Filter: 62488
+                    Buffers: shared hit=3473
+Planning:
+  Buffers: shared hit=93 read=1
+Planning Time: 0.125 ms
+Execution Time: 8.345 ms

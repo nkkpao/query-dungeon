@@ -4,7 +4,7 @@ Baseline plan: regenerate with make explain CHALLENGE=09-unpaid-orders-partial-i
 
 Business task: triage recent unpaid orders.
 
-Hints: a partial index can target the sparse status.
+Hints: check how many rows match the status and whether a full-table access path is wasteful.
 
 Trade-offs: partial indexes are compact, but only queries matching the predicate benefit.
 

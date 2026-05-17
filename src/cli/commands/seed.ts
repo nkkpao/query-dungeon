@@ -28,6 +28,7 @@ export function seedCommand(): Command {
             await client.query(statement);
           }
         }
+        await client.query('ANALYZE');
         const counts = await client.query<{table_name: string; estimate: string}>(`
           SELECT relname AS table_name, n_live_tup::text AS estimate
           FROM pg_stat_user_tables

@@ -2,7 +2,7 @@
 
 Baseline plan: regenerate with make explain CHALLENGE=06-jsonb-filter-gin-index.
 
-Business task: find premium products stored in JSONB attributes.
+Business task: count premium products stored in JSONB attributes.
 
 Hints: inspect JSONB containment and the scan type.
 

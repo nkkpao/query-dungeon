@@ -15,8 +15,8 @@ make compare CHALLENGE=01-user-orders-missing-index
 Hints:
 
 - Look for a scan over `orders`.
-- The baseline intentionally lacks an index on `orders(user_id)`.
-- Optimize for filtering by user and ordering by newest order.
+- Compare the filter columns with the sort columns.
+- Design the narrowest access path for this support lookup.
 
 Trade-offs: the reference index speeds this lookup but adds write and storage cost on every order insert.
 

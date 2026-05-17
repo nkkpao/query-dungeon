@@ -2,7 +2,7 @@ import {Command} from 'commander';
 import {getChallenge} from '../../challenges/registry.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
 import {timeoutMs} from '../options.js';
-import {loadChallengeQuery} from '../query-loader.js';
+import {loadChallengeQuery, loadExpectedQuery} from '../query-loader.js';
 
 export function compareCommand(): Command {
   return new Command('compare')
@@ -13,16 +13,21 @@ export function compareCommand(): Command {
       const challenge = getChallenge(challengeId);
       await withClient({databaseUrl: options.databaseUrl, timeoutMs: timeoutMs(options)}, async (client) => {
         await assertSeeded(client);
-        const [bad, solution] = await Promise.all([
+        const [bad, solution, expected] = await Promise.all([
           client.query(await loadChallengeQuery(challenge, 'bad')),
           client.query(await loadChallengeQuery(challenge, 'solution')),
+          client.query(await loadExpectedQuery(challenge)),
         ]);
         const badRows = normalizeRows(bad.rows);
         const solutionRows = normalizeRows(solution.rows);
-        if (JSON.stringify(badRows) !== JSON.stringify(solutionRows)) {
-          throw new Error(`RESULT_MISMATCH: ${challenge.id} bad and solution results differ.`);
+        const expectedRows = normalizeRows(expected.rows);
+        if (JSON.stringify(badRows) !== JSON.stringify(expectedRows)) {
+          throw new Error(`RESULT_MISMATCH: ${challenge.id} bad query differs from expected result.`);
         }
-        console.log(`OK: ${challenge.id} bad and solution results are equivalent (${badRows.length} rows).`);
+        if (JSON.stringify(solutionRows) !== JSON.stringify(expectedRows)) {
+          throw new Error(`RESULT_MISMATCH: ${challenge.id} solution query differs from expected result.`);
+        }
+        console.log(`OK: ${challenge.id} bad and solution results match expected output (${expectedRows.length} rows).`);
       });
     });
 }

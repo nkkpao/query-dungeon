@@ -1,1 +1,14 @@
-Regenerate with: make explain CHALLENGE=01-user-orders-missing-index
+Limit  (cost=2103.17..2103.19 rows=10 width=34) (actual time=3.589..3.591 rows=14.00 loops=1)
+  Buffers: shared hit=856 read=3
+  ->  Sort  (cost=2103.17..2103.19 rows=10 width=34) (actual time=3.588..3.589 rows=14.00 loops=1)
+        Sort Key: created_at DESC, id DESC
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=856 read=3
+        ->  Seq Scan on orders o  (cost=0.00..2103.00 rows=10 width=34) (actual time=0.021..3.578 rows=14.00 loops=1)
+              Filter: (user_id = 424)
+              Rows Removed by Filter: 99986
+              Buffers: shared hit=850 read=3
+Planning:
+  Buffers: shared hit=66
+Planning Time: 0.093 ms
+Execution Time: 3.597 ms

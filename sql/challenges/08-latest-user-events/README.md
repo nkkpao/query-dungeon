@@ -4,7 +4,7 @@ Baseline plan: regenerate with make explain CHALLENGE=08-latest-user-events.
 
 Business task: show the latest activity feed for a user.
 
-Hints: the sort and filter want the same composite order.
+Hints: compare the feed predicate with the requested ordering before choosing an access path.
 
 Trade-offs: the covering shape is excellent for this feed and less useful for global event analytics.
 

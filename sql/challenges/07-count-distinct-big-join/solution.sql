@@ -1,4 +1,4 @@
-CREATE INDEX IF NOT EXISTS idx_solution_order_items_product_order ON order_items(product_id, order_id);
+CREATE INDEX IF NOT EXISTS idx_solution_orders_status_user ON orders(status, user_id, id);
 
 -- query
 SELECT u.country, count(DISTINCT o.id) AS orders_count

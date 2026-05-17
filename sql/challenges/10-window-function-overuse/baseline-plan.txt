@@ -1,1 +1,26 @@
-Regenerate with: make explain CHALLENGE=10-window-function-overuse
+Limit  (cost=15512.56..15512.68 rows=50 width=20) (actual time=41.767..41.772 rows=50.00 loops=1)
+  Buffers: shared hit=859, temp read=353 written=354
+  ->  Sort  (cost=15512.56..15513.76 rows=480 width=20) (actual time=41.766..41.768 rows=50.00 loops=1)
+        Sort Key: ranked.total_cents DESC, ranked.user_id
+        Sort Method: top-N heapsort  Memory: 31kB
+        Buffers: shared hit=859, temp read=353 written=354
+        ->  Subquery Scan on ranked  (cost=12138.38..15496.61 rows=480 width=20) (actual time=26.801..41.006 rows=10000.00 loops=1)
+              Filter: (ranked.rn = 1)
+              Buffers: shared hit=853, temp read=353 written=354
+              ->  WindowAgg  (cost=12138.38..14297.24 rows=95950 width=76) (actual time=26.800..40.307 rows=10000.00 loops=1)
+                    Window: w1 AS (PARTITION BY o.user_id ORDER BY o.total_cents, o.id ROWS UNBOUNDED PRECEDING)
+                    Run Condition: (row_number() OVER w1 <= 1)
+                    Storage: Memory  Maximum Storage: 17kB
+                    Buffers: shared hit=853, temp read=353 written=354
+                    ->  Sort  (cost=12138.36..12378.24 rows=95950 width=20) (actual time=26.796..32.381 rows=95937.00 loops=1)
+                          Sort Key: o.user_id, o.total_cents DESC, o.id DESC
+                          Sort Method: external merge  Disk: 2824kB
+                          Buffers: shared hit=853, temp read=353 written=354
+                          ->  Seq Scan on orders o  (cost=0.00..2228.00 rows=95950 width=20) (actual time=0.006..9.663 rows=95937.00 loops=1)
+                                Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                Rows Removed by Filter: 4063
+                                Buffers: shared hit=853
+Planning:
+  Buffers: shared hit=135
+Planning Time: 0.154 ms
+Execution Time: 42.137 ms

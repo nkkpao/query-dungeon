@@ -1,1 +1,14 @@
-Regenerate with: make explain CHALLENGE=09-unpaid-orders-partial-index
+Limit  (cost=2160.57..2160.69 rows=50 width=34) (actual time=3.794..3.799 rows=50.00 loops=1)
+  Buffers: shared hit=859
+  ->  Sort  (cost=2160.57..2164.90 rows=1733 width=34) (actual time=3.793..3.795 rows=50.00 loops=1)
+        Sort Key: created_at DESC, id DESC
+        Sort Method: top-N heapsort  Memory: 31kB
+        Buffers: shared hit=859
+        ->  Seq Scan on orders  (cost=0.00..2103.00 rows=1733 width=34) (actual time=0.005..3.686 rows=1681.00 loops=1)
+              Filter: (status = 'unpaid'::text)
+              Rows Removed by Filter: 98319
+              Buffers: shared hit=853
+Planning:
+  Buffers: shared hit=69
+Planning Time: 0.082 ms
+Execution Time: 3.805 ms

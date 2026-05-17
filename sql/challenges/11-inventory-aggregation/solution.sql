@@ -1,4 +1,4 @@
-CREATE INDEX IF NOT EXISTS idx_solution_inventory_product_created ON inventory_movements(product_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_solution_inventory_product_delta ON inventory_movements(product_id, quantity_delta);
 
 -- query
 SELECT p.id AS product_id,

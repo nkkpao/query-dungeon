@@ -2,8 +2,9 @@ import {Command} from 'commander';
 import {getChallenge} from '../../challenges/registry.js';
 import {benchmarkQuery} from '../../db/benchmark.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
+import {splitSqlStatements} from '../../db/sql-files.js';
 import {seedScale, timeoutMs} from '../options.js';
-import {loadChallengeQuery} from '../query-loader.js';
+import {loadChallengeQuery, loadSolutionMigration} from '../query-loader.js';
 
 export function benchmarkCommand(): Command {
   return new Command('benchmark')
@@ -18,10 +19,22 @@ export function benchmarkCommand(): Command {
         await assertSeeded(client);
         const badSql = await loadChallengeQuery(challenge, 'bad');
         const solutionSql = await loadChallengeQuery(challenge, 'solution');
-        const results = [
-          await benchmarkQuery(client, challenge, 'bad', seedScale(options), badSql, iterations),
-          await benchmarkQuery(client, challenge, 'solution', seedScale(options), solutionSql, iterations),
-        ];
+        const migrationSql = await loadSolutionMigration(challenge);
+        let results;
+        await client.query('BEGIN');
+        try {
+          for (const indexName of challenge.solutionIndexes) {
+            await client.query(`DROP INDEX IF EXISTS ${indexName}`);
+          }
+          const bad = await benchmarkQuery(client, challenge, 'bad', seedScale(options), badSql, iterations);
+          for (const statement of splitSqlStatements(migrationSql)) {
+            await client.query(statement);
+          }
+          const solution = await benchmarkQuery(client, challenge, 'solution', seedScale(options), solutionSql, iterations);
+          results = [bad, solution];
+        } finally {
+          await client.query('ROLLBACK');
+        }
         if (options.json) {
           console.log(JSON.stringify(results, null, 2));
           return;

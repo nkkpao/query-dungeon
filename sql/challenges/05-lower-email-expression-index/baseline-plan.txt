@@ -1,1 +1,8 @@
-Regenerate with: make explain CHALLENGE=05-lower-email-expression-index
+Seq Scan on users  (cost=0.00..254.00 rows=50 width=38) (actual time=0.014..2.017 rows=1.00 loops=1)
+  Filter: (lower(email) = 'user42@example.com'::text)
+  Rows Removed by Filter: 9999
+  Buffers: shared hit=104
+Planning:
+  Buffers: shared hit=58
+Planning Time: 0.092 ms
+Execution Time: 2.021 ms

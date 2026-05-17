@@ -8,7 +8,6 @@ JOIN order_items oi ON oi.product_id = p.id
 JOIN orders o ON o.id = oi.order_id
 JOIN users u ON u.id = o.user_id
 WHERE o.status IN ('paid', 'shipped', 'delivered')
-  AND u.status <> 'deleted'
 GROUP BY c.id, c.name
 ORDER BY revenue_cents DESC, c.id
 LIMIT 10

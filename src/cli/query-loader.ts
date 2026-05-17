@@ -9,6 +9,10 @@ export async function loadChallengeQuery(challenge: Challenge, variant: QueryVar
   return extractSolutionParts(sql).querySql;
 }
 
+export async function loadExpectedQuery(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.expectedSqlPath);
+}
+
 export async function loadSolutionMigration(challenge: Challenge): Promise<string> {
   const sql = await readSqlFile(challenge.solutionSqlPath);
   return extractSolutionParts(sql).migrationSql;

@@ -24,7 +24,7 @@ export async function withClient<T>(
   const client = await pool.connect();
   try {
     const timeoutMs = options.timeoutMs ?? Number(process.env.QUERY_TIMEOUT_MS ?? 15000);
-    await client.query('SET statement_timeout = $1', [timeoutMs]);
+    await client.query('SELECT set_config($1, $2, false)', ['statement_timeout', String(timeoutMs)]);
     return await fn(client);
   } catch (error) {
     if (error instanceof Error && /statement timeout/i.test(error.message)) {
