@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=01-user-orders-missing-index

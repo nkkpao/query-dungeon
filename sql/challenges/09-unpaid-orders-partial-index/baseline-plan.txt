@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=09-unpaid-orders-partial-index

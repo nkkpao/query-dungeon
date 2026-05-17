@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=12-dashboard-boss-fight

@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=06-jsonb-filter-gin-index

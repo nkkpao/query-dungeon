@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=11-inventory-aggregation

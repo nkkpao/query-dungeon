@@ -1,0 +1,1 @@
+Regenerate with: make explain CHALLENGE=07-count-distinct-big-join
