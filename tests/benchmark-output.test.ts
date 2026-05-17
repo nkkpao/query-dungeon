@@ -5,7 +5,8 @@ describe('benchmark output shape', () => {
   it('contains required metrics', () => {
     const result: BenchmarkResult = {
       challengeId: '01-user-orders-missing-index',
-      variant: 'bad',
+      label: 'participant',
+      sqlPath: 'workspace/sql/attempt.sql',
       seedScale: 'small',
       latencyMs: 1,
       planningTimeMs: 0.1,

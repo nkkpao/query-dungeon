@@ -12,7 +12,12 @@
     "test:watch": "vitest",
     "dungeon": "tsx src/cli/index.ts",
     "seed": "tsx src/cli/index.ts seed",
-    "list": "tsx src/cli/index.ts list"
+    "list": "tsx src/cli/index.ts list",
+    "run-sql": "tsx src/cli/index.ts run-sql",
+    "explain-file": "tsx src/cli/index.ts explain-file",
+    "benchmark-file": "tsx src/cli/index.ts benchmark-file",
+    "validate-file": "tsx src/cli/index.ts validate-file",
+    "diff-results": "tsx src/cli/index.ts diff-results"
   },
   "dependencies": {
     "commander": "^12.1.0",

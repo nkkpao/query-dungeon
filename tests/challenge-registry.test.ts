@@ -10,10 +10,11 @@ describe('challenge registry', () => {
       expect(['easy', 'medium', 'hard', 'boss']).toContain(challenge.difficulty);
       expect(challenge.antiPatternTags.length).toBeGreaterThan(0);
       expect(challenge.planSymptoms.length).toBeGreaterThan(0);
-      expect(challenge.badSqlPath).toContain(challenge.id);
-      expect(challenge.solutionSqlPath).toContain(challenge.id);
-      expect(challenge.expectedSqlPath).toContain(challenge.id);
-      expect(challenge.baselinePlanPath).toContain(challenge.id);
+      expect(challenge.challengePath).toContain(challenge.id);
+      expect(challenge.baselineSqlPath).toContain(challenge.id);
+      expect(challenge.expectedResultPath).toContain(challenge.id);
+      expect(challenge.hintsPath).toContain(challenge.id);
+      expect(challenge).not.toHaveProperty('solutionIndexes');
     }
   });
 

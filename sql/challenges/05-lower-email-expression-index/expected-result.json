@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "id",
+    "email",
+    "status",
+    "country"
+  ],
+  "rows": [],
+  "orderSensitive": false,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/05-lower-email-expression-index/expected.sql"
+}

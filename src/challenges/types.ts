@@ -14,20 +14,19 @@ export type AntiPatternTag =
   | 'n_plus_one'
   | 'stale_stats';
 
-export type QueryVariant = 'bad' | 'solution';
-
 export interface Challenge {
   id: string;
   title: string;
   difficulty: Difficulty;
   antiPatternTags: AntiPatternTag[];
   planSymptoms: string[];
-  badSqlPath: string;
-  solutionSqlPath: string;
-  expectedSqlPath: string;
-  baselinePlanPath: string;
-  readmePath: string;
-  solutionIndexes: string[];
+  challengePath: string;
+  baselineSqlPath: string;
+  expectedResultPath: string;
+  hintsPath: string;
+  optionalSolutionSqlPath: string;
+  optionalIndexesSqlPath: string;
+  optionalExplainPath: string;
 }
 
 export interface ParsedExplain {
@@ -43,7 +42,21 @@ export interface ParsedExplain {
 
 export interface BenchmarkResult extends ParsedExplain {
   challengeId: string;
-  variant: QueryVariant;
+  label: string;
+  sqlPath: string;
   seedScale: string;
   latencyMs: number;
+}
+
+export interface ExpectedResultContract {
+  columns: string[];
+  rows: Record<string, unknown>[];
+  fixtureSqlPath?: string;
+  orderSensitive: boolean;
+  numericTolerance?: number;
+  normalization?: {
+    sortRows?: boolean;
+    numericStrings?: boolean;
+    datesToIso?: boolean;
+  };
 }

@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "category_id",
+    "category_name",
+    "paid_orders",
+    "revenue_cents"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/02-sales-report-over-joining/expected.sql"
+}

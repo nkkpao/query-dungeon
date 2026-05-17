@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "id",
+    "user_id",
+    "total_cents",
+    "spring_events",
+    "open_tickets"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/expected.sql"
+}

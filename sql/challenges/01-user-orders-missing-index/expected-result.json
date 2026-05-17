@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "id",
+    "user_id",
+    "status",
+    "created_at",
+    "total_cents"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/01-user-orders-missing-index/expected.sql"
+}
