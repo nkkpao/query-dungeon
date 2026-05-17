@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "order_id",
+    "user_id",
+    "latest_payment_status",
+    "latest_payment_at"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/03-latest-payment-correlated-subquery/expected.sql"
+}

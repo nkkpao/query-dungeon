@@ -1,0 +1,13 @@
+{
+  "columns": [
+    "premium_products"
+  ],
+  "rows": [],
+  "orderSensitive": false,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/06-jsonb-filter-gin-index/expected.sql"
+}

@@ -17,11 +17,11 @@
 
 **Purpose**: Preserve current project behavior before changing challenge assets or CLI semantics.
 
-- [ ] T001 Snapshot current challenge IDs, bad query paths, seed files, and baseline index policy in tests/challenge-files.test.ts
-- [ ] T002 [P] Snapshot existing benchmark output shape and explain parser expectations in tests/benchmark-output.test.ts
-- [ ] T003 [P] Snapshot current CLI command registration and add failing expectations that default CLI registration must not expose apply-solution, reset-solutions, solution variants, or automatic bad-versus-solution commands in tests/cli-smoke.test.ts
-- [ ] T004 [P] Add fixture helpers for temporary participant SQL files in tests/helpers/sql-fixtures.ts
-- [ ] T005 [P] Add fixture helpers for expected-result JSON assertions in tests/helpers/expected-results.ts
+- [X] T001 Snapshot current challenge IDs, bad query paths, seed files, and baseline index policy in tests/challenge-files.test.ts
+- [X] T002 [P] Snapshot existing benchmark output shape and explain parser expectations in tests/benchmark-output.test.ts
+- [X] T003 [P] Snapshot current CLI command registration and add failing expectations that default CLI registration must not expose apply-solution, reset-solutions, solution variants, or automatic bad-versus-solution commands in tests/cli-smoke.test.ts
+- [X] T004 [P] Add fixture helpers for temporary participant SQL files in tests/helpers/sql-fixtures.ts
+- [X] T005 [P] Add fixture helpers for expected-result JSON assertions in tests/helpers/expected-results.ts
 
 ---
 
@@ -31,14 +31,14 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T006 Refactor Challenge and BenchmarkResult types for baseline, expected result, hints, optional official solution, and participant labels in src/challenges/types.ts
-- [ ] T007 Refactor challenge registry paths from bad/solution variants to challenge.md, baseline.sql, expected-result.json, hints.md, and optional files in src/challenges/registry.ts
-- [ ] T008 Replace QueryVariant-based challenge query loading with explicit baseline, expected-result, participant file, and optional official loaders in src/cli/query-loader.ts
-- [ ] T009 [P] Add safe SQL file reading and empty-file errors for participant-selected paths in src/db/sql-files.ts
-- [ ] T010 [P] Add expected-result JSON schema types and parser in src/challenges/expected-result.ts
-- [ ] T011 [P] Extract reusable row normalization and result diff helpers from src/cli/commands/compare.ts into src/db/result-compare.ts
-- [ ] T012 Refactor benchmark helper to accept a label and SQL path instead of QueryVariant in src/db/benchmark.ts
-- [ ] T013 Update CLI entrypoint imports and command registration scaffolding for new file-based commands in src/cli/index.ts
+- [X] T006 Refactor Challenge and BenchmarkResult types for baseline, expected result, hints, optional official solution, and participant labels in src/challenges/types.ts
+- [X] T007 Refactor challenge registry paths from bad/solution variants to challenge.md, baseline.sql, expected-result.json, hints.md, and optional files in src/challenges/registry.ts
+- [X] T008 Replace QueryVariant-based challenge query loading with explicit baseline, expected-result, participant file, and optional official loaders in src/cli/query-loader.ts
+- [X] T009 [P] Add safe SQL file reading and empty-file errors for participant-selected paths in src/db/sql-files.ts
+- [X] T010 [P] Add expected-result JSON schema types and parser in src/challenges/expected-result.ts
+- [X] T011 [P] Extract reusable row normalization and result diff helpers from src/cli/commands/compare.ts into src/db/result-compare.ts
+- [X] T012 Refactor benchmark helper to accept a label and SQL path instead of QueryVariant in src/db/benchmark.ts
+- [X] T013 Update CLI entrypoint imports and command registration scaffolding for new file-based commands in src/cli/index.ts
 
 **Checkpoint**: Challenge metadata, SQL loading, expected-result parsing, result comparison, and benchmark primitives are ready for story work.
 
@@ -52,33 +52,33 @@
 
 ### Tests and Guardrails for User Story 1
 
-- [ ] T014 [P] [US1] Add challenge contract tests requiring challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files for every challenge in tests/challenge-files.test.ts
-- [ ] T015 [P] [US1] Add guardrail test that default challenge docs, README paths, Makefile targets, package scripts, and list output do not reveal official solution SQL paths in tests/official-solution-gating.test.ts
-- [ ] T016 [P] [US1] Add CLI smoke tests for run-sql and explain-file with baseline.sql in tests/cli-smoke.test.ts
-- [ ] T017 [P] [US1] Add regression test that every baseline.sql remains runnable through the shared SQL loader in tests/challenge-registry.test.ts
+- [X] T014 [P] [US1] Add challenge contract tests requiring challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files for every challenge in tests/challenge-files.test.ts
+- [X] T015 [P] [US1] Add guardrail test that default challenge docs, README paths, Makefile targets, package scripts, and list output do not reveal official solution SQL paths in tests/official-solution-gating.test.ts
+- [X] T016 [P] [US1] Add CLI smoke tests for run-sql and explain-file with baseline.sql in tests/cli-smoke.test.ts
+- [X] T017 [P] [US1] Add regression test that every baseline.sql remains runnable through the shared SQL loader in tests/challenge-registry.test.ts
 
 ### Implementation for User Story 1
 
-- [ ] T018 [P] [US1] Create participant workspace directories with placeholders in workspace/sql/.gitkeep, workspace/indexes/.gitkeep, and workspace/notes/.gitkeep
-- [ ] T019 [P] [US1] Add workspace usage notes for scratch SQL, scratch indexes, and notes in workspace/README.md
-- [ ] T020 [US1] Migrate challenge 01 assets from README.md, bad.sql, expected.sql, solution.sql, and baseline-plan.txt to the new structure under sql/challenges/01-user-orders-missing-index/
-- [ ] T021 [US1] Migrate challenge 02 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/02-sales-report-over-joining/
-- [ ] T022 [US1] Migrate challenge 03 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/03-latest-payment-correlated-subquery/
-- [ ] T023 [US1] Migrate challenge 04 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/04-offset-pagination/
-- [ ] T024 [US1] Migrate challenge 05 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/05-lower-email-expression-index/
-- [ ] T025 [US1] Migrate challenge 06 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/06-jsonb-filter-gin-index/
-- [ ] T026 [US1] Migrate challenge 07 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/07-count-distinct-big-join/
-- [ ] T027 [US1] Migrate challenge 08 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/08-latest-user-events/
-- [ ] T028 [US1] Migrate challenge 09 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/09-unpaid-orders-partial-index/
-- [ ] T029 [US1] Migrate challenge 10 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/10-window-function-overuse/
-- [ ] T030 [US1] Migrate challenge 11 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/11-inventory-aggregation/
-- [ ] T031 [US1] Migrate challenge 12 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/12-dashboard-boss-fight/
-- [ ] T032 [US1] Update list command output to include challengePath and hide optional solution paths in src/cli/commands/list.ts
-- [ ] T033 [US1] Implement run-sql command for participant-selected SQL files in src/cli/commands/run-sql.ts
-- [ ] T034 [US1] Implement explain-file command for participant-selected SQL files in src/cli/commands/explain-file.ts
-- [ ] T035 [US1] Remove solution variant handling from default run and explain paths in src/cli/commands/run.ts and src/cli/commands/explain.ts
-- [ ] T036 [US1] Wire run-sql and explain-file into src/cli/index.ts and remove default solution-oriented command registration
-- [ ] T037 [US1] Update Makefile targets for run-sql and explain-file while removing default run/explain solution variant paths in Makefile
+- [X] T018 [P] [US1] Create participant workspace directories with placeholders in workspace/sql/.gitkeep, workspace/indexes/.gitkeep, and workspace/notes/.gitkeep
+- [X] T019 [P] [US1] Add workspace usage notes for scratch SQL, scratch indexes, and notes in workspace/README.md
+- [X] T020 [US1] Migrate challenge 01 assets from README.md, bad.sql, expected.sql, solution.sql, and baseline-plan.txt to the new structure under sql/challenges/01-user-orders-missing-index/
+- [X] T021 [US1] Migrate challenge 02 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/02-sales-report-over-joining/
+- [X] T022 [US1] Migrate challenge 03 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/03-latest-payment-correlated-subquery/
+- [X] T023 [US1] Migrate challenge 04 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/04-offset-pagination/
+- [X] T024 [US1] Migrate challenge 05 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/05-lower-email-expression-index/
+- [X] T025 [US1] Migrate challenge 06 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/06-jsonb-filter-gin-index/
+- [X] T026 [US1] Migrate challenge 07 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/07-count-distinct-big-join/
+- [X] T027 [US1] Migrate challenge 08 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/08-latest-user-events/
+- [X] T028 [US1] Migrate challenge 09 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/09-unpaid-orders-partial-index/
+- [X] T029 [US1] Migrate challenge 10 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/10-window-function-overuse/
+- [X] T030 [US1] Migrate challenge 11 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/11-inventory-aggregation/
+- [X] T031 [US1] Migrate challenge 12 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/12-dashboard-boss-fight/
+- [X] T032 [US1] Update list command output to include challengePath and hide optional solution paths in src/cli/commands/list.ts
+- [X] T033 [US1] Implement run-sql command for participant-selected SQL files in src/cli/commands/run-sql.ts
+- [X] T034 [US1] Implement explain-file command for participant-selected SQL files in src/cli/commands/explain-file.ts
+- [X] T035 [US1] Remove solution variant handling from default run and explain paths in src/cli/commands/run.ts and src/cli/commands/explain.ts
+- [X] T036 [US1] Wire run-sql and explain-file into src/cli/index.ts and remove default solution-oriented command registration
+- [X] T037 [US1] Update Makefile targets for run-sql and explain-file while removing default run/explain solution variant paths in Makefile
 
 **Checkpoint**: User Story 1 is independently functional as the MVP manual exploration workflow.
 
@@ -92,24 +92,24 @@
 
 ### Tests and Benchmarks for User Story 2
 
-- [ ] T038 [P] [US2] Add expected-result parser tests for columns, orderSensitive, numericTolerance, and normalization in tests/result-validation.test.ts
-- [ ] T039 [P] [US2] Add validate-file CLI tests for pass, mismatch, malformed SQL, empty file, and timeout cases in tests/manual-workflow.test.ts
-- [ ] T040 [P] [US2] Add benchmark-file CLI tests for participant-only, participant-versus-baseline, three repeated attempts, and no official-solution execution in tests/benchmark-output.test.ts
-- [ ] T041 [P] [US2] Add diff-results CLI tests for equal, missing, extra, and changed rows in tests/result-validation.test.ts
-- [ ] T042 [P] [US2] Add scratch index workflow test using workspace/indexes/ without marking indexes as official solutions in tests/manual-workflow.test.ts
+- [X] T038 [P] [US2] Add expected-result parser tests for columns, orderSensitive, numericTolerance, and normalization in tests/result-validation.test.ts
+- [X] T039 [P] [US2] Add validate-file CLI tests for pass, mismatch, malformed SQL, empty file, and timeout cases in tests/manual-workflow.test.ts
+- [X] T040 [P] [US2] Add benchmark-file CLI tests for participant-only, participant-versus-baseline, three repeated attempts, and no official-solution execution in tests/benchmark-output.test.ts
+- [X] T041 [P] [US2] Add diff-results CLI tests for equal, missing, extra, and changed rows in tests/result-validation.test.ts
+- [X] T042 [P] [US2] Add scratch index workflow test using workspace/indexes/ without marking indexes as official solutions in tests/manual-workflow.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T043 [US2] Implement deterministic expected-result comparison service in src/db/result-compare.ts
-- [ ] T044 [US2] Implement validate-file command against expected-result.json in src/cli/commands/validate-file.ts
-- [ ] T045 [US2] Implement benchmark-file command with optional baseline comparison in src/cli/commands/benchmark-file.ts
-- [ ] T046 [US2] Implement diff-results command for two participant-selected SQL files in src/cli/commands/diff-results.ts
-- [ ] T047 [US2] Add scratch SQL and scratch index execution support to participant file loader in src/cli/query-loader.ts
-- [ ] T048 [US2] Add clear recovery errors for missing SQL file, empty SQL file, invalid expected-result fixture, result mismatch, and query timeout in src/cli/index.ts
-- [ ] T049 [US2] Wire validate-file, benchmark-file, and diff-results into src/cli/index.ts
-- [ ] T050 [US2] Update Makefile targets for benchmark-file, validate-file, diff-results, and reset in Makefile
-- [ ] T051 [US2] Remove automatic bad-versus-solution behavior from benchmark command and ensure default benchmarking cannot load official solution SQL in src/cli/commands/benchmark.ts
-- [ ] T052 [US2] Remove automatic bad-versus-solution behavior from compare command and ensure default validation cannot execute official solution SQL in src/cli/commands/compare.ts
+- [X] T043 [US2] Implement deterministic expected-result comparison service in src/db/result-compare.ts
+- [X] T044 [US2] Implement validate-file command against expected-result.json in src/cli/commands/validate-file.ts
+- [X] T045 [US2] Implement benchmark-file command with optional baseline comparison in src/cli/commands/benchmark-file.ts
+- [X] T046 [US2] Implement diff-results command for two participant-selected SQL files in src/cli/commands/diff-results.ts
+- [X] T047 [US2] Add scratch SQL and scratch index execution support to participant file loader in src/cli/query-loader.ts
+- [X] T048 [US2] Add clear recovery errors for missing SQL file, empty SQL file, invalid expected-result fixture, result mismatch, and query timeout in src/cli/index.ts
+- [X] T049 [US2] Wire validate-file, benchmark-file, and diff-results into src/cli/index.ts
+- [X] T050 [US2] Update Makefile targets for benchmark-file, validate-file, diff-results, and reset in Makefile
+- [X] T051 [US2] Remove automatic bad-versus-solution behavior from benchmark command and ensure default benchmarking cannot load official solution SQL in src/cli/commands/benchmark.ts
+- [X] T052 [US2] Remove automatic bad-versus-solution behavior from compare command and ensure default validation cannot execute official solution SQL in src/cli/commands/compare.ts
 
 **Checkpoint**: User Story 2 supports iterative manual optimization and deterministic correctness checks independently of official solutions.
 
@@ -123,21 +123,21 @@
 
 ### Tests and Guardrails for User Story 3
 
-- [ ] T053 [P] [US3] Add tests proving run-sql, explain-file, benchmark-file, validate-file, diff-results, list, and README paths do not read optional solution files in tests/official-solution-gating.test.ts
-- [ ] T054 [P] [US3] Add compare-with-official-solution CLI tests for warning text, --benchmark behavior, and --show-sql gating in tests/official-solution-gating.test.ts
-- [ ] T055 [P] [US3] Add challenge optional artifact tests for official-solution.sql, official-indexes.sql, official-explain.txt, and trade-off notes in tests/challenge-files.test.ts
-- [ ] T056 [P] [US3] Add regression test that baseline.sql files do not contain official solution index names from optional files in tests/baseline-index-policy.test.ts
+- [X] T053 [P] [US3] Add tests proving run-sql, explain-file, benchmark-file, validate-file, diff-results, list, and README paths do not read optional solution files in tests/official-solution-gating.test.ts
+- [X] T054 [P] [US3] Add compare-with-official-solution CLI tests for warning text, --benchmark behavior, and --show-sql gating in tests/official-solution-gating.test.ts
+- [X] T055 [P] [US3] Add challenge optional artifact tests for official-solution.sql, official-indexes.sql, official-explain.txt, and trade-off notes in tests/challenge-files.test.ts
+- [X] T056 [P] [US3] Add regression test that baseline.sql files do not contain official solution index names from optional files in tests/baseline-index-policy.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T057 [US3] Implement official solution loader that reads only optional/ files after explicit opt-in in src/cli/query-loader.ts
-- [ ] T058 [US3] Implement compare-with-official-solution command with warning, --benchmark, and --show-sql gates in src/cli/commands/compare-with-official-solution.ts
-- [ ] T059 [US3] Remove apply-solution command from default CLI registration in src/cli/index.ts
-- [ ] T060 [US3] Remove or downgrade reset-solutions command to an optional legacy example outside the default workflow in src/cli/commands/reset-solutions.ts
-- [ ] T061 [US3] Remove solution_state dependency from normal seed and learner flows in sql/schema/003_solution_state.sql and src/cli/commands/seed.ts
-- [ ] T062 [US3] Add explicit Makefile opt-in target for compare-with-official-solution and no default target that reveals solution material in Makefile
-- [ ] T063 [US3] Add official solution access notices to optional solution documentation in sql/challenges/*/optional/README.md
-- [ ] T064 [US3] Add registry guardrail test proving solutionSqlPath, solutionIndexes, and QueryVariant solution are not part of active challenge metadata in tests/official-solution-gating.test.ts
+- [X] T057 [US3] Implement official solution loader that reads only optional/ files after explicit opt-in in src/cli/query-loader.ts
+- [X] T058 [US3] Implement compare-with-official-solution command with warning, --benchmark, and --show-sql gates in src/cli/commands/compare-with-official-solution.ts
+- [X] T059 [US3] Remove apply-solution command from default CLI registration in src/cli/index.ts
+- [X] T060 [US3] Remove or downgrade reset-solutions command to an optional legacy example outside the default workflow in src/cli/commands/reset-solutions.ts
+- [X] T061 [US3] Remove solution_state dependency from normal seed and learner flows in sql/schema/003_solution_state.sql and src/cli/commands/seed.ts
+- [X] T062 [US3] Add explicit Makefile opt-in target for compare-with-official-solution and no default target that reveals solution material in Makefile
+- [X] T063 [US3] Add official solution access notices to optional solution documentation in sql/challenges/*/optional/README.md
+- [X] T064 [US3] Add registry guardrail test proving solutionSqlPath, solutionIndexes, and QueryVariant solution are not part of active challenge metadata in tests/official-solution-gating.test.ts
 
 **Checkpoint**: User Story 3 provides deliberate solution access without weakening the exploratory default workflow.
 
@@ -147,17 +147,17 @@
 
 **Purpose**: Reframe the repository as an investigation lab and teach manual plan reading, hypothesis testing, and safe experimentation.
 
-- [ ] T065 [P] Rewrite English README around read challenge, run baseline, EXPLAIN ANALYZE, experiment, validate, benchmark, and optional solution comparison in README.md
-- [ ] T066 [P] Rewrite Russian README around the same exploratory workflow in README_RU.md
-- [ ] T067 [P] Add manual EXPLAIN ANALYZE investigation guide updates in docs/how-to-explain.md
-- [ ] T068 [P] Add Russian manual EXPLAIN ANALYZE investigation guide updates in docs/how-to-explain_RU.md
-- [ ] T069 [P] Update optimization workflow documentation for manual hypotheses, scratch SQL, scratch indexes, validation, and benchmarking in docs/query-optimization-workflow.md
-- [ ] T070 [P] Update Russian optimization workflow documentation in docs/query-optimization-workflow_RU.md
-- [ ] T071 [P] Update indexing cheatsheet to emphasize manual index experiments and cleanup in docs/indexing-cheatsheet.md
-- [ ] T072 [P] Update Russian indexing cheatsheet with manual index experiment guidance in docs/indexing-cheatsheet_RU.md
-- [ ] T073 [P] Update roadmap to describe hands-on lab progression and de-emphasize automatic demos in docs/roadmap.md
-- [ ] T074 [P] Update Russian roadmap to describe hands-on lab progression in docs/roadmap_RU.md
-- [ ] T075 Update quickstart examples to use new file-based commands and workspace paths in specs/002-manual-sql-lab/quickstart.md
+- [X] T065 [P] Rewrite English README around read challenge, run baseline, EXPLAIN ANALYZE, experiment, validate, benchmark, and optional solution comparison in README.md
+- [X] T066 [P] Rewrite Russian README around the same exploratory workflow in README_RU.md
+- [X] T067 [P] Add manual EXPLAIN ANALYZE investigation guide updates in docs/how-to-explain.md
+- [X] T068 [P] Add Russian manual EXPLAIN ANALYZE investigation guide updates in docs/how-to-explain_RU.md
+- [X] T069 [P] Update optimization workflow documentation for manual hypotheses, scratch SQL, scratch indexes, validation, and benchmarking in docs/query-optimization-workflow.md
+- [X] T070 [P] Update Russian optimization workflow documentation in docs/query-optimization-workflow_RU.md
+- [X] T071 [P] Update indexing cheatsheet to emphasize manual index experiments and cleanup in docs/indexing-cheatsheet.md
+- [X] T072 [P] Update Russian indexing cheatsheet with manual index experiment guidance in docs/indexing-cheatsheet_RU.md
+- [X] T073 [P] Update roadmap to describe hands-on lab progression and de-emphasize automatic demos in docs/roadmap.md
+- [X] T074 [P] Update Russian roadmap to describe hands-on lab progression in docs/roadmap_RU.md
+- [X] T075 Update quickstart examples to use new file-based commands and workspace paths in specs/002-manual-sql-lab/quickstart.md
 
 ---
 
@@ -165,16 +165,16 @@
 
 **Purpose**: Confirm the refactor preserves datasets, runnable challenges, benchmark reproducibility, and exploratory guardrails.
 
-- [ ] T076 Run npm test and fix failures in tests/
-- [ ] T077 Run npm run build and fix TypeScript errors in src/
+- [X] T076 Run npm test and fix failures in tests/
+- [X] T077 Run npm run build and fix TypeScript errors in src/
 - [ ] T078 Run make seed SEED_SCALE=small and verify datasets load unchanged via sql/seeds/
 - [ ] T079 Run run-sql and explain-file against every challenge baseline.sql and record any broken challenge paths in specs/002-manual-sql-lab/tasks.md
 - [ ] T080 Run validate-file against every challenge baseline.sql and update expected-result.json fixtures where deterministic validation requires normalization in sql/challenges/*/expected-result.json
 - [ ] T081 Run benchmark-file --baseline for every challenge baseline.sql with at least three repeated attempts to verify benchmark reproducibility in src/db/benchmark.ts
-- [ ] T082 Search for default solution exposure in README.md, README_RU.md, docs/, src/cli/, Makefile, package.json, and sql/challenges/*/challenge.md and remove any accidental leak
-- [ ] T083 Verify official solution artifacts remain separate from active challenge flow in sql/challenges/*/optional/
-- [ ] T084 Verify existing seed files and baseline schema are unchanged unless an earlier task documented a required migration in sql/seeds/ and sql/schema/
-- [ ] T085 Update package scripts to expose the new workflow commands or examples without solution replay shortcuts in package.json
+- [X] T082 Search for default solution exposure in README.md, README_RU.md, docs/, src/cli/, Makefile, package.json, and sql/challenges/*/challenge.md and remove any accidental leak
+- [X] T083 Verify official solution artifacts remain separate from active challenge flow in sql/challenges/*/optional/
+- [X] T084 Verify existing seed files and baseline schema are unchanged unless an earlier task documented a required migration in sql/seeds/ and sql/schema/
+- [X] T085 Update package scripts to expose the new workflow commands or examples without solution replay shortcuts in package.json
 
 ---
 
@@ -258,6 +258,13 @@ Task: "T069 Update optimization workflow in docs/query-optimization-workflow.md"
 1. US1 delivers the non-solution default challenge flow.
 2. US2 adds participant validation, benchmarking, diffing, and scratchpad iteration.
 3. US3 adds explicit official comparison with guardrails.
+
+## Regression Notes
+
+- 2026-05-17: `npm test` passed and `npm run build` passed.
+- 2026-05-17: `make seed SEED_SCALE=small` could not run in this sandbox
+  because Docker access to `/var/run/docker.sock` was denied. T078-T081 remain
+  unchecked until run in an environment with Docker/PostgreSQL access.
 4. Documentation and regression phases harden the experience across all challenges.
 
 ### Safety Rules

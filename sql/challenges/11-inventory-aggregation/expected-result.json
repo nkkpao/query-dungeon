@@ -1,0 +1,15 @@
+{
+  "columns": [
+    "product_id",
+    "name",
+    "on_hand"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/11-inventory-aggregation/expected.sql"
+}

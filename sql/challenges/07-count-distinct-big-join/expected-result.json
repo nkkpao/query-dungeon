@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "country",
+    "orders_count"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/07-count-distinct-big-join/expected.sql"
+}

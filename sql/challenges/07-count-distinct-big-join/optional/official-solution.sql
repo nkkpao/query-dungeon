@@ -1,0 +1,6 @@
+SELECT u.country, count(DISTINCT o.id) AS orders_count
+FROM users u
+JOIN orders o ON o.user_id = u.id
+WHERE o.status IN ('paid', 'shipped', 'delivered')
+GROUP BY u.country
+ORDER BY orders_count DESC, u.country

@@ -8,3 +8,7 @@
 - GIN: useful for JSONB containment and array-like lookups.
 
 Indexes are not free. They take storage, slow writes, and can be too query-specific.
+
+For lab work, write index hypotheses in `workspace/indexes/` and run them
+explicitly. Measure before and after with `explain-file` and `benchmark-file`,
+then reseed when you need to return to the baseline schema.

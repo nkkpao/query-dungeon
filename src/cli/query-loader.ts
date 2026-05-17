@@ -1,19 +1,18 @@
-import type {Challenge, QueryVariant} from '../challenges/types.js';
-import {extractSolutionParts, readSqlFile} from '../db/sql-files.js';
+import type {Challenge} from '../challenges/types.js';
+import {readSqlFile} from '../db/sql-files.js';
 
-export async function loadChallengeQuery(challenge: Challenge, variant: QueryVariant): Promise<string> {
-  if (variant === 'bad') {
-    return readSqlFile(challenge.badSqlPath);
-  }
-  const sql = await readSqlFile(challenge.solutionSqlPath);
-  return extractSolutionParts(sql).querySql;
+export async function loadBaselineQuery(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.baselineSqlPath);
 }
 
-export async function loadExpectedQuery(challenge: Challenge): Promise<string> {
-  return readSqlFile(challenge.expectedSqlPath);
+export async function loadParticipantSql(sqlPath: string): Promise<string> {
+  return readSqlFile(sqlPath);
 }
 
-export async function loadSolutionMigration(challenge: Challenge): Promise<string> {
-  const sql = await readSqlFile(challenge.solutionSqlPath);
-  return extractSolutionParts(sql).migrationSql;
+export async function loadOfficialSolutionQuery(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.optionalSolutionSqlPath);
+}
+
+export async function loadOfficialSolutionIndexes(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.optionalIndexesSqlPath);
 }

@@ -1,0 +1,15 @@
+{
+  "columns": [
+    "user_id",
+    "order_id",
+    "total_cents"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/10-window-function-overuse/expected.sql"
+}

@@ -1,0 +1,17 @@
+{
+  "columns": [
+    "id",
+    "user_id",
+    "event_type",
+    "metadata",
+    "created_at"
+  ],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/08-latest-user-events/expected.sql"
+}

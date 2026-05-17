@@ -8,7 +8,7 @@ export function seedCommand(): Command {
     .description('Reset schema and load deterministic seed data')
     .option('--scale <small|medium|large>', 'seed scale')
     .action(async function (this: Command, localOptions) {
-      const options = {...(this.parent?.opts() ?? {}), ...localOptions};
+      const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
       const scale = seedScale(options);
       validateSeedScale(scale);
       await withClient({databaseUrl: options.databaseUrl, timeoutMs: timeoutMs(options)}, async (client) => {
@@ -16,7 +16,6 @@ export function seedCommand(): Command {
           'sql/seeds/000_reset.sql',
           'sql/schema/001_tables.sql',
           'sql/schema/002_baseline_indexes.sql',
-          'sql/schema/003_solution_state.sql',
           'sql/seeds/001_seed_small.sql',
         ];
         if (scale === 'medium' || scale === 'large') files.push('sql/seeds/002_seed_medium.sql');

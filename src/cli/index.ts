@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import 'dotenv/config';
 import {Command} from 'commander';
-import {applySolutionCommand} from './commands/apply-solution.js';
-import {benchmarkCommand} from './commands/benchmark.js';
-import {compareCommand} from './commands/compare.js';
-import {explainCommand} from './commands/explain.js';
+import {benchmarkFileCommand} from './commands/benchmark-file.js';
+import {compareWithOfficialSolutionCommand} from './commands/compare-with-official-solution.js';
+import {diffResultsCommand} from './commands/diff-results.js';
+import {explainFileCommand} from './commands/explain-file.js';
 import {listCommand} from './commands/list.js';
-import {resetSolutionsCommand} from './commands/reset-solutions.js';
-import {runCommand} from './commands/run.js';
+import {runSqlCommand} from './commands/run-sql.js';
 import {seedCommand} from './commands/seed.js';
+import {validateFileCommand} from './commands/validate-file.js';
 
 const program = new Command()
   .name('dungeon')
@@ -21,12 +21,12 @@ const program = new Command()
 program
   .addCommand(seedCommand())
   .addCommand(listCommand())
-  .addCommand(runCommand())
-  .addCommand(explainCommand())
-  .addCommand(benchmarkCommand())
-  .addCommand(compareCommand())
-  .addCommand(applySolutionCommand())
-  .addCommand(resetSolutionsCommand());
+  .addCommand(runSqlCommand())
+  .addCommand(explainFileCommand())
+  .addCommand(benchmarkFileCommand())
+  .addCommand(validateFileCommand())
+  .addCommand(diffResultsCommand())
+  .addCommand(compareWithOfficialSolutionCommand());
 
 program.parseAsync(process.argv).catch((error: unknown) => {
   let message = error instanceof Error && error.message ? error.message : String(error);
