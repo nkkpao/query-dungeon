@@ -140,9 +140,10 @@ starting state.
   training environment with PostgreSQL 16+ available to scenario runners.
 - **FR-002**: The project MUST provide deterministic commands for setup, seed,
   run, explain, benchmark, and resetting reference optimizations.
-- **FR-003**: The project MUST generate or load a large synthetic dataset that is
-  sufficient to make inefficient query plans observable, with a default total
-  size between 1 million and 5 million rows.
+- **FR-003**: The project MUST generate or load deterministic synthetic datasets
+  through named seed profiles: `small` for smoke tests and constrained laptops,
+  `medium` as the default learning profile with 1 million to 5 million total
+  rows, and `large` as an opt-in heavier profile.
 - **FR-004**: The project MUST provide a CLI-first runner interface that can list
   puzzles, run an individual puzzle, capture its plan, and benchmark it.
 - **FR-005**: The project MUST include at least 12 runnable query optimization
@@ -188,6 +189,8 @@ starting state.
 - **FR-023**: Version-specific PostgreSQL behavior MUST be documented when a
   puzzle depends on features or planner behavior that differ across supported
   PostgreSQL 16+ versions.
+- **FR-024**: Runner commands MUST enforce a configurable query timeout so
+  intentionally bad SQL cannot run indefinitely on local machines.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -223,8 +226,9 @@ starting state.
   readable enough to understand, business-meaningful, and poor enough to create
   observable plan issues.
 - **Seed Data**: The dataset is synthetic, large, deterministic, and includes
-  distributions that make the target plan symptoms appear. The default seed
-  profile contains 1-5 million total rows.
+  distributions that make the target plan symptoms appear. Seed profiles include
+  a fast `small` profile, a default `medium` profile with 1-5 million total
+  rows, and an opt-in `large` profile for stronger plan symptoms.
 - **Expected Result**: Every puzzle defines deterministic output so result
   equality can be tested between bad and optimized variants.
 - **Baseline Plan**: Every puzzle stores or regenerates
@@ -249,8 +253,9 @@ starting state.
   puzzle within 15 minutes using the documented quest instructions.
 - **SC-002**: The catalog contains at least 12 runnable puzzles, and 100% of them
   include all required scenario artifacts.
-- **SC-003**: The default seed workflow creates 1-5 million total marketplace
-  rows and can regenerate the dataset on a developer laptop.
+- **SC-003**: The default `medium` seed workflow creates 1-5 million total
+  marketplace rows and can regenerate the dataset on a developer laptop, while
+  `small` remains available for smoke tests and constrained machines.
 - **SC-004**: 100% of puzzles have automated checks proving the bad and optimized
   variants return equivalent results.
 - **SC-005**: 100% of puzzles produce before/after benchmark output with latency,
@@ -276,6 +281,9 @@ starting state.
 - The learner is a developer who can run local command-line tools and read SQL.
 - The repository is a local training lab, not a deployed service or production
   template.
+- The project intentionally contains slow queries, so local safety depends on
+  bounded seed profiles and configurable statement timeouts rather than
+  production-style hardening.
 - Synthetic data is acceptable and no real user or business data is required.
 - PostgreSQL 16+ is the supported database range; lessons must document
   version-specific dependencies when relevant.
