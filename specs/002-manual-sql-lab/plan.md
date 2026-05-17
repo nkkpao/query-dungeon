@@ -36,11 +36,15 @@ access
 **Performance Goals**: Baseline challenge symptoms remain measurable on the
 supported seed profiles; learner SQL validation completes in under 30 seconds
 on the smallest dataset; benchmark-file reports latency and plan metrics for
-participant SQL independently of official solutions  
+participant SQL independently of official solutions; every challenge supports
+at least three repeated participant-SQL benchmark attempts with optional
+baseline comparison and no official solution execution  
 **Constraints**: Preserve existing seed datasets and bad-query intent; do not
 show, apply, benchmark, or compare official solutions in default commands; keep
 raw SQL directly visible and editable; support iterative scratchpad SQL and
-manual indexes  
+manual indexes; default CLI registration must not include solution variants,
+apply-solution, reset-solutions, or automatic bad-versus-solution benchmark or
+compare commands  
 **Scale/Scope**: Existing 12 marketplace challenges, `small|medium|large` seed
 profiles, one participant workspace with `/workspace/sql/`,
 `/workspace/indexes/`, and `/workspace/notes/`
@@ -70,6 +74,10 @@ profiles, one participant workspace with `/workspace/sql/`,
   Correctness checks compare learner SQL to `expected-result.json`; benchmark
   evidence measures learner SQL against baseline by default. Official before/
   after comparison exists only in opt-in solution comparison paths.
+- **Analyze remediation gate**: PASS. Implementation must add guardrail tests
+  that fail while default CLI, README, Makefile, registry, benchmark, or
+  validation code can expose, execute, or compare official solutions without
+  the explicit solution-comparison command.
 - **Trade-off review**: PASS. Official solution artifacts remain separate and
   include trade-off notes in optional solution documentation or challenge
   metadata; learners do not see these through default commands.
@@ -211,6 +219,22 @@ never confused with official artifacts.
    files, default README paths do not link to official solution replay, and
    participant SQL files work across run, explain, benchmark, validate, and
    diff workflows.
+10. **Prove every challenge remains iterative**: Run repeated participant-SQL
+    benchmarks and fixture-based validation for every challenge baseline and at
+    least one workspace SQL attempt, without executing official solutions.
+
+## Analyze Findings Resolved
+
+| Finding | Why It Harms Hands-on Learning | Chosen Fix |
+|---------|--------------------------------|------------|
+| C1: Default CLI registers solution commands | Learners can apply or replay the answer instead of investigating plans. | Make solution commands absent from default registration; only explicit solution comparison may access optional files. |
+| C2: README and Makefile guide solution replay | The first path teaches demonstration replay rather than performance engineering practice. | Rewrite default docs and Makefile around baseline, explain, workspace experiments, validation, and benchmark-file. |
+| C3: Registry treats solutions as active metadata | Solution paths and index names become normal challenge data instead of gated reference artifacts. | Replace variant metadata with baseline, expected-result, hints, and optional official paths. |
+| C4: Benchmark auto-runs official solution | Benchmarking becomes an answer reveal instead of iterative hypothesis testing. | Benchmark participant SQL and optional baseline by default; official benchmark only behind explicit solution comparison. |
+| C5: Validation executes official solution | Correctness checks depend on the answer and can leak solution behavior. | Validate participant SQL against deterministic expected-result fixtures only. |
+| C6: Run/explain cannot accept arbitrary SQL | Learners cannot practice with their own hypotheses. | Add file-based run and explain commands for participant-selected SQL. |
+| C7: Docs still say compare bad and solution | Workflow language reduces exploration and skips manual tuning loops. | Rewrite workflow docs around EXPLAIN ANALYZE, hypotheses, scratch files, validation, and benchmark iteration. |
+| C8: Benchmark coverage sampled challenges only | Success criteria require every challenge to support repeated benchmark attempts. | Add all-challenge repeated benchmark regression coverage. |
 
 ## Complexity Tracking
 

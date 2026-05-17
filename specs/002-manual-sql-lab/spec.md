@@ -10,6 +10,7 @@
 ### Session 2026-05-17
 
 - Q: What decisions define the hands-on training workflow? → A: Solutions hidden by default; solution SQL lives outside active challenge flow; participant SQL files are first-class inputs; supported learner commands include explain, benchmark, compare-results, and validate-correctness; compare-with-official-solution is optional and explicit; README flow emphasizes exploration; participants create indexes manually in migration or scratch files; scratchpad mode is supported; existing auto-demo flows are removed or downgraded to optional examples.
+- Q: What analyze findings must be locked before implementation? → A: Default CLI registration, README examples, Makefile targets, benchmark behavior, validation behavior, and challenge registry metadata must all fail guardrail checks if they expose official solutions, execute official solutions, or compare against official solutions without an explicit solution-comparison command.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -103,6 +104,9 @@ As a learner or maintainer, I want reference solutions to exist but require an e
 - **FR-023**: The lab MUST encourage participants to create indexes manually in their own migration or scratch files and then measure the effect themselves.
 - **FR-024**: The lab MUST support a scratchpad mode where learners can run experimental SQL and schema changes without treating those changes as official challenge solutions.
 - **FR-025**: Existing automatic demonstration flows MUST be removed from the default path or downgraded to clearly labeled optional examples that do not reveal official solutions by default.
+- **FR-026**: Default CLI registration MUST NOT include commands or options that apply official solutions, reset official solution state, run a `solution` variant, explain a `solution` variant, or automatically benchmark bad SQL against official solution SQL.
+- **FR-027**: Correctness validation MUST compare participant SQL only against deterministic expected-result fixtures and MUST NOT execute official solution SQL as part of validation.
+- **FR-028**: Benchmark tooling MUST support at least three repeated benchmark attempts for every challenge using participant-selected SQL and optional baseline comparison, without requiring an official solution comparison.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -127,6 +131,7 @@ As a learner or maintainer, I want reference solutions to exist but require an e
 - **Hints**: Each challenge provides graduated hints that nudge learners toward plan symptoms, data distribution, indexing options, or rewrite ideas without giving away optimized SQL.
 - **Reference Optimization**: Each challenge has a separate optional reference solution with optimized SQL or schema changes, expected plan characteristics, and trade-off notes.
 - **Benchmark Evidence**: Learners can benchmark baseline and learner-provided SQL manually; official baseline-versus-solution comparisons are available only after explicit solution access or in maintainer material.
+- **Validation Evidence**: Learner correctness checks use deterministic expected-result fixtures; official solution execution is never part of default validation.
 - **Trade-offs**: Reference solutions explain costs, limits, and cases where the approach may not help.
 - **Scratchpad Mode**: Each challenge supports manual experimentation with learner-owned SQL and index changes without promoting those changes into official challenge flow.
 
@@ -145,6 +150,7 @@ As a learner or maintainer, I want reference solutions to exist but require an e
 - **SC-009**: 100% of supported learner workflows that inspect, benchmark, compare, or validate SQL accept participant-provided SQL files.
 - **SC-010**: 100% of official-solution comparison workflows require an explicit solution-comparison action and are absent from the default README path.
 - **SC-011**: At least 90% of pilot learners can create a manual index experiment in a migration or scratch file, rerun explain, benchmark the hypothesis, and validate correctness without using official solution material.
+- **SC-012**: Automated regression checks prove that every published challenge supports at least three repeated participant-SQL benchmark attempts with optional baseline comparison and no official-solution execution.
 
 ## Assumptions
 
