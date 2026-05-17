@@ -5,6 +5,19 @@
 **Status**: Draft  
 **Input**: User description: "Создай учебный проект \"Postgres Query Dungeon\" — локальный репозиторий с backend-приложением и PostgreSQL, где есть набор намеренно плохих SQL-запросов для тренировки оптимизации."
 
+## Clarifications
+
+### Session 2026-05-17
+
+- Q: Which PostgreSQL version is the primary database target? → A: PostgreSQL 17 by default, with PostgreSQL 16 compatibility acceptable when no lesson depends on version-specific behavior.
+- Q: What default dataset size should scenarios use? → A: 1-5 million total rows, large enough to expose bad local plans without overwhelming a developer laptop.
+- Q: What data domain should the synthetic dataset model? → A: E-commerce / marketplace with users, orders, products, payments, events, reviews, and inventory.
+- Q: What runner interface is primary? → A: CLI-first; REST API is optional and must not replace the CLI workflow.
+- Q: Which backend stack should be used? → A: Python, chosen for simple CLI tooling, deterministic data generation, PostgreSQL scripting, benchmark orchestration, and result-equivalence tests.
+- Q: What must make a bad query acceptable? → A: It must be intentionally inefficient while still answering a meaningful business question with a deterministic result.
+- Q: How should puzzle difficulty be classified? → A: Every puzzle has one difficulty level: easy, medium, hard, or boss.
+- Q: Which anti-pattern tags are canonical? → A: missing_index, low_selectivity, function_on_column, correlated_subquery, over_joining, bad_pagination, jsonb_scan, sort_spill, cte_materialization, window_overuse, n_plus_one, stale_stats.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Start a Local Training Lab (Priority: P1)
@@ -124,13 +137,14 @@ starting state.
 ### Functional Requirements
 
 - **FR-001**: The project MUST provide a local command that starts the complete
-  training environment with PostgreSQL available to scenario runners.
+  training environment with PostgreSQL 17 available to scenario runners.
 - **FR-002**: The project MUST provide deterministic commands for setup, seed,
   run, explain, benchmark, and resetting reference optimizations.
 - **FR-003**: The project MUST generate or load a large synthetic dataset that is
-  sufficient to make inefficient query plans observable.
-- **FR-004**: The project MUST provide a runner interface that can list puzzles,
-  run an individual puzzle, capture its plan, and benchmark it.
+  sufficient to make inefficient query plans observable, with a default total
+  size between 1 million and 5 million rows.
+- **FR-004**: The project MUST provide a CLI-first runner interface that can list
+  puzzles, run an individual puzzle, capture its plan, and benchmark it.
 - **FR-005**: The project MUST include at least 12 runnable query optimization
   puzzles.
 - **FR-006**: Each puzzle MUST include a business story, intentionally bad SQL,
@@ -156,15 +170,35 @@ starting state.
   resetting solutions.
 - **FR-015**: The project MUST explicitly communicate that it is not production
   ready and is intentionally inefficient by design.
+- **FR-016**: The backend and runner tooling MUST use Python as the primary
+  stack for CLI commands, data generation, query execution, benchmarks, and
+  correctness tests.
+- **FR-017**: A REST API MAY be provided, but every required workflow MUST remain
+  available through CLI commands.
+- **FR-018**: The synthetic dataset MUST use an e-commerce / marketplace domain
+  with users, orders, products, payments, events, reviews, and inventory.
+- **FR-019**: Every puzzle MUST have exactly one difficulty level from easy,
+  medium, hard, or boss.
+- **FR-020**: Every puzzle MUST include one or more canonical anti-pattern tags
+  from the approved tag list.
+- **FR-021**: The puzzle catalog MUST include all canonical anti-pattern tags at
+  least once across the 12 or more puzzles.
+- **FR-022**: Bad queries MUST remain business-meaningful and MUST NOT be slow
+  only because they perform arbitrary useless work.
+- **FR-023**: Version-specific PostgreSQL behavior MUST be documented when a
+  puzzle depends on features or planner behavior that differ between PostgreSQL
+  16 and 17.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Puzzle**: A named training task with a business story, bad query, runner
   command, expected result, baseline plan, hints, reference solution, and
-  reference migration.
+  reference migration. Each puzzle has one difficulty level and one or more
+  canonical anti-pattern tags.
 - **Dataset**: Deterministic synthetic data used by all puzzles, including row
   volumes, relationships, distributions, and edge cases required to expose bad
-  plans.
+  plans. The default dataset uses an e-commerce / marketplace domain with users,
+  orders, products, payments, events, reviews, and inventory.
 - **Query Variant**: Either the intentionally bad query or an optimized reference
   query for the same puzzle, both tied to the same expected result.
 - **Plan Capture**: A reproducible `EXPLAIN (ANALYZE, BUFFERS)` artifact for a
@@ -173,15 +207,24 @@ starting state.
   counts, buffer usage, planning time, and execution time.
 - **Solution Migration**: A separate database change artifact that applies the
   reference indexes or related database changes for a puzzle.
+- **Difficulty Level**: One of easy, medium, hard, or boss, used to order the
+  learner journey and set expectation for investigation depth.
+- **Anti-pattern Tag**: A canonical label describing the primary lesson in a bad
+  query. Approved tags are missing_index, low_selectivity, function_on_column,
+  correlated_subquery, over_joining, bad_pagination, jsonb_scan, sort_spill,
+  cte_materialization, window_overuse, n_plus_one, and stale_stats.
 
 ### Training Scenario Contract *(mandatory for PostgreSQL optimization scenarios)*
 
 - **Business Task**: The learner is solving realistic reporting, search,
-  ranking, filtering, reconciliation, or dashboard-style data questions.
+  ranking, filtering, reconciliation, or dashboard-style data questions in an
+  e-commerce / marketplace domain.
 - **Bad Query**: Every puzzle starts from intentionally inefficient SQL that is
-  readable enough to understand but poor enough to create observable plan issues.
+  readable enough to understand, business-meaningful, and poor enough to create
+  observable plan issues.
 - **Seed Data**: The dataset is synthetic, large, deterministic, and includes
-  distributions that make the target plan symptoms appear.
+  distributions that make the target plan symptoms appear. The default seed
+  profile contains 1-5 million total rows.
 - **Expected Result**: Every puzzle defines deterministic output so result
   equality can be tested between bad and optimized variants.
 - **Baseline Plan**: Every puzzle stores or regenerates
@@ -195,6 +238,8 @@ starting state.
   compares latency, rows, buffers, planning time, and execution time.
 - **Trade-offs**: Each solution explains storage cost, write overhead, query
   specificity, maintainability, and cases where the optimization may not help.
+- **Difficulty and Tags**: Each puzzle declares one difficulty level and at least
+  one canonical anti-pattern tag.
 
 ## Success Criteria *(mandatory)*
 
@@ -204,20 +249,27 @@ starting state.
   puzzle within 15 minutes using the documented quest instructions.
 - **SC-002**: The catalog contains at least 12 runnable puzzles, and 100% of them
   include all required scenario artifacts.
-- **SC-003**: 100% of puzzles can regenerate their baseline plan after a clean
-  reset and seed workflow.
+- **SC-003**: The default seed workflow creates 1-5 million total marketplace
+  rows and can regenerate the dataset on a developer laptop.
 - **SC-004**: 100% of puzzles have automated checks proving the bad and optimized
   variants return equivalent results.
 - **SC-005**: 100% of puzzles produce before/after benchmark output with latency,
   rows, buffers, planning time, and execution time.
 - **SC-006**: Across the puzzle catalog, every required plan symptom, index type,
-  and query rewrite category appears in at least one puzzle.
+  query rewrite category, and canonical anti-pattern tag appears in at least one
+  puzzle.
 - **SC-007**: A learner can apply a reference solution, benchmark it, reset the
   solution, and rerun the baseline for any puzzle without manually editing the
   database.
 - **SC-008**: At least 90% of pilot learners can explain the observed plan
   symptom and the main trade-off of a completed puzzle using the provided
   materials.
+- **SC-009**: 100% of puzzles declare exactly one difficulty level from easy,
+  medium, hard, or boss.
+- **SC-010**: 100% of required workflows can be completed from CLI commands even
+  if no REST API is enabled.
+- **SC-011**: 100% of puzzles can regenerate their baseline plan after a clean
+  reset and seed workflow.
 
 ## Assumptions
 
@@ -225,9 +277,13 @@ starting state.
 - The repository is a local training lab, not a deployed service or production
   template.
 - Synthetic data is acceptable and no real user or business data is required.
+- PostgreSQL 17 is the default database version; PostgreSQL 16 compatibility is
+  acceptable unless a lesson explicitly documents a version-specific dependency.
+- Python is the primary backend stack because it keeps CLI commands, data
+  generation, PostgreSQL scripting, benchmark orchestration, and tests concise.
 - Absolute timings may vary by machine, so comparisons focus on before/after
   evidence, plan shape, rows, buffers, and relative improvement.
 - A single local learner workflow is the default; multi-user progress tracking,
   authentication, and hosted leaderboards are out of scope for the first version.
-- The runner may expose either a REST-style interface, a CLI, or both, as long as
-  every puzzle has a documented command or endpoint.
+- The runner is CLI-first. REST API support is optional and cannot be required to
+  complete setup, puzzle execution, explanation capture, benchmarking, or reset.

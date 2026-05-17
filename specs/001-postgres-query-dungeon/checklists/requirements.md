@@ -6,7 +6,7 @@
 
 ## Content Quality
 
-- [x] No implementation details (languages, frameworks, APIs)
+- [x] No accidental implementation details beyond explicit training-lab constraints
 - [x] Focused on user value and business needs
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
@@ -27,10 +27,11 @@
 - [x] All functional requirements have clear acceptance criteria
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
-- [x] No implementation details leak into specification
+- [x] No implementation details leak into specification beyond explicit constraints
 
 ## Notes
 
-- Validation passed. PostgreSQL, local environment, plans, SQL, indexes, and
-  runner references are treated as explicit product/domain constraints from the
-  request and project constitution rather than accidental implementation leakage.
+- Validation passed. PostgreSQL, Python, local environment, plans, SQL, indexes,
+  and CLI runner references are treated as explicit product/domain constraints
+  from the request and project constitution rather than accidental implementation
+  leakage.
