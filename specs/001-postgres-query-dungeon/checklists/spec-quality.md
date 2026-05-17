@@ -20,7 +20,7 @@
 - [ ] CHK007 Is the term "intentionally bad" clarified so bad queries remain business-meaningful and not arbitrary waste work? [Clarity, Spec §FR-022, Spec §Training Scenario Contract]
 - [ ] CHK008 Is "large synthetic dataset" quantified with a bounded default size suitable for local laptops? [Clarity, Spec §FR-003, Spec §SC-003]
 - [ ] CHK009 Is the primary interface unambiguous as CLI-first, with REST API explicitly optional? [Clarity, Spec §FR-004, Spec §FR-017]
-- [ ] CHK010 Is the PostgreSQL version decision clear enough for planning Docker image selection and version-specific lesson notes? [Clarity, Spec §FR-001, Spec §FR-023]
+- [ ] CHK010 Is the PostgreSQL 16+ version decision clear enough for planning Docker image selection and version-specific lesson notes? [Clarity, Spec §FR-001, Spec §FR-023]
 - [ ] CHK011 Are difficulty levels limited to a canonical set with no room for alternate labels? [Clarity, Spec §FR-019, Spec §Key Entities]
 - [ ] CHK012 Are anti-pattern tags defined as a closed canonical list rather than open-ended labels? [Clarity, Spec §FR-020, Spec §Key Entities]
 
@@ -28,7 +28,7 @@
 
 - [ ] CHK013 Are baseline requirements consistently separated from reference optimization requirements across functional requirements, scenario contract, and success criteria? [Consistency, Spec §FR-010-FR-012]
 - [ ] CHK014 Do CLI-first requirements align with the assumption that REST API support is optional and non-blocking? [Consistency, Spec §FR-004, Spec §FR-017, Spec §Assumptions]
-- [ ] CHK015 Are PostgreSQL 17 default and PostgreSQL 16 compatibility statements consistent rather than competing version targets? [Consistency, Spec §Clarifications, Spec §Assumptions]
+- [ ] CHK015 Are PostgreSQL 16+ support statements consistent rather than competing version targets? [Consistency, Spec §Clarifications, Spec §Assumptions]
 - [ ] CHK016 Are benchmark requirements consistent with the warning that absolute timings vary by machine? [Consistency, Spec §FR-013, Spec §Assumptions]
 - [ ] CHK017 Are "not production ready" requirements consistent with the intentionally inefficient design and local-only training scope? [Consistency, Spec §FR-015, Spec §Assumptions]
 
@@ -74,7 +74,7 @@
 
 - [ ] CHK041 Are assumptions about learner skill level, local command-line usage, and SQL familiarity documented? [Assumption, Spec §Assumptions]
 - [ ] CHK042 Are assumptions about synthetic data and absence of real user data documented clearly enough to avoid privacy or compliance work? [Assumption, Spec §Assumptions]
-- [ ] CHK043 Is the Python stack decision documented with rationale and aligned with CLI, data generation, benchmark, and test requirements? [Assumption, Spec §Clarifications, Spec §FR-016]
+- [ ] CHK043 Is the TypeScript + Node.js stack decision documented with rationale and aligned with CLI, data generation, benchmark, and test requirements? [Assumption, Spec §Clarifications, Spec §FR-016]
 - [ ] CHK044 Are version-specific PostgreSQL behavior dependencies required to be documented at puzzle level? [Dependency, Spec §FR-023]
 
 ## Ambiguities & Conflicts

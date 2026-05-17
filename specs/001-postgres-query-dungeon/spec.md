@@ -9,11 +9,11 @@
 
 ### Session 2026-05-17
 
-- Q: Which PostgreSQL version is the primary database target? → A: PostgreSQL 17 by default, with PostgreSQL 16 compatibility acceptable when no lesson depends on version-specific behavior.
+- Q: Which PostgreSQL version is the primary database target? → A: PostgreSQL 16+; lessons must document any version-specific planner behavior.
 - Q: What default dataset size should scenarios use? → A: 1-5 million total rows, large enough to expose bad local plans without overwhelming a developer laptop.
 - Q: What data domain should the synthetic dataset model? → A: E-commerce / marketplace with users, orders, products, payments, events, reviews, and inventory.
 - Q: What runner interface is primary? → A: CLI-first; REST API is optional and must not replace the CLI workflow.
-- Q: Which backend stack should be used? → A: Python, chosen for simple CLI tooling, deterministic data generation, PostgreSQL scripting, benchmark orchestration, and result-equivalence tests.
+- Q: Which backend stack should be used? → A: TypeScript + Node.js, chosen for a simple commander-based CLI, typed challenge registry, node-postgres/kysely connectivity, Vitest tests, and raw SQL challenge files.
 - Q: What must make a bad query acceptable? → A: It must be intentionally inefficient while still answering a meaningful business question with a deterministic result.
 - Q: How should puzzle difficulty be classified? → A: Every puzzle has one difficulty level: easy, medium, hard, or boss.
 - Q: Which anti-pattern tags are canonical? → A: missing_index, low_selectivity, function_on_column, correlated_subquery, over_joining, bad_pagination, jsonb_scan, sort_spill, cte_materialization, window_overuse, n_plus_one, stale_stats.
@@ -137,7 +137,7 @@ starting state.
 ### Functional Requirements
 
 - **FR-001**: The project MUST provide a local command that starts the complete
-  training environment with PostgreSQL 17 available to scenario runners.
+  training environment with PostgreSQL 16+ available to scenario runners.
 - **FR-002**: The project MUST provide deterministic commands for setup, seed,
   run, explain, benchmark, and resetting reference optimizations.
 - **FR-003**: The project MUST generate or load a large synthetic dataset that is
@@ -170,9 +170,9 @@ starting state.
   resetting solutions.
 - **FR-015**: The project MUST explicitly communicate that it is not production
   ready and is intentionally inefficient by design.
-- **FR-016**: The backend and runner tooling MUST use Python as the primary
-  stack for CLI commands, data generation, query execution, benchmarks, and
-  correctness tests.
+- **FR-016**: The backend and runner tooling MUST use TypeScript + Node.js as
+  the primary stack for CLI commands, data generation, query execution,
+  benchmarks, and correctness tests.
 - **FR-017**: A REST API MAY be provided, but every required workflow MUST remain
   available through CLI commands.
 - **FR-018**: The synthetic dataset MUST use an e-commerce / marketplace domain
@@ -186,8 +186,8 @@ starting state.
 - **FR-022**: Bad queries MUST remain business-meaningful and MUST NOT be slow
   only because they perform arbitrary useless work.
 - **FR-023**: Version-specific PostgreSQL behavior MUST be documented when a
-  puzzle depends on features or planner behavior that differ between PostgreSQL
-  16 and 17.
+  puzzle depends on features or planner behavior that differ across supported
+  PostgreSQL 16+ versions.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -277,10 +277,11 @@ starting state.
 - The repository is a local training lab, not a deployed service or production
   template.
 - Synthetic data is acceptable and no real user or business data is required.
-- PostgreSQL 17 is the default database version; PostgreSQL 16 compatibility is
-  acceptable unless a lesson explicitly documents a version-specific dependency.
-- Python is the primary backend stack because it keeps CLI commands, data
-  generation, PostgreSQL scripting, benchmark orchestration, and tests concise.
+- PostgreSQL 16+ is the supported database range; lessons must document
+  version-specific dependencies when relevant.
+- TypeScript + Node.js is the primary backend stack because it supports a simple
+  commander-based CLI, a typed challenge registry, node-postgres/kysely
+  connectivity, Vitest tests, and raw SQL challenge files.
 - Absolute timings may vary by machine, so comparisons focus on before/after
   evidence, plan shape, rows, buffers, and relative improvement.
 - A single local learner workflow is the default; multi-user progress tracking,

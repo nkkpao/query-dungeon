@@ -31,7 +31,7 @@
 
 ## Notes
 
-- Validation passed. PostgreSQL, Python, local environment, plans, SQL, indexes,
-  and CLI runner references are treated as explicit product/domain constraints
-  from the request and project constitution rather than accidental implementation
-  leakage.
+- Validation passed. PostgreSQL, TypeScript + Node.js, local environment, plans,
+  SQL, indexes, and CLI runner references are treated as explicit product/domain
+  constraints from the request and project constitution rather than accidental
+  implementation leakage.
