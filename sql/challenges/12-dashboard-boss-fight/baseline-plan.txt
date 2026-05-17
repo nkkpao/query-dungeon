@@ -1,0 +1,36 @@
+Limit  (cost=3626293.71..3807256.25 rows=25 width=44) (actual time=9780.597..10243.380 rows=25.00 loops=1)
+  Buffers: shared hit=1826809
+  ->  Result  (cost=7042.85..694541281.31 rows=95950 width=44) (actual time=34.313..10178.118 rows=525.00 loops=1)
+        Buffers: shared hit=1826809
+        ->  Sort  (cost=7042.85..7282.73 rows=95950 width=28) (actual time=14.688..14.914 rows=525.00 loops=1)
+              Sort Key: o.created_at DESC, o.id DESC
+              Sort Method: top-N heapsort  Memory: 111kB
+              Buffers: shared hit=859
+              ->  Seq Scan on orders o  (cost=0.00..2228.00 rows=95950 width=28) (actual time=0.015..8.023 rows=95937.00 loops=1)
+                    Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                    Rows Removed by Filter: 4063
+                    Buffers: shared hit=853
+        SubPlan 1
+          ->  Aggregate  (cost=7223.01..7223.02 rows=1 width=8) (actual time=19.349..19.349 rows=1.00 loops=525)
+                Buffers: shared hit=1823325
+                ->  Seq Scan on user_events e  (cost=0.00..7223.00 rows=3 width=0) (actual time=5.236..19.338 rows=230.91 loops=525)
+                      Filter: ((metadata @> '{"campaign": "spring"}'::jsonb) AND (user_id = o.user_id))
+                      Rows Removed by Filter: 249769
+                      Buffers: shared hit=1823325
+        SubPlan 2
+          ->  Aggregate  (cost=15.46..15.47 rows=1 width=8) (actual time=0.007..0.007 rows=1.00 loops=525)
+                Buffers: shared hit=2625
+                ->  Index Scan using idx_support_tickets_user_id on support_tickets st  (cost=0.29..15.46 rows=1 width=0) (actual time=0.006..0.006 rows=0.64 loops=525)
+                      Index Cond: (user_id = o.user_id)
+                      Filter: (status = ANY ('{open,pending}'::text[]))
+                      Rows Removed by Filter: 2
+                      Index Searches: 525
+                      Buffers: shared hit=2625
+Planning:
+  Buffers: shared hit=194 read=2
+Planning Time: 0.302 ms
+JIT:
+  Functions: 19
+  Options: Inlining true, Optimization true, Expressions true, Deforming true
+  Timing: Generation 0.488 ms (Deform 0.184 ms), Inlining 26.724 ms, Optimization 20.165 ms, Emission 18.303 ms, Total 65.681 ms
+Execution Time: 10252.490 ms

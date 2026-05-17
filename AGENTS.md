@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
-For governing principles, read `.specify/memory/constitution.md`. For additional
-context about technologies to be used, project structure, shell commands, and
-other important information, read the current plan.
+For governing principles, read `.specify/memory/constitution.md`. For the active
+feature's technologies, project structure, shell commands, and implementation
+constraints, read `specs/001-postgres-query-dungeon/plan.md`.
 <!-- SPECKIT END -->

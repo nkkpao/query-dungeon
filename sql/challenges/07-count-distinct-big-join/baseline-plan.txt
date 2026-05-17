@@ -1,0 +1,54 @@
+Sort  (cost=1603966.07..1603966.08 rows=6 width=40) (actual time=6949.477..6949.482 rows=6.00 loops=1)
+  Sort Key: (count(DISTINCT expanded.order_id)) DESC, expanded.country
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=113864 read=4, temp read=48590 written=87860
+  CTE expanded
+    ->  Nested Loop Left Join  (cost=3756.68..115359.54 rows=7577353 width=27) (actual time=152.704..1105.377 rows=7638753.00 loops=1)
+          Buffers: shared hit=113858 read=4
+          ->  Hash Join  (cost=3756.38..12643.60 rows=379003 width=19) (actual time=152.622..323.319 rows=379217.00 loops=1)
+                Hash Cond: (o.user_id = u.id)
+                Buffers: shared hit=3862
+                ->  Hash Join  (cost=3427.38..11319.29 rows=379003 width=24) (actual time=17.416..127.578 rows=379217.00 loops=1)
+                      Hash Cond: (oi.order_id = o.id)
+                      Buffers: shared hit=3758
+                      ->  Seq Scan on order_items oi  (cost=0.00..6855.00 rows=395000 width=16) (actual time=0.010..19.028 rows=395000.00 loops=1)
+                            Buffers: shared hit=2905
+                      ->  Hash  (cost=2228.00..2228.00 rows=95950 width=16) (actual time=17.027..17.028 rows=95937.00 loops=1)
+                            Buckets: 131072  Batches: 1  Memory Usage: 5522kB
+                            Buffers: shared hit=853
+                            ->  Seq Scan on orders o  (cost=0.00..2228.00 rows=95950 width=16) (actual time=0.013..8.447 rows=95937.00 loops=1)
+                                  Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                  Rows Removed by Filter: 4063
+                                  Buffers: shared hit=853
+                ->  Hash  (cost=204.00..204.00 rows=10000 width=11) (actual time=135.129..135.129 rows=10000.00 loops=1)
+                      Buckets: 16384  Batches: 1  Memory Usage: 597kB
+                      Buffers: shared hit=104
+                      ->  Seq Scan on users u  (cost=0.00..204.00 rows=10000 width=11) (actual time=133.835..134.365 rows=10000.00 loops=1)
+                            Buffers: shared hit=104
+          ->  Memoize  (cost=0.30..0.66 rows=20 width=16) (actual time=0.000..0.001 rows=20.14 loops=379217)
+                Cache Key: oi.product_id
+                Cache Mode: logical
+                Hits: 374217  Misses: 5000  Evictions: 0  Overflows: 0  Memory Usage: 5040kB
+                Buffers: shared hit=109996 read=4
+                ->  Index Scan using idx_reviews_product_id on reviews r  (cost=0.29..0.65 rows=20 width=16) (actual time=0.001..0.006 rows=20.00 loops=5000)
+                      Index Cond: (product_id = oi.product_id)
+                      Index Searches: 5000
+                      Buffers: shared hit=109996 read=4
+  ->  GroupAggregate  (cost=1431776.25..1488606.45 rows=6 width=40) (actual time=5946.100..6949.440 rows=6.00 loops=1)
+        Group Key: expanded.country
+        Buffers: shared hit=113858 read=4, temp read=48590 written=87860
+        ->  Sort  (cost=1431776.25..1450719.63 rows=7577353 width=40) (actual time=5748.297..6524.735 rows=7638753.00 loops=1)
+              Sort Key: expanded.country, expanded.order_id
+              Sort Method: external merge  Disk: 194360kB
+              Buffers: shared hit=113858 read=4, temp read=48590 written=87860
+              ->  CTE Scan on expanded  (cost=0.00..151547.06 rows=7577353 width=40) (actual time=152.708..2325.436 rows=7638753.00 loops=1)
+                    Storage: Disk  Maximum Storage: 313304kB
+                    Buffers: shared hit=113858 read=4, temp written=39163
+Planning:
+  Buffers: shared hit=236 read=4
+Planning Time: 0.631 ms
+JIT:
+  Functions: 38
+  Options: Inlining true, Optimization true, Expressions true, Deforming true
+  Timing: Generation 1.112 ms (Deform 0.490 ms), Inlining 31.076 ms, Optimization 59.705 ms, Emission 43.100 ms, Total 134.993 ms
+Execution Time: 6987.744 ms

@@ -1,0 +1,40 @@
+Limit  (cost=15510.94..15511.07 rows=50 width=29) (actual time=133.639..133.649 rows=50.00 loops=1)
+  Buffers: shared hit=4970
+  CTE stock
+    ->  HashAggregate  (cost=2862.00..2912.01 rows=5001 width=16) (actual time=19.312..19.682 rows=5000.00 loops=1)
+          Group Key: inventory_movements.product_id
+          Batches: 1  Memory Usage: 409kB
+          Buffers: shared hit=1062
+          ->  Seq Scan on inventory_movements  (cost=0.00..2262.00 rows=120000 width=12) (actual time=0.011..4.939 rows=120000.00 loops=1)
+                Buffers: shared hit=1062
+  ->  Sort  (cost=12598.93..12697.70 rows=39508 width=29) (actual time=133.637..133.643 rows=50.00 loops=1)
+        Sort Key: (max(stock.on_hand)), p.id
+        Sort Method: top-N heapsort  Memory: 31kB
+        Buffers: shared hit=4970
+        ->  HashAggregate  (cost=10891.43..11286.51 rows=39508 width=29) (actual time=132.751..133.220 rows=5000.00 loops=1)
+              Group Key: p.id
+              Batches: 1  Memory Usage: 1561kB
+              Buffers: shared hit=4967
+              ->  Hash Right Join  (cost=1962.56..10693.89 rows=39508 width=29) (actual time=27.069..92.320 rows=395000.00 loops=1)
+                    Hash Cond: (oi.product_id = p.id)
+                    Buffers: shared hit=4967
+                    ->  Seq Scan on order_items oi  (cost=0.00..6855.00 rows=395000 width=8) (actual time=0.008..14.842 rows=395000.00 loops=1)
+                          Buffers: shared hit=2905
+                    ->  Hash  (cost=1900.04..1900.04 rows=5001 width=29) (actual time=27.028..27.032 rows=5000.00 loops=1)
+                          Buckets: 8192  Batches: 1  Memory Usage: 377kB
+                          Buffers: shared hit=2062
+                          ->  Hash Join  (cost=162.53..1900.04 rows=5001 width=29) (actual time=20.982..26.494 rows=5000.00 loops=1)
+                                Hash Cond: (p.id = stock.product_id)
+                                Buffers: shared hit=2062
+                                ->  Seq Scan on products p  (cost=0.00..1500.00 rows=50000 width=21) (actual time=0.006..2.297 rows=50000.00 loops=1)
+                                      Buffers: shared hit=1000
+                                ->  Hash  (cost=100.02..100.02 rows=5001 width=16) (actual time=20.936..20.937 rows=5000.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 299kB
+                                      Buffers: shared hit=1062
+                                      ->  CTE Scan on stock  (cost=0.00..100.02 rows=5001 width=16) (actual time=19.314..20.410 rows=5000.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 260kB
+                                            Buffers: shared hit=1062
+Planning:
+  Buffers: shared hit=195 read=2
+Planning Time: 0.427 ms
+Execution Time: 134.340 ms

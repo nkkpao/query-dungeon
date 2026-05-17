@@ -1,0 +1,12 @@
+Limit  (cost=7356.20..7356.27 rows=25 width=34) (actual time=9.335..9.337 rows=25.00 loops=1)
+  Buffers: shared hit=859
+  ->  Sort  (cost=7353.70..7603.70 rows=100000 width=34) (actual time=9.279..9.309 rows=1025.00 loops=1)
+        Sort Key: created_at DESC, id DESC
+        Sort Method: top-N heapsort  Memory: 219kB
+        Buffers: shared hit=859
+        ->  Seq Scan on orders  (cost=0.00..1853.00 rows=100000 width=34) (actual time=0.004..3.781 rows=100000.00 loops=1)
+              Buffers: shared hit=853
+Planning:
+  Buffers: shared hit=61
+Planning Time: 0.077 ms
+Execution Time: 9.353 ms
