@@ -110,9 +110,11 @@
 - `badSqlPath`: `sql/challenges/<id>/bad.sql`
 - `solutionSqlPath`: `sql/challenges/<id>/solution.sql`
 - `expectedSqlPath`: query or fixture used for result comparison
+- `baselinePlanPath`: captured baseline `EXPLAIN (ANALYZE, BUFFERS)` artifact
 - `readmePath`: challenge prompt, hints, and trade-offs
 - Validation: every challenge must have raw bad SQL, solution SQL, expected
-  result definition, README, difficulty, tags, and a unique ID.
+  result definition, captured baseline plan, README, difficulty, tags, and a
+  unique ID.
 
 ### BenchmarkResult
 
@@ -139,6 +141,19 @@ Baseline schema may include primary keys, foreign key supporting indexes where
 needed for referential integrity, and a few ordinary application indexes. It
 must intentionally omit indexes that are the lesson target, including expression,
 partial, covering, composite, and GIN indexes for their respective challenges.
+
+Forbidden baseline indexes include, at minimum:
+
+- `orders(user_id)` for the missing user-order index lesson.
+- `lower(users.email)` for the expression index lesson.
+- GIN indexes on JSONB product attributes or event metadata for JSONB lessons.
+- Partial unpaid-order indexes for the unpaid orders lesson.
+- Composite or covering indexes for latest user events.
+- Dashboard-specific indexes, extended statistics, or pre-aggregation objects
+  that remove the boss-fight anti-patterns.
+
+Reference indexes and rewrite support belong in challenge `solution.sql` files,
+not in `sql/schema/002_baseline_indexes.sql`.
 
 ## Dataset Skew Rules
 

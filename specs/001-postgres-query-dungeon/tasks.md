@@ -35,7 +35,7 @@
 **Critical**: No user story work begins until these tasks are complete.
 
 - [ ] T009 Create marketplace tables users, categories, products, orders, order_items, payments, reviews, inventory_movements, user_events, and support_tickets in sql/schema/001_tables.sql
-- [ ] T010 Create intentionally insufficient baseline indexes in sql/schema/002_baseline_indexes.sql
+- [ ] T010 Create intentionally insufficient baseline indexes and document forbidden solution indexes in sql/schema/002_baseline_indexes.sql
 - [ ] T011 Create seed reset and schema loader SQL in sql/seeds/000_reset.sql
 - [ ] T012 Create small scale marketplace seed script with skewed users/products/categories/orders/events in sql/seeds/001_seed_small.sql
 - [ ] T013 Create medium scale marketplace seed script targeting 1-5 million total rows in sql/seeds/002_seed_medium.sql
@@ -56,7 +56,7 @@
 - [ ] T028 Implement apply-solution command skeleton in src/cli/commands/apply-solution.ts
 - [ ] T029 Implement reset-solutions command skeleton in src/cli/commands/reset-solutions.ts
 - [ ] T030 [P] Add seed scale validation tests for small, medium, large, and invalid scale in tests/seed-scale.test.ts
-- [ ] T031 [P] Add registry validation tests for required challenge metadata fields in tests/challenge-registry.test.ts
+- [ ] T031 [P] Add registry validation tests for required challenge metadata fields and baseline plan artifact paths in tests/challenge-registry.test.ts
 
 **Checkpoint**: Project can install dependencies, start PostgreSQL, load schema/seeds, and run an empty CLI command set.
 
@@ -217,6 +217,19 @@
 - [ ] T116 Verify optimized solutions remain separate from bad starting states across sql/challenges/*/bad.sql and sql/challenges/*/solution.sql
 - [ ] T117 Refresh baseline plan regeneration instructions for all challenges in sql/challenges/*/README.md
 - [ ] T118 Run quickstart validation commands from specs/001-postgres-query-dungeon/quickstart.md and record any fixes in README.md
+- [ ] T119 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 01 in sql/challenges/01-user-orders-missing-index/baseline-plan.txt
+- [ ] T120 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 02 in sql/challenges/02-sales-report-over-joining/baseline-plan.txt
+- [ ] T121 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 03 in sql/challenges/03-latest-payment-correlated-subquery/baseline-plan.txt
+- [ ] T122 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 04 in sql/challenges/04-offset-pagination/baseline-plan.txt
+- [ ] T123 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 05 in sql/challenges/05-lower-email-expression-index/baseline-plan.txt
+- [ ] T124 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 06 in sql/challenges/06-jsonb-filter-gin-index/baseline-plan.txt
+- [ ] T125 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 07 in sql/challenges/07-count-distinct-big-join/baseline-plan.txt
+- [ ] T126 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 08 in sql/challenges/08-latest-user-events/baseline-plan.txt
+- [ ] T127 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 09 in sql/challenges/09-unpaid-orders-partial-index/baseline-plan.txt
+- [ ] T128 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 10 in sql/challenges/10-window-function-overuse/baseline-plan.txt
+- [ ] T129 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 11 in sql/challenges/11-inventory-aggregation/baseline-plan.txt
+- [ ] T130 [P] Capture baseline EXPLAIN ANALYZE BUFFERS artifact for challenge 12 in sql/challenges/12-dashboard-boss-fight/baseline-plan.txt
+- [ ] T131 Add baseline index guard test that fails if sql/schema/002_baseline_indexes.sql contains lesson solution indexes in tests/baseline-index-policy.test.ts
 
 ---
 
@@ -257,6 +270,7 @@
 - US3 tests T093-T095 can run in parallel because they target different test files.
 - US4 tests T104-T105 can run in parallel.
 - Documentation tasks T111-T113 can run in parallel.
+- Baseline plan capture tasks T119-T130 can run in parallel after all challenge bad.sql files and seed scripts exist.
 
 ## Parallel Example: Expanding Challenge Catalog
 
@@ -287,5 +301,7 @@ Task: "T052 [US2] Create intentionally bad latest payment correlated subquery in
 
 - Every task uses the required checkbox, task ID, optional `[P]`, story label where needed, and file path.
 - Every challenge has `README.md`, `bad.sql`, `solution.sql`, and `expected.sql`.
+- Every challenge has a captured `baseline-plan.txt` generated from `EXPLAIN (ANALYZE, BUFFERS)`.
 - No optimized SQL is mixed into `bad.sql`.
+- Baseline schema excludes all solution indexes listed in the baseline index policy.
 - All correctness tests compare bad and optimized results before accepting benchmark improvements.

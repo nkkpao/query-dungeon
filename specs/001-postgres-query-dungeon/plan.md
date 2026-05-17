@@ -95,6 +95,7 @@ sql/
     ├── 01-user-orders-missing-index/
     │   ├── README.md
     │   ├── bad.sql
+    │   ├── baseline-plan.txt
     │   ├── solution.sql
     │   └── expected.sql
     └── ...
@@ -144,6 +145,27 @@ files own all educational query content.
 
 Coverage note: all canonical anti-pattern tags from the specification are
 covered by at least one MVP challenge.
+
+## Baseline Index Safety
+
+`sql/schema/002_baseline_indexes.sql` may include only primary-key support,
+referential-integrity support, and intentionally insufficient ordinary indexes.
+It MUST NOT include indexes that solve a challenge. The forbidden baseline index
+set includes, at minimum:
+
+- `orders(user_id)` for challenge 01
+- indexes that remove the over-joining or low-selectivity lesson in challenge 02
+- payment lookup indexes that remove the correlated-subquery lesson in challenge 03
+- pagination/keyset support indexes that remove the OFFSET lesson in challenge 04
+- `lower(users.email)` expression index for challenge 05
+- GIN indexes on product/event JSONB payloads for challenge 06
+- composite/covering indexes that solve latest user events for challenge 08
+- partial indexes for unpaid orders for challenge 09
+- dashboard-specific indexes or statistics fixes that solve challenge 12
+
+Each challenge stores the captured baseline plan at
+`sql/challenges/<id>/baseline-plan.txt`, generated from
+`EXPLAIN (ANALYZE, BUFFERS)` against the baseline schema and seed data.
 
 ## Complexity Tracking
 
