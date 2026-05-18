@@ -13,5 +13,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/08-latest-user-events/expected.sql"
+  "fixtureSqlPath": "sql/challenges/08-latest-user-events/baseline.sql"
 }

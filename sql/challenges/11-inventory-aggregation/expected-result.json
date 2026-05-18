@@ -11,5 +11,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/11-inventory-aggregation/expected.sql"
+  "fixtureSqlPath": "sql/challenges/11-inventory-aggregation/baseline.sql"
 }

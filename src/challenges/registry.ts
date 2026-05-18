@@ -33,10 +33,11 @@ function challenge(
     challengePath: `${base}/${id}/challenge.md`,
     baselineSqlPath: `${base}/${id}/baseline.sql`,
     expectedResultPath: `${base}/${id}/expected-result.json`,
-    hintsPath: `${base}/${id}/hints.md`,
+    hintsPath: `${base}/${id}/hints/hints.md`,
+    hintsRuPath: `${base}/${id}/hints/hints_RU.md`,
     optionalSolutionSqlPath: `${base}/${id}/optional/official-solution.sql`,
     optionalIndexesSqlPath: `${base}/${id}/optional/official-indexes.sql`,
-    optionalExplainPath: `${base}/${id}/optional/official-explain.txt`,
+    optionalBaselineExplainPath: `${base}/${id}/optional/baseline-explain.txt`,
   };
 }
 

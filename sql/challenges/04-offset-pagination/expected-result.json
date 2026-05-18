@@ -13,5 +13,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/04-offset-pagination/expected.sql"
+  "fixtureSqlPath": "sql/challenges/04-offset-pagination/baseline.sql"
 }

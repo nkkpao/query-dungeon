@@ -13,5 +13,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/01-user-orders-missing-index/expected.sql"
+  "fixtureSqlPath": "sql/challenges/01-user-orders-missing-index/baseline.sql"
 }

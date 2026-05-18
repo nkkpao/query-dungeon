@@ -24,9 +24,10 @@ export interface Challenge {
   baselineSqlPath: string;
   expectedResultPath: string;
   hintsPath: string;
+  hintsRuPath: string;
   optionalSolutionSqlPath: string;
   optionalIndexesSqlPath: string;
-  optionalExplainPath: string;
+  optionalBaselineExplainPath: string;
 }
 
 export interface ParsedExplain {

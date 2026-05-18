@@ -5,7 +5,7 @@ export function parseExplainText(planText: string): ParsedExplain {
   const planningTimeMs = numberMatch(planText, /Planning Time:\s*([\d.]+)\s*ms/i);
   const executionTimeMs = numberMatch(planText, /Execution Time:\s*([\d.]+)\s*ms/i);
   const rows = numberMatch(planText, /rows=(\d+)/i);
-  const buffers = planText.split('\n').filter((line) => line.includes('Buffers:'));
+  const buffers = planText.split('\n').filter((line) => /^\s{0,2}Buffers:/.test(line));
   let sharedHitBlocks = 0;
   let sharedReadBlocks = 0;
   let tempReadBlocks = 0;

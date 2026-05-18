@@ -12,5 +12,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/05-lower-email-expression-index/expected.sql"
+  "fixtureSqlPath": "sql/challenges/05-lower-email-expression-index/baseline.sql"
 }

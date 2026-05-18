@@ -14,6 +14,8 @@ describe('challenge registry', () => {
       expect(challenge.baselineSqlPath).toContain(challenge.id);
       expect(challenge.expectedResultPath).toContain(challenge.id);
       expect(challenge.hintsPath).toContain(challenge.id);
+      expect(challenge.hintsRuPath).toContain(challenge.id);
+      expect(challenge.optionalBaselineExplainPath).toContain(challenge.id);
       expect(challenge).not.toHaveProperty('solutionIndexes');
     }
   });

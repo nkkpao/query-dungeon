@@ -13,5 +13,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/expected.sql"
+  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/baseline.sql"
 }

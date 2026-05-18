@@ -26,13 +26,13 @@ export function compareWithOfficialSolutionCommand(): Command {
     ) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
       const challenge = getChallenge(challengeId);
+      console.warn('SOLUTION_ACCESS_OPT_IN: You are leaving the default exercise flow and reading official solution material.');
       const [participantSql, officialSql, officialIndexes] = await Promise.all([
         loadParticipantSql(localOptions.file),
         loadOfficialSolutionQuery(challenge),
         loadOfficialSolutionIndexes(challenge),
       ]);
 
-      console.warn('SOLUTION_ACCESS_OPT_IN: You are leaving the default exercise flow and reading official solution material.');
       if (localOptions.showSql) {
         console.log('\n-- official-indexes.sql');
         console.log(officialIndexes.trim());
@@ -45,6 +45,9 @@ export function compareWithOfficialSolutionCommand(): Command {
       }
 
       const iterations = Number(localOptions.iterations);
+      if (!Number.isInteger(iterations) || iterations < 1) {
+        throw new Error('INVALID_ITERATIONS: --iterations must be a positive integer.');
+      }
       await withClient({databaseUrl: options.databaseUrl, timeoutMs: timeoutMs(options)}, async (client) => {
         await assertSeeded(client);
         const results = [];

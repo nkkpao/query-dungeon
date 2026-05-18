@@ -13,5 +13,5 @@
 10. Record the trade-off: storage, write cost, specificity, maintenance, and
     cases where the idea may not help.
 
-Official solutions are reference material for deliberate review. They are not
+Suggested solutions are reference material for deliberate review. They are not
 part of the investigation loop.

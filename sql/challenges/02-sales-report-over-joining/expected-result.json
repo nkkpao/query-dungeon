@@ -12,5 +12,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/02-sales-report-over-joining/expected.sql"
+  "fixtureSqlPath": "sql/challenges/02-sales-report-over-joining/baseline.sql"
 }

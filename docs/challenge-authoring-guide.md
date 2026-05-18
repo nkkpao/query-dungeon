@@ -6,10 +6,11 @@ Each challenge directory must be a complete investigation packet:
   constraints, manual workflow, and solution access notice.
 - `baseline.sql`: intentionally inefficient starting query.
 - `expected-result.json`: deterministic correctness contract.
-- `hints.md`: graduated guidance that does not reveal official SQL.
+- `hints/hints.md`: graduated English guidance that does not reveal official SQL.
+- `hints/hints_RU.md`: graduated Russian guidance that does not reveal official SQL.
 - `optional/official-indexes.sql`: reference index/schema changes.
 - `optional/official-solution.sql`: reference query.
-- `optional/official-explain.txt`: maintained plan evidence.
+- `optional/baseline-explain.txt`: maintained baseline plan evidence.
 - `optional/README.md`: access notice and trade-off reminder.
 
 Preserve the bad starting state. Do not place official index names, optimized
@@ -22,7 +23,7 @@ Authoring checklist:
 3. Participant attempts can be validated with `validate-file`.
 4. `benchmark-file --baseline --iterations 3` works for the baseline and a
    workspace attempt.
-5. Official material is only reachable through `optional/` and explicit
+5. Suggested solutions are only reachable through `optional/` and explicit
    solution comparison.
 6. Trade-offs document storage, write cost, specificity, maintenance, and
    limits of the reference approach.

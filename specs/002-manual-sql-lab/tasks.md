@@ -32,7 +32,7 @@
 **CRITICAL**: No user story work can begin until this phase is complete.
 
 - [X] T006 Refactor Challenge and BenchmarkResult types for baseline, expected result, hints, optional official solution, and participant labels in src/challenges/types.ts
-- [X] T007 Refactor challenge registry paths from bad/solution variants to challenge.md, baseline.sql, expected-result.json, hints.md, and optional files in src/challenges/registry.ts
+- [X] T007 Refactor challenge registry paths from bad/solution variants to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional files in src/challenges/registry.ts
 - [X] T008 Replace QueryVariant-based challenge query loading with explicit baseline, expected-result, participant file, and optional official loaders in src/cli/query-loader.ts
 - [X] T009 [P] Add safe SQL file reading and empty-file errors for participant-selected paths in src/db/sql-files.ts
 - [X] T010 [P] Add expected-result JSON schema types and parser in src/challenges/expected-result.ts
@@ -52,7 +52,7 @@
 
 ### Tests and Guardrails for User Story 1
 
-- [X] T014 [P] [US1] Add challenge contract tests requiring challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files for every challenge in tests/challenge-files.test.ts
+- [X] T014 [P] [US1] Add challenge contract tests requiring challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files for every challenge in tests/challenge-files.test.ts
 - [X] T015 [P] [US1] Add guardrail test that default challenge docs, README paths, Makefile targets, package scripts, and list output do not reveal official solution SQL paths in tests/official-solution-gating.test.ts
 - [X] T016 [P] [US1] Add CLI smoke tests for run-sql and explain-file with baseline.sql in tests/cli-smoke.test.ts
 - [X] T017 [P] [US1] Add regression test that every baseline.sql remains runnable through the shared SQL loader in tests/challenge-registry.test.ts
@@ -62,17 +62,17 @@
 - [X] T018 [P] [US1] Create participant workspace directories with placeholders in workspace/sql/.gitkeep, workspace/indexes/.gitkeep, and workspace/notes/.gitkeep
 - [X] T019 [P] [US1] Add workspace usage notes for scratch SQL, scratch indexes, and notes in workspace/README.md
 - [X] T020 [US1] Migrate challenge 01 assets from README.md, bad.sql, expected.sql, solution.sql, and baseline-plan.txt to the new structure under sql/challenges/01-user-orders-missing-index/
-- [X] T021 [US1] Migrate challenge 02 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/02-sales-report-over-joining/
-- [X] T022 [US1] Migrate challenge 03 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/03-latest-payment-correlated-subquery/
-- [X] T023 [US1] Migrate challenge 04 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/04-offset-pagination/
-- [X] T024 [US1] Migrate challenge 05 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/05-lower-email-expression-index/
-- [X] T025 [US1] Migrate challenge 06 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/06-jsonb-filter-gin-index/
-- [X] T026 [US1] Migrate challenge 07 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/07-count-distinct-big-join/
-- [X] T027 [US1] Migrate challenge 08 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/08-latest-user-events/
-- [X] T028 [US1] Migrate challenge 09 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/09-unpaid-orders-partial-index/
-- [X] T029 [US1] Migrate challenge 10 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/10-window-function-overuse/
-- [X] T030 [US1] Migrate challenge 11 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/11-inventory-aggregation/
-- [X] T031 [US1] Migrate challenge 12 assets to challenge.md, baseline.sql, expected-result.json, hints.md, and optional/ files under sql/challenges/12-dashboard-boss-fight/
+- [X] T021 [US1] Migrate challenge 02 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/02-sales-report-over-joining/
+- [X] T022 [US1] Migrate challenge 03 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/03-latest-payment-correlated-subquery/
+- [X] T023 [US1] Migrate challenge 04 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/04-offset-pagination/
+- [X] T024 [US1] Migrate challenge 05 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/05-lower-email-expression-index/
+- [X] T025 [US1] Migrate challenge 06 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/06-jsonb-filter-gin-index/
+- [X] T026 [US1] Migrate challenge 07 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/07-count-distinct-big-join/
+- [X] T027 [US1] Migrate challenge 08 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/08-latest-user-events/
+- [X] T028 [US1] Migrate challenge 09 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/09-unpaid-orders-partial-index/
+- [X] T029 [US1] Migrate challenge 10 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/10-window-function-overuse/
+- [X] T030 [US1] Migrate challenge 11 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/11-inventory-aggregation/
+- [X] T031 [US1] Migrate challenge 12 assets to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files under sql/challenges/12-dashboard-boss-fight/
 - [X] T032 [US1] Update list command output to include challengePath and hide optional solution paths in src/cli/commands/list.ts
 - [X] T033 [US1] Implement run-sql command for participant-selected SQL files in src/cli/commands/run-sql.ts
 - [X] T034 [US1] Implement explain-file command for participant-selected SQL files in src/cli/commands/explain-file.ts
@@ -125,7 +125,7 @@
 
 - [X] T053 [P] [US3] Add tests proving run-sql, explain-file, benchmark-file, validate-file, diff-results, list, and README paths do not read optional solution files in tests/official-solution-gating.test.ts
 - [X] T054 [P] [US3] Add compare-with-official-solution CLI tests for warning text, --benchmark behavior, and --show-sql gating in tests/official-solution-gating.test.ts
-- [X] T055 [P] [US3] Add challenge optional artifact tests for official-solution.sql, official-indexes.sql, official-explain.txt, and trade-off notes in tests/challenge-files.test.ts
+- [X] T055 [P] [US3] Add challenge optional artifact tests for official-solution.sql, official-indexes.sql, baseline-explain.txt, and trade-off notes in tests/challenge-files.test.ts
 - [X] T056 [P] [US3] Add regression test that baseline.sql files do not contain official solution index names from optional files in tests/baseline-index-policy.test.ts
 
 ### Implementation for User Story 3

@@ -20,6 +20,9 @@ export function benchmarkFileCommand(): Command {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
       const challenge = getChallenge(challengeId);
       const iterations = Number(localOptions.iterations);
+      if (!Number.isInteger(iterations) || iterations < 1) {
+        throw new Error('INVALID_ITERATIONS: --iterations must be a positive integer.');
+      }
       const participantSql = await loadParticipantSql(localOptions.file);
       await withClient({databaseUrl: options.databaseUrl, timeoutMs: timeoutMs(options)}, async (client) => {
         await assertSeeded(client);

@@ -2,10 +2,36 @@
 
 Capture the baseline plan yourself with `make explain-file`.
 
-Business task: show the latest activity feed for a user.
+Business task: A profile page shows the newest events for one user.
 
-Hints: compare the feed predicate with the requested ordering before choosing an access path.
+Expected output: `id`, `user_id`, `event_type`, `metadata`, `created_at`; newest events first.
 
-Solution access: official reference material is in `optional/` and is outside the default exercise flow. Use it only through the explicit `compare-with-official-solution` command after your own investigation.
+Symptoms to investigate:
+
+- Look for a broad scan over `user_events`.
+- Compare the user predicate with requested ordering.
+- Check whether an unrelated single-column index misleads the plan.
+
+Constraints:
+
+- Keep the user filter and deterministic order.
+- Do not precompute the feed outside PostgreSQL.
+- Measure both latency and buffer changes.
+
+Success criterion: The feed can be read through a path ordered for one user rather than sorting a broad scan.
+
+Manual workflow:
+
+```bash
+make run-sql CHALLENGE=08-latest-user-events SQL=sql/challenges/08-latest-user-events/baseline.sql
+make explain-file CHALLENGE=08-latest-user-events SQL=sql/challenges/08-latest-user-events/baseline.sql
+cp sql/challenges/08-latest-user-events/baseline.sql workspace/sql/08-latest-user-events-attempt-1.sql
+make validate-file CHALLENGE=08-latest-user-events SQL=workspace/sql/08-latest-user-events-attempt-1.sql
+make benchmark-file CHALLENGE=08-latest-user-events SQL=workspace/sql/08-latest-user-events-attempt-1.sql ITERATIONS=3
+```
+
+Hints: see `hints/hints.md`.
+
+Solution access: suggested solutions are in `optional/` and are outside the default exercise flow. Use them only through the explicit `compare-with-official-solution` command after your own investigation.
 
 Docs: see `docs/how-to-explain.md`, `docs/indexing-cheatsheet.md`, and `docs/query-optimization-workflow.md`.

@@ -68,10 +68,9 @@ your workspace, validate correctness, and benchmark repeated attempts.
      RIGHT=workspace/sql/01-user-orders-attempt-2.sql
    ```
 
-Official reference material lives under each challenge's `optional/` directory
-and is not part of the default workflow. Use
-`compare-with-official-solution` only when you intentionally want to leave the
-exercise flow.
+Suggested solutions live under each challenge's `optional/` directory and are
+not part of the default workflow. Use `compare-with-official-solution` only
+when you intentionally want to leave the exercise flow.
 
 ## Challenge Catalog
 

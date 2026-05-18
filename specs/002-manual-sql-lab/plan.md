@@ -58,9 +58,10 @@ profiles, one participant workspace with `/workspace/sql/`,
   symptoms in `challenge.md`, `baseline.sql`, and maintainer baseline plan
   evidence.
 - **Scenario contract**: PASS. Each challenge is planned to contain
-  `challenge.md`, `baseline.sql`, `expected-result.json`, `hints.md`, and
+  `challenge.md`, `baseline.sql`, `expected-result.json`, `hints/hints.md`,
+  `hints/hints_RU.md`, and
   `optional/official-solution.sql`, `optional/official-indexes.sql`, and
-  `optional/official-explain.txt`.
+  `optional/baseline-explain.txt`.
 - **PostgreSQL-first scope**: PASS. The learner workflow centers on SQL files,
   `EXPLAIN (ANALYZE, BUFFERS)`, manual indexes, result validation, and
   benchmarks. Automatic optimization suggestions, generated indexes, and
@@ -137,11 +138,13 @@ sql/
     │   ├── challenge_RU.md
     │   ├── baseline.sql                # renamed from bad.sql
     │   ├── expected-result.json        # replaces executable expected.sql for validation contract
-    │   ├── hints.md
+    │   ├── hints/
+    │   │   ├── hints.md
+    │   │   └── hints_RU.md
     │   └── optional/
     │       ├── official-solution.sql
     │       ├── official-indexes.sql
-    │       └── official-explain.txt
+    │       └── baseline-explain.txt
     └── ...
 
 src/
@@ -197,7 +200,7 @@ never confused with official artifacts.
    `README.md` to `challenge.md`, `bad.sql` to `baseline.sql`, convert
    `expected.sql` into `expected-result.json`, split `solution.sql` into
    `optional/official-solution.sql` and `optional/official-indexes.sql`, and
-   move `baseline-plan.txt` to `optional/official-explain.txt` only if it
+   move `baseline-plan.txt` to `optional/baseline-explain.txt` only if it
    contains solution-revealing plan evidence.
 4. **Update registry and loaders**: Replace `QueryVariant`-driven loading with
    explicit baseline, expected result, hints, and optional official solution

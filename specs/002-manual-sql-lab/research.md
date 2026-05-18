@@ -33,10 +33,10 @@ history, and test coverage while making the learner-facing contract explicit.
 
 ## Decision: Use `expected-result.json` for learner validation contracts
 
-**Rationale**: The current `expected.sql` can keep existing result logic during
-transition, but the learner-facing contract should be a fixture describing the
-expected output shape and rows. JSON fixtures are easier to compare against
-participant SQL without executing hidden expected SQL during every validation.
+**Rationale**: The learner-facing contract should describe the expected output
+shape and rows. Until seeded JSON row fixtures are materialized, executable
+fixtures must point at public `baseline.sql` files so validation does not run
+hidden suggested solution SQL during every validation.
 
 **Alternatives considered**:
 

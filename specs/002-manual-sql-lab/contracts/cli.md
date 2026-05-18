@@ -97,7 +97,7 @@ Compares a participant-selected SQL file with official solution behavior.
 
 Requirements:
 
-- Must display a warning that official solution material is being accessed.
+- Must display a warning before official solution material is read.
 - Must require an explicit command name; it cannot be reached through default
   run, explain, benchmark, validate, diff, README, or Makefile paths.
 - Uses files under `sql/challenges/<id>/optional/`.

@@ -9,5 +9,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/06-jsonb-filter-gin-index/expected.sql"
+  "fixtureSqlPath": "sql/challenges/06-jsonb-filter-gin-index/baseline.sql"
 }

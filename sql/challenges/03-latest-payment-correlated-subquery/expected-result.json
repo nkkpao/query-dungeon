@@ -12,5 +12,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/03-latest-payment-correlated-subquery/expected.sql"
+  "fixtureSqlPath": "sql/challenges/03-latest-payment-correlated-subquery/baseline.sql"
 }

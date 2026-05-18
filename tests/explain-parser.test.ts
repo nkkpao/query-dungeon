@@ -6,6 +6,8 @@ describe('EXPLAIN parser', () => {
     const parsed = parseExplainText(`
 Seq Scan on orders  (cost=0.00..10.00 rows=42 width=8) (actual time=0.010..0.020 rows=20 loops=1)
   Buffers: shared hit=7 read=3
+  ->  Index Scan on users  (cost=0.00..1.00 rows=1 width=8) (actual time=0.001..0.002 rows=1 loops=20)
+        Buffers: shared hit=99 read=99
 Planning Time: 0.123 ms
 Execution Time: 4.567 ms
 `);

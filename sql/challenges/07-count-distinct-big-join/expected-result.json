@@ -10,5 +10,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/07-count-distinct-big-join/expected.sql"
+  "fixtureSqlPath": "sql/challenges/07-count-distinct-big-join/baseline.sql"
 }

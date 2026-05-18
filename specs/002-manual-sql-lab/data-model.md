@@ -14,10 +14,11 @@ Represents one optimization exercise.
 - `challengePath`: `sql/challenges/<id>/challenge.md`
 - `baselineSqlPath`: `sql/challenges/<id>/baseline.sql`
 - `expectedResultPath`: `sql/challenges/<id>/expected-result.json`
-- `hintsPath`: `sql/challenges/<id>/hints.md`
+- `hintsPath`: `sql/challenges/<id>/hints/hints.md`
+- `hintsRuPath`: `sql/challenges/<id>/hints/hints_RU.md`
 - `optionalSolutionSqlPath`: `sql/challenges/<id>/optional/official-solution.sql`
 - `optionalIndexesSqlPath`: `sql/challenges/<id>/optional/official-indexes.sql`
-- `optionalExplainPath`: `sql/challenges/<id>/optional/official-explain.txt`
+- `optionalBaselineExplainPath`: `sql/challenges/<id>/optional/baseline-explain.txt`
 
 **Validation rules**:
 
@@ -174,7 +175,7 @@ Measurement for selected SQL.
 
 - Default benchmark output must not include official solution metrics.
 - Baseline comparison is allowed by default.
-- Official solution comparison requires explicit opt-in.
+- Suggested solution comparison requires explicit opt-in.
 
 ## Official Solution
 
@@ -192,4 +193,4 @@ Reference material outside the active challenge flow.
 
 - Must remain separate from baseline and participant files.
 - Default commands must not read these files.
-- Explicit comparison commands must warn that official material is being used.
+- Explicit comparison commands must warn that suggested solutions are being used.

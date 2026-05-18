@@ -13,5 +13,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/09-unpaid-orders-partial-index/expected.sql"
+  "fixtureSqlPath": "sql/challenges/09-unpaid-orders-partial-index/baseline.sql"
 }
