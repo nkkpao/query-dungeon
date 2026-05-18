@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import {Command} from 'commander';
 import {benchmarkFileCommand} from './commands/benchmark-file.js';
-import {compareWithOfficialSolutionCommand} from './commands/compare-with-official-solution.js';
+import {compareWithSuggestedSolutionCommand} from './commands/compare-with-suggested-solution.js';
 import {diffResultsCommand} from './commands/diff-results.js';
 import {explainFileCommand} from './commands/explain-file.js';
 import {listCommand} from './commands/list.js';
@@ -26,7 +26,7 @@ program
   .addCommand(benchmarkFileCommand())
   .addCommand(validateFileCommand())
   .addCommand(diffResultsCommand())
-  .addCommand(compareWithOfficialSolutionCommand());
+  .addCommand(compareWithSuggestedSolutionCommand());
 
 program.parseAsync(process.argv).catch((error: unknown) => {
   let message = error instanceof Error && error.message ? error.message : String(error);

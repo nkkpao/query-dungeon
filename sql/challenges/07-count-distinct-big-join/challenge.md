@@ -32,6 +32,6 @@ make benchmark-file CHALLENGE=07-count-distinct-big-join SQL=workspace/sql/07-co
 
 Hints: see `hints/hints.md`.
 
-Solution access: suggested solutions are in `optional/` and are outside the default exercise flow. Use them only through the explicit `compare-with-official-solution` command after your own investigation.
+Solution access: suggested solutions are in `optional/` and are outside the default exercise flow. Use them only through the explicit `compare-with-suggested-solution` command after your own investigation.
 
 Docs: see `docs/how-to-explain.md`, `docs/indexing-cheatsheet.md`, and `docs/query-optimization-workflow.md`.

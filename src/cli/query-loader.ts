@@ -9,10 +9,10 @@ export async function loadParticipantSql(sqlPath: string): Promise<string> {
   return readSqlFile(sqlPath);
 }
 
-export async function loadOfficialSolutionQuery(challenge: Challenge): Promise<string> {
-  return readSqlFile(challenge.optionalSolutionSqlPath);
+export async function loadSuggestedSolutionQuery(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.optionalSuggestedSolutionSqlPath);
 }
 
-export async function loadOfficialSolutionIndexes(challenge: Challenge): Promise<string> {
-  return readSqlFile(challenge.optionalIndexesSqlPath);
+export async function loadSuggestedSolutionIndexes(challenge: Challenge): Promise<string> {
+  return readSqlFile(challenge.optionalSuggestedIndexesSqlPath);
 }

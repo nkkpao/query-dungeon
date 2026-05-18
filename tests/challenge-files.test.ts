@@ -13,8 +13,8 @@ describe('challenge files', () => {
         challenge.expectedResultPath,
         challenge.hintsPath,
         challenge.hintsRuPath,
-        challenge.optionalSolutionSqlPath,
-        challenge.optionalIndexesSqlPath,
+        challenge.optionalSuggestedSolutionSqlPath,
+        challenge.optionalSuggestedIndexesSqlPath,
         challenge.optionalBaselineExplainPath,
       ]) {
         expect(existsSync(file), file).toBe(true);
@@ -75,9 +75,9 @@ describe('challenge files', () => {
       const expected = await loadExpectedResult(challenge.expectedResultPath);
       expect(expected.fixtureSqlPath, challenge.id).toBe(challenge.baselineSqlPath);
       const fixtureSql = readFileSync(expected.fixtureSqlPath!, 'utf8').trim();
-      const officialSql = readFileSync(challenge.optionalSolutionSqlPath, 'utf8').trim();
+      const suggestedSql = readFileSync(challenge.optionalSuggestedSolutionSqlPath, 'utf8').trim();
       if (path.basename(expected.fixtureSqlPath!) !== 'baseline.sql') {
-        expect(fixtureSql, challenge.id).not.toBe(officialSql);
+        expect(fixtureSql, challenge.id).not.toBe(suggestedSql);
       }
     }
   });

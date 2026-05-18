@@ -35,8 +35,8 @@ function challenge(
     expectedResultPath: `${base}/${id}/expected-result.json`,
     hintsPath: `${base}/${id}/hints/hints.md`,
     hintsRuPath: `${base}/${id}/hints/hints_RU.md`,
-    optionalSolutionSqlPath: `${base}/${id}/optional/official-solution.sql`,
-    optionalIndexesSqlPath: `${base}/${id}/optional/official-indexes.sql`,
+    optionalSuggestedSolutionSqlPath: `${base}/${id}/optional/suggested-solution.sql`,
+    optionalSuggestedIndexesSqlPath: `${base}/${id}/optional/suggested-indexes.sql`,
     optionalBaselineExplainPath: `${base}/${id}/optional/baseline-explain.txt`,
   };
 }

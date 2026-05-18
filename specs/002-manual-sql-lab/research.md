@@ -50,7 +50,7 @@ hidden suggested solution SQL during every validation.
 **Rationale**: `/workspace/sql/`, `/workspace/indexes/`, and `/workspace/notes/`
 give participants obvious places to create repeatable experiments. Keeping this
 outside `sql/challenges/` prevents learner hypotheses from being mistaken for
-official challenge assets.
+suggested challenge assets.
 
 **Alternatives considered**:
 
@@ -74,16 +74,16 @@ parsing, and benchmark reporting.
 - Remove helper commands entirely: rejected because validation and repeatable
   benchmarks are part of the lab value.
 
-## Decision: Make official comparison explicit and isolated
+## Decision: Make suggested comparison explicit and isolated
 
 **Rationale**: Maintainers and learners who opt in still need reference
 solutions, expected plan characteristics, and comparison evidence. A dedicated
-`compare-with-official-solution` command makes the boundary visible and
+`compare-with-suggested-solution` command makes the boundary visible and
 testable, while default commands never read optional solution files.
 
 **Alternatives considered**:
 
-- Delete all official solution access: rejected because maintainers and
+- Delete all suggested solution access: rejected because maintainers and
   facilitators need reference artifacts.
 - Keep `apply-solution`: rejected for the default lab because it mutates the
   challenge state toward the answer rather than encouraging manual practice.
@@ -91,16 +91,16 @@ testable, while default commands never read optional solution files.
 ## Decision: Preserve benchmark infrastructure but change benchmark semantics
 
 **Rationale**: Existing benchmark timing and explain parsing are useful. The
-semantics must change from official bad-versus-solution demonstration to
+semantics must change from suggested bad-versus-solution demonstration to
 participant-file measurement. Default benchmarking compares a learner file to
-the baseline only when the learner asks for that comparison; official solution
+the baseline only when the learner asks for that comparison; suggested solution
 benchmarks require explicit opt-in.
 
 **Alternatives considered**:
 
 - Benchmark only one file with no baseline support: rejected because learners
   need a reference point for manual improvement.
-- Always benchmark official solution too: rejected because it violates the
+- Always benchmark suggested solution too: rejected because it violates the
   hands-on training philosophy.
 
 ## Decision: Out-of-scope automation remains absent

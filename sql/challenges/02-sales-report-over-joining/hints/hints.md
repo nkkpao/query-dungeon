@@ -4,4 +4,4 @@
 - Watch row counts before aggregation.
 - Remove nonessential joins before choosing indexes.
 
-These hints stop short of the official SQL. Use them to decide what to measure next.
+These hints stop short of the suggested SQL. Use them to decide what to measure next.

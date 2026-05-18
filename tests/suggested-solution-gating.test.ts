@@ -8,8 +8,8 @@ import {explainFileCommand} from '../src/cli/commands/explain-file.js';
 import {runSqlCommand} from '../src/cli/commands/run-sql.js';
 import {validateFileCommand} from '../src/cli/commands/validate-file.js';
 
-describe('official solution gating', () => {
-  it('keeps official paths out of active challenge metadata', () => {
+describe('suggested solution gating', () => {
+  it('keeps suggested paths out of active challenge metadata', () => {
     for (const challenge of challenges) {
       expect(challenge).not.toHaveProperty('solutionSqlPath');
       expect(challenge).not.toHaveProperty('solutionIndexes');

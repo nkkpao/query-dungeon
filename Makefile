@@ -9,7 +9,7 @@ ITERATIONS ?= 3
 
 CLI = node dist/src/cli/index.js --database-url $(DATABASE_URL) --scale $(SEED_SCALE) --timeout-ms $(QUERY_TIMEOUT_MS)
 
-.PHONY: setup seed list run-sql explain-file benchmark-file validate-file diff-results compare-with-official-solution reset test build
+.PHONY: setup seed list run-sql explain-file benchmark-file validate-file diff-results compare-with-suggested-solution reset test build
 
 setup:
 	npm install
@@ -37,8 +37,8 @@ validate-file:
 diff-results:
 	$(CLI) diff-results $(CHALLENGE) --left $(LEFT) --right $(RIGHT)
 
-compare-with-official-solution:
-	$(CLI) compare-with-official-solution $(CHALLENGE) --file $(SQL)
+compare-with-suggested-solution:
+	$(CLI) compare-with-suggested-solution $(CHALLENGE) --file $(SQL)
 
 reset: seed
 

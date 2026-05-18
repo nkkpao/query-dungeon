@@ -16,8 +16,8 @@ Represents one optimization exercise.
 - `expectedResultPath`: `sql/challenges/<id>/expected-result.json`
 - `hintsPath`: `sql/challenges/<id>/hints/hints.md`
 - `hintsRuPath`: `sql/challenges/<id>/hints/hints_RU.md`
-- `optionalSolutionSqlPath`: `sql/challenges/<id>/optional/official-solution.sql`
-- `optionalIndexesSqlPath`: `sql/challenges/<id>/optional/official-indexes.sql`
+- `optionalSuggestedSolutionSqlPath`: `sql/challenges/<id>/optional/suggested-solution.sql`
+- `optionalSuggestedIndexesSqlPath`: `sql/challenges/<id>/optional/suggested-indexes.sql`
 - `optionalBaselineExplainPath`: `sql/challenges/<id>/optional/baseline-explain.txt`
 
 **Validation rules**:
@@ -43,8 +43,8 @@ Learner-facing markdown for one challenge.
 
 **Validation rules**:
 
-- Must not include official optimized SQL.
-- Must not link the default path to official solution replay.
+- Must not include suggested optimized SQL.
+- Must not link the default path to suggested solution replay.
 - Must explain how to run baseline SQL, inspect plans, test hypotheses, and
   validate correctness manually.
 
@@ -61,7 +61,7 @@ The intentionally inefficient starting query.
 
 **Validation rules**:
 
-- Must remain separate from optional official solution files.
+- Must remain separate from optional suggested solution files.
 - Must not include solution-only indexes or optimized rewrites.
 - Must be runnable through the same file-based CLI commands as participant SQL.
 
@@ -97,7 +97,7 @@ Graduated learner guidance.
 **Validation rules**:
 
 - Hints may mention plan symptoms, data distributions, or PostgreSQL concepts.
-- Hints must not reveal the final official SQL or complete index set.
+- Hints must not reveal the final suggested SQL or complete index set.
 
 ## Participant SQL File
 
@@ -130,7 +130,7 @@ Learner-authored SQL for manual schema experiments.
 **Validation rules**:
 
 - Index files are run only when explicitly selected by the participant.
-- Index changes are not treated as official solutions.
+- Index changes are not treated as suggested solutions.
 - Learners must be able to reset or drop manual indexes during experimentation.
 
 ## Scratchpad
@@ -146,7 +146,7 @@ Learner-owned experimentation area.
 
 **Validation rules**:
 
-- Scratchpad contents are not official challenge artifacts.
+- Scratchpad contents are not suggested challenge artifacts.
 - Scratchpad files can be rerun repeatedly.
 - Documentation encourages notes that record hypothesis, plan evidence, and
   benchmark outcome.
@@ -158,7 +158,7 @@ Measurement for selected SQL.
 **Fields**:
 
 - `challengeId`
-- `label`: baseline, participant label, or explicit official comparison label
+- `label`: baseline, participant label, or explicit suggested comparison label
 - `sqlPath`
 - `seedScale`
 - `iterations`
@@ -173,19 +173,19 @@ Measurement for selected SQL.
 
 **Validation rules**:
 
-- Default benchmark output must not include official solution metrics.
+- Default benchmark output must not include suggested solution metrics.
 - Baseline comparison is allowed by default.
 - Suggested solution comparison requires explicit opt-in.
 
-## Official Solution
+## Suggested Solution
 
 Reference material outside the active challenge flow.
 
 **Fields**:
 
-- `officialSolutionSqlPath`
-- `officialIndexesSqlPath`
-- `officialExplainPath`
+- `suggestedSolutionSqlPath`
+- `suggestedIndexesSqlPath`
+- `suggestedExplainPath`
 - `tradeOffNotes`
 - `accessMode`: explicit opt-in only
 

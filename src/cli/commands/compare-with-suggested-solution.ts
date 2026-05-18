@@ -6,18 +6,18 @@ import {splitSqlStatements} from '../../db/sql-files.js';
 import {seedScale, timeoutMs} from '../options.js';
 import {
   loadBaselineQuery,
-  loadOfficialSolutionIndexes,
-  loadOfficialSolutionQuery,
+  loadSuggestedSolutionIndexes,
+  loadSuggestedSolutionQuery,
   loadParticipantSql,
 } from '../query-loader.js';
 
-export function compareWithOfficialSolutionCommand(): Command {
-  return new Command('compare-with-official-solution')
-    .description('Explicitly compare participant SQL with official solution material')
+export function compareWithSuggestedSolutionCommand(): Command {
+  return new Command('compare-with-suggested-solution')
+    .description('Explicitly compare participant SQL with suggested solution material')
     .argument('<challenge-id>')
     .requiredOption('--file <path>', 'participant SQL file')
-    .option('--benchmark', 'benchmark participant, baseline, and official solution inside a rolled-back transaction')
-    .option('--show-sql', 'print official SQL')
+    .option('--benchmark', 'benchmark participant, baseline, and suggested solution inside a rolled-back transaction')
+    .option('--show-sql', 'print suggested SQL')
     .option('--iterations <n>', 'benchmark iterations', '3')
     .action(async function (
       this: Command,
@@ -26,21 +26,21 @@ export function compareWithOfficialSolutionCommand(): Command {
     ) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
       const challenge = getChallenge(challengeId);
-      console.warn('SOLUTION_ACCESS_OPT_IN: You are leaving the default exercise flow and reading official solution material.');
-      const [participantSql, officialSql, officialIndexes] = await Promise.all([
+      console.warn('SOLUTION_ACCESS_OPT_IN: You are leaving the default exercise flow and reading suggested solution material.');
+      const [participantSql, suggestedSql, suggestedIndexes] = await Promise.all([
         loadParticipantSql(localOptions.file),
-        loadOfficialSolutionQuery(challenge),
-        loadOfficialSolutionIndexes(challenge),
+        loadSuggestedSolutionQuery(challenge),
+        loadSuggestedSolutionIndexes(challenge),
       ]);
 
       if (localOptions.showSql) {
-        console.log('\n-- official-indexes.sql');
-        console.log(officialIndexes.trim());
-        console.log('\n-- official-solution.sql');
-        console.log(officialSql.trim());
+        console.log('\n-- suggested-indexes.sql');
+        console.log(suggestedIndexes.trim());
+        console.log('\n-- suggested-solution.sql');
+        console.log(suggestedSql.trim());
       }
       if (!localOptions.benchmark) {
-        console.log('Use --benchmark to measure your file against the baseline and official reference.');
+        console.log('Use --benchmark to measure your file against the baseline and suggested reference.');
         return;
       }
 
@@ -55,10 +55,10 @@ export function compareWithOfficialSolutionCommand(): Command {
         try {
           results.push(await benchmarkQuery(client, challenge, 'baseline', challenge.baselineSqlPath, seedScale(options), await loadBaselineQuery(challenge), iterations));
           results.push(await benchmarkQuery(client, challenge, 'participant', localOptions.file, seedScale(options), participantSql, iterations));
-          for (const statement of splitSqlStatements(officialIndexes)) {
+          for (const statement of splitSqlStatements(suggestedIndexes)) {
             await client.query(statement);
           }
-          results.push(await benchmarkQuery(client, challenge, 'official-solution', challenge.optionalSolutionSqlPath, seedScale(options), officialSql, iterations));
+          results.push(await benchmarkQuery(client, challenge, 'suggested-solution', challenge.optionalSuggestedSolutionSqlPath, seedScale(options), suggestedSql, iterations));
         } finally {
           await client.query('ROLLBACK');
         }

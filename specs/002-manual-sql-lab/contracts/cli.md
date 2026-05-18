@@ -2,7 +2,7 @@
 
 The CLI is the required interface for the lab workflow. Commands must keep raw
 SQL visible and learner-selected. Default commands must not reveal, apply, or
-benchmark official solution SQL.
+benchmark suggested solution SQL.
 
 ## Global Options
 
@@ -39,7 +39,7 @@ Requirements:
 - Refuses unknown challenge IDs.
 - Applies the configured statement timeout.
 - Reports whether the database appears seeded.
-- Does not read optional official solution files.
+- Does not read optional suggested solution files.
 
 ### `dungeon explain-file <challenge-id> --file <path>`
 
@@ -50,8 +50,8 @@ Requirements:
 - Prints raw plan text by default.
 - Supports `--json` with parsed planning time, execution time, row count, and
   buffer fields where parser support is available.
-- Does not substitute baseline or official solution SQL.
-- Does not apply official indexes.
+- Does not substitute baseline or suggested solution SQL.
+- Does not apply suggested indexes.
 
 ### `dungeon benchmark-file <challenge-id> --file <path> [--baseline] [--iterations <n>]`
 
@@ -64,7 +64,7 @@ Requirements:
   challenge.
 - Reports latency, rows, buffers, planning time, and execution time.
 - Warns that absolute timings vary by machine.
-- Does not include official solution metrics.
+- Does not include suggested solution metrics.
 
 ### `dungeon validate-file <challenge-id> --file <path>`
 
@@ -75,7 +75,7 @@ Requirements:
 - Normalizes rows according to the expected-result contract.
 - Fails with a clear message when columns, rows, values, order-sensitive output,
   or numeric tolerances do not match.
-- Does not reveal official solution SQL.
+- Does not reveal suggested solution SQL.
 - Does not treat faster runtime as correctness.
 
 ### `dungeon diff-results <challenge-id> --left <path> --right <path>`
@@ -87,28 +87,28 @@ Requirements:
 - Shows whether normalized outputs are equal.
 - Reports missing, extra, or changed rows in a concise format.
 - Supports `--json`.
-- Does not require either side to be the official solution.
+- Does not require either side to be the suggested solution.
 
 ## Explicit Opt-in Commands
 
-### `dungeon compare-with-official-solution <challenge-id> --file <path> [--benchmark] [--show-sql]`
+### `dungeon compare-with-suggested-solution <challenge-id> --file <path> [--benchmark] [--show-sql]`
 
-Compares a participant-selected SQL file with official solution behavior.
+Compares a participant-selected SQL file with suggested solution behavior.
 
 Requirements:
 
-- Must display a warning before official solution material is read.
+- Must display a warning before suggested solution material is read.
 - Must require an explicit command name; it cannot be reached through default
   run, explain, benchmark, validate, diff, README, or Makefile paths.
 - Uses files under `sql/challenges/<id>/optional/`.
-- `--show-sql` is required before printing official solution SQL.
-- `--benchmark` may compare participant, baseline, and official solution
+- `--show-sql` is required before printing suggested solution SQL.
+- `--benchmark` may compare participant, baseline, and suggested solution
   measurements only after opt-in.
 
 ## Deprecated or Removed Commands
 
 These commands must be removed from the default workflow or retained only as
-clearly labeled optional examples that do not reveal official solutions by
+clearly labeled optional examples that do not reveal suggested solutions by
 default:
 
 - `dungeon run <challenge-id> --variant solution`
@@ -127,7 +127,7 @@ default:
 - `make benchmark-file CHALLENGE=<id> SQL=<path>`: delegate to `dungeon benchmark-file --baseline`
 - `make validate-file CHALLENGE=<id> SQL=<path>`: delegate to `dungeon validate-file`
 - `make diff-results CHALLENGE=<id> LEFT=<path> RIGHT=<path>`: delegate to `dungeon diff-results`
-- `make compare-with-official-solution CHALLENGE=<id> SQL=<path>`: explicit opt-in only
+- `make compare-with-suggested-solution CHALLENGE=<id> SQL=<path>`: explicit opt-in only
 - `make reset`: restore schema and selected seed scale
 
 ## Error Contract

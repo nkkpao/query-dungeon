@@ -25,8 +25,8 @@ export interface Challenge {
   expectedResultPath: string;
   hintsPath: string;
   hintsRuPath: string;
-  optionalSolutionSqlPath: string;
-  optionalIndexesSqlPath: string;
+  optionalSuggestedSolutionSqlPath: string;
+  optionalSuggestedIndexesSqlPath: string;
   optionalBaselineExplainPath: string;
 }
 

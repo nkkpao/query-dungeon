@@ -8,8 +8,8 @@ files.
 - `bad.sql` became `baseline.sql`.
 - `README.md` became `challenge.md`.
 - `README_RU.md` became `challenge_RU.md`.
-- `solution.sql` moved to `optional/official-solution.sql`.
-- Official index DDL moved to `optional/official-indexes.sql`.
+- `solution.sql` moved to `optional/suggested-solution.sql`.
+- Suggested index DDL moved to `optional/suggested-indexes.sql`.
 - Captured plan evidence moved to `optional/baseline-explain.txt`.
 - `expected-result.json` is now the validation contract. Executable fixtures
   point at public `baseline.sql` so validation does not run suggested solution
@@ -21,7 +21,7 @@ files.
   `diff-results` for normal work.
 - `apply-solution`, `reset-solutions`, and automatic bad-versus-solution flows
   are not registered in the default CLI.
-- Use `compare-with-official-solution` only as an explicit opt-in review step.
+- Use `compare-with-suggested-solution` only as an explicit opt-in review step.
 
 ## Data Preservation
 

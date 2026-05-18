@@ -1,7 +1,7 @@
 # Quickstart: Hands-on SQL Optimization Lab
 
 This quickstart describes the target workflow for the refactor. The point is to
-practice investigation, not replay an official answer.
+practice investigation, not replay an suggested answer.
 
 ## 1. Start the local lab
 
@@ -92,23 +92,23 @@ npm run dungeon -- diff-results 01-user-orders-missing-index \
   --right workspace/sql/01-user-orders-attempt-2.sql
 ```
 
-This compares participant-selected results only. It does not read official
+This compares participant-selected results only. It does not read suggested
 solution files.
 
-## 8. Optional official comparison
+## 8. Optional suggested comparison
 
 Only after you want to leave the exercise flow:
 
 ```bash
-npm run dungeon -- compare-with-official-solution 01-user-orders-missing-index \
+npm run dungeon -- compare-with-suggested-solution 01-user-orders-missing-index \
   --file workspace/sql/01-user-orders-attempt-1.sql \
   --benchmark
 ```
 
-Printing official SQL requires an additional explicit option:
+Printing suggested SQL requires an additional explicit option:
 
 ```bash
-npm run dungeon -- compare-with-official-solution 01-user-orders-missing-index \
+npm run dungeon -- compare-with-suggested-solution 01-user-orders-missing-index \
   --file workspace/sql/01-user-orders-attempt-1.sql \
   --show-sql
 ```

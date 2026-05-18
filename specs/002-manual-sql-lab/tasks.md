@@ -31,9 +31,9 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [X] T006 Refactor Challenge and BenchmarkResult types for baseline, expected result, hints, optional official solution, and participant labels in src/challenges/types.ts
+- [X] T006 Refactor Challenge and BenchmarkResult types for baseline, expected result, hints, optional suggested solution, and participant labels in src/challenges/types.ts
 - [X] T007 Refactor challenge registry paths from bad/solution variants to challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional files in src/challenges/registry.ts
-- [X] T008 Replace QueryVariant-based challenge query loading with explicit baseline, expected-result, participant file, and optional official loaders in src/cli/query-loader.ts
+- [X] T008 Replace QueryVariant-based challenge query loading with explicit baseline, expected-result, participant file, and optional suggested loaders in src/cli/query-loader.ts
 - [X] T009 [P] Add safe SQL file reading and empty-file errors for participant-selected paths in src/db/sql-files.ts
 - [X] T010 [P] Add expected-result JSON schema types and parser in src/challenges/expected-result.ts
 - [X] T011 [P] Extract reusable row normalization and result diff helpers from src/cli/commands/compare.ts into src/db/result-compare.ts
@@ -46,14 +46,14 @@
 
 ## Phase 3: User Story 1 - Explore a Challenge Manually (Priority: P1) MVP
 
-**Goal**: Learners can open a challenge, see only learner-facing artifacts, run baseline SQL manually, inspect its plan, and begin experimentation without seeing official solution material.
+**Goal**: Learners can open a challenge, see only learner-facing artifacts, run baseline SQL manually, inspect its plan, and begin experimentation without seeing suggested solution material.
 
-**Independent Test**: Run `dungeon list`, open a migrated challenge, execute `run-sql` and `explain-file` against `baseline.sql`, and verify no default output exposes optional official solution files.
+**Independent Test**: Run `dungeon list`, open a migrated challenge, execute `run-sql` and `explain-file` against `baseline.sql`, and verify no default output exposes optional suggested solution files.
 
 ### Tests and Guardrails for User Story 1
 
 - [X] T014 [P] [US1] Add challenge contract tests requiring challenge.md, baseline.sql, expected-result.json, hints/hints.md, hints/hints_RU.md, and optional/ files for every challenge in tests/challenge-files.test.ts
-- [X] T015 [P] [US1] Add guardrail test that default challenge docs, README paths, Makefile targets, package scripts, and list output do not reveal official solution SQL paths in tests/official-solution-gating.test.ts
+- [X] T015 [P] [US1] Add guardrail test that default challenge docs, README paths, Makefile targets, package scripts, and list output do not reveal suggested solution SQL paths in tests/suggested-solution-gating.test.ts
 - [X] T016 [P] [US1] Add CLI smoke tests for run-sql and explain-file with baseline.sql in tests/cli-smoke.test.ts
 - [X] T017 [P] [US1] Add regression test that every baseline.sql remains runnable through the shared SQL loader in tests/challenge-registry.test.ts
 
@@ -86,17 +86,17 @@
 
 ## Phase 4: User Story 2 - Benchmark and Validate My Own SQL (Priority: P2)
 
-**Goal**: Learners can run correctness validation, benchmark arbitrary participant SQL, compare participant attempts, and use scratch SQL or scratch indexes repeatedly without official solution exposure.
+**Goal**: Learners can run correctness validation, benchmark arbitrary participant SQL, compare participant attempts, and use scratch SQL or scratch indexes repeatedly without suggested solution exposure.
 
-**Independent Test**: Create SQL and index files in workspace/, run validate-file, benchmark-file with baseline, and diff-results between two participant SQL files without touching optional official solution files.
+**Independent Test**: Create SQL and index files in workspace/, run validate-file, benchmark-file with baseline, and diff-results between two participant SQL files without touching optional suggested solution files.
 
 ### Tests and Benchmarks for User Story 2
 
 - [X] T038 [P] [US2] Add expected-result parser tests for columns, orderSensitive, numericTolerance, and normalization in tests/result-validation.test.ts
 - [X] T039 [P] [US2] Add validate-file CLI tests for pass, mismatch, malformed SQL, empty file, and timeout cases in tests/manual-workflow.test.ts
-- [X] T040 [P] [US2] Add benchmark-file CLI tests for participant-only, participant-versus-baseline, three repeated attempts, and no official-solution execution in tests/benchmark-output.test.ts
+- [X] T040 [P] [US2] Add benchmark-file CLI tests for participant-only, participant-versus-baseline, three repeated attempts, and no suggested-solution execution in tests/benchmark-output.test.ts
 - [X] T041 [P] [US2] Add diff-results CLI tests for equal, missing, extra, and changed rows in tests/result-validation.test.ts
-- [X] T042 [P] [US2] Add scratch index workflow test using workspace/indexes/ without marking indexes as official solutions in tests/manual-workflow.test.ts
+- [X] T042 [P] [US2] Add scratch index workflow test using workspace/indexes/ without marking indexes as suggested solutions in tests/manual-workflow.test.ts
 
 ### Implementation for User Story 2
 
@@ -108,36 +108,36 @@
 - [X] T048 [US2] Add clear recovery errors for missing SQL file, empty SQL file, invalid expected-result fixture, result mismatch, and query timeout in src/cli/index.ts
 - [X] T049 [US2] Wire validate-file, benchmark-file, and diff-results into src/cli/index.ts
 - [X] T050 [US2] Update Makefile targets for benchmark-file, validate-file, diff-results, and reset in Makefile
-- [X] T051 [US2] Remove automatic bad-versus-solution behavior from benchmark command and ensure default benchmarking cannot load official solution SQL in src/cli/commands/benchmark.ts
-- [X] T052 [US2] Remove automatic bad-versus-solution behavior from compare command and ensure default validation cannot execute official solution SQL in src/cli/commands/compare.ts
+- [X] T051 [US2] Remove automatic bad-versus-solution behavior from benchmark command and ensure default benchmarking cannot load suggested solution SQL in src/cli/commands/benchmark.ts
+- [X] T052 [US2] Remove automatic bad-versus-solution behavior from compare command and ensure default validation cannot execute suggested solution SQL in src/cli/commands/compare.ts
 
-**Checkpoint**: User Story 2 supports iterative manual optimization and deterministic correctness checks independently of official solutions.
+**Checkpoint**: User Story 2 supports iterative manual optimization and deterministic correctness checks independently of suggested solutions.
 
 ---
 
 ## Phase 5: User Story 3 - Access Reference Solutions Deliberately (Priority: P3)
 
-**Goal**: Official solutions remain available for maintainers and explicit learner comparison, but cannot leak through default challenge flow or default commands.
+**Goal**: Suggested solutions remain available for maintainers and explicit learner comparison, but cannot leak through default challenge flow or default commands.
 
-**Independent Test**: Default commands never read optional files; `compare-with-official-solution` shows a warning and uses official files only after the learner runs the explicit command.
+**Independent Test**: Default commands never read optional files; `compare-with-suggested-solution` shows a warning and uses suggested files only after the learner runs the explicit command.
 
 ### Tests and Guardrails for User Story 3
 
-- [X] T053 [P] [US3] Add tests proving run-sql, explain-file, benchmark-file, validate-file, diff-results, list, and README paths do not read optional solution files in tests/official-solution-gating.test.ts
-- [X] T054 [P] [US3] Add compare-with-official-solution CLI tests for warning text, --benchmark behavior, and --show-sql gating in tests/official-solution-gating.test.ts
-- [X] T055 [P] [US3] Add challenge optional artifact tests for official-solution.sql, official-indexes.sql, baseline-explain.txt, and trade-off notes in tests/challenge-files.test.ts
-- [X] T056 [P] [US3] Add regression test that baseline.sql files do not contain official solution index names from optional files in tests/baseline-index-policy.test.ts
+- [X] T053 [P] [US3] Add tests proving run-sql, explain-file, benchmark-file, validate-file, diff-results, list, and README paths do not read optional solution files in tests/suggested-solution-gating.test.ts
+- [X] T054 [P] [US3] Add compare-with-suggested-solution CLI tests for warning text, --benchmark behavior, and --show-sql gating in tests/suggested-solution-gating.test.ts
+- [X] T055 [P] [US3] Add challenge optional artifact tests for suggested-solution.sql, suggested-indexes.sql, baseline-explain.txt, and trade-off notes in tests/challenge-files.test.ts
+- [X] T056 [P] [US3] Add regression test that baseline.sql files do not contain suggested solution index names from optional files in tests/baseline-index-policy.test.ts
 
 ### Implementation for User Story 3
 
-- [X] T057 [US3] Implement official solution loader that reads only optional/ files after explicit opt-in in src/cli/query-loader.ts
-- [X] T058 [US3] Implement compare-with-official-solution command with warning, --benchmark, and --show-sql gates in src/cli/commands/compare-with-official-solution.ts
+- [X] T057 [US3] Implement suggested solution loader that reads only optional/ files after explicit opt-in in src/cli/query-loader.ts
+- [X] T058 [US3] Implement compare-with-suggested-solution command with warning, --benchmark, and --show-sql gates in src/cli/commands/compare-with-suggested-solution.ts
 - [X] T059 [US3] Remove apply-solution command from default CLI registration in src/cli/index.ts
 - [X] T060 [US3] Remove or downgrade reset-solutions command to an optional legacy example outside the default workflow in src/cli/commands/reset-solutions.ts
 - [X] T061 [US3] Remove solution_state dependency from normal seed and learner flows in sql/schema/003_solution_state.sql and src/cli/commands/seed.ts
-- [X] T062 [US3] Add explicit Makefile opt-in target for compare-with-official-solution and no default target that reveals solution material in Makefile
-- [X] T063 [US3] Add official solution access notices to optional solution documentation in sql/challenges/*/optional/README.md
-- [X] T064 [US3] Add registry guardrail test proving solutionSqlPath, solutionIndexes, and QueryVariant solution are not part of active challenge metadata in tests/official-solution-gating.test.ts
+- [X] T062 [US3] Add explicit Makefile opt-in target for compare-with-suggested-solution and no default target that reveals solution material in Makefile
+- [X] T063 [US3] Add suggested solution access notices to optional solution documentation in sql/challenges/*/optional/README.md
+- [X] T064 [US3] Add registry guardrail test proving solutionSqlPath, solutionIndexes, and QueryVariant solution are not part of active challenge metadata in tests/suggested-solution-gating.test.ts
 
 **Checkpoint**: User Story 3 provides deliberate solution access without weakening the exploratory default workflow.
 
@@ -172,7 +172,7 @@
 - [ ] T080 Run validate-file against every challenge baseline.sql and update expected-result.json fixtures where deterministic validation requires normalization in sql/challenges/*/expected-result.json
 - [ ] T081 Run benchmark-file --baseline for every challenge baseline.sql with at least three repeated attempts to verify benchmark reproducibility in src/db/benchmark.ts
 - [X] T082 Search for default solution exposure in README.md, README_RU.md, docs/, src/cli/, Makefile, package.json, and sql/challenges/*/challenge.md and remove any accidental leak
-- [X] T083 Verify official solution artifacts remain separate from active challenge flow in sql/challenges/*/optional/
+- [X] T083 Verify suggested solution artifacts remain separate from active challenge flow in sql/challenges/*/optional/
 - [X] T084 Verify existing seed files and baseline schema are unchanged unless an earlier task documented a required migration in sql/seeds/ and sql/schema/
 - [X] T085 Update package scripts to expose the new workflow commands or examples without solution replay shortcuts in package.json
 
@@ -257,7 +257,7 @@ Task: "T069 Update optimization workflow in docs/query-optimization-workflow.md"
 
 1. US1 delivers the non-solution default challenge flow.
 2. US2 adds participant validation, benchmarking, diffing, and scratchpad iteration.
-3. US3 adds explicit official comparison with guardrails.
+3. US3 adds explicit suggested comparison with guardrails.
 
 ## Regression Notes
 

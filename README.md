@@ -69,7 +69,7 @@ your workspace, validate correctness, and benchmark repeated attempts.
    ```
 
 Suggested solutions live under each challenge's `optional/` directory and are
-not part of the default workflow. Use `compare-with-official-solution` only
+not part of the default workflow. Use `compare-with-suggested-solution` only
 when you intentionally want to leave the exercise flow.
 
 ## Challenge Catalog

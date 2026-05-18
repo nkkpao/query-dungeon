@@ -6,14 +6,14 @@ Each challenge directory must be a complete investigation packet:
   constraints, manual workflow, and solution access notice.
 - `baseline.sql`: intentionally inefficient starting query.
 - `expected-result.json`: deterministic correctness contract.
-- `hints/hints.md`: graduated English guidance that does not reveal official SQL.
-- `hints/hints_RU.md`: graduated Russian guidance that does not reveal official SQL.
-- `optional/official-indexes.sql`: reference index/schema changes.
-- `optional/official-solution.sql`: reference query.
+- `hints/hints.md`: graduated English guidance that does not reveal suggested SQL.
+- `hints/hints_RU.md`: graduated Russian guidance that does not reveal suggested SQL.
+- `optional/suggested-indexes.sql`: reference index/schema changes.
+- `optional/suggested-solution.sql`: reference query.
 - `optional/baseline-explain.txt`: maintained baseline plan evidence.
 - `optional/README.md`: access notice and trade-off reminder.
 
-Preserve the bad starting state. Do not place official index names, optimized
+Preserve the bad starting state. Do not place suggested index names, optimized
 query text, or optimized plans in learner-facing files.
 
 Authoring checklist:

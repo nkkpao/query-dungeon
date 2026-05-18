@@ -9,7 +9,7 @@ Refactor Postgres Query Dungeon from a demonstration-oriented CLI into a
 hands-on SQL optimization lab. Preserve existing datasets, bad queries,
 PostgreSQL Docker workflow, explain parsing, result comparison, and benchmark
 measurement helpers, but reorganize challenge assets and CLI commands so
-learners run and improve their own SQL files. Official solutions remain
+learners run and improve their own SQL files. Suggested solutions remain
 available only through explicit opt-in flows outside the default README and
 challenge path.
 
@@ -36,11 +36,11 @@ access
 **Performance Goals**: Baseline challenge symptoms remain measurable on the
 supported seed profiles; learner SQL validation completes in under 30 seconds
 on the smallest dataset; benchmark-file reports latency and plan metrics for
-participant SQL independently of official solutions; every challenge supports
+participant SQL independently of suggested solutions; every challenge supports
 at least three repeated participant-SQL benchmark attempts with optional
-baseline comparison and no official solution execution  
+baseline comparison and no suggested solution execution  
 **Constraints**: Preserve existing seed datasets and bad-query intent; do not
-show, apply, benchmark, or compare official solutions in default commands; keep
+show, apply, benchmark, or compare suggested solutions in default commands; keep
 raw SQL directly visible and editable; support iterative scratchpad SQL and
 manual indexes; default CLI registration must not include solution variants,
 apply-solution, reset-solutions, or automatic bad-versus-solution benchmark or
@@ -60,7 +60,7 @@ profiles, one participant workspace with `/workspace/sql/`,
 - **Scenario contract**: PASS. Each challenge is planned to contain
   `challenge.md`, `baseline.sql`, `expected-result.json`, `hints/hints.md`,
   `hints/hints_RU.md`, and
-  `optional/official-solution.sql`, `optional/official-indexes.sql`, and
+  `optional/suggested-solution.sql`, `optional/suggested-indexes.sql`, and
   `optional/baseline-explain.txt`.
 - **PostgreSQL-first scope**: PASS. The learner workflow centers on SQL files,
   `EXPLAIN (ANALYZE, BUFFERS)`, manual indexes, result validation, and
@@ -69,23 +69,23 @@ profiles, one participant workspace with `/workspace/sql/`,
 - **Docker Compose reproducibility**: PASS. Existing Docker Compose, seed, and
   reset workflows remain. Makefile targets are updated to setup, seed, run SQL,
   explain participant files, benchmark participant files, validate participant
-  files, diff participant results, and optionally compare with official
+  files, diff participant results, and optionally compare with suggested
   solution.
 - **Correctness and evidence**: PASS with lab-specific exposure rules.
   Correctness checks compare learner SQL to `expected-result.json`; benchmark
-  evidence measures learner SQL against baseline by default. Official before/
+  evidence measures learner SQL against baseline by default. Suggested before/
   after comparison exists only in opt-in solution comparison paths.
 - **Analyze remediation gate**: PASS. Implementation must add guardrail tests
   that fail while default CLI, README, Makefile, registry, benchmark, or
-  validation code can expose, execute, or compare official solutions without
+  validation code can expose, execute, or compare suggested solutions without
   the explicit solution-comparison command.
-- **Trade-off review**: PASS. Official solution artifacts remain separate and
+- **Trade-off review**: PASS. Suggested solution artifacts remain separate and
   include trade-off notes in optional solution documentation or challenge
   metadata; learners do not see these through default commands.
 
 **Post-design re-check**: PASS. The research, data model, CLI contract, and
 quickstart preserve reproducible bad baselines, PostgreSQL-first manual work,
-isolated official solutions, learner-owned scratchpad files, correctness
+isolated suggested solutions, learner-owned scratchpad files, correctness
 validation, and benchmark evidence without default solution replay.
 
 ## Project Structure
@@ -142,8 +142,8 @@ sql/
     │   │   ├── hints.md
     │   │   └── hints_RU.md
     │   └── optional/
-    │       ├── official-solution.sql
-    │       ├── official-indexes.sql
+    │       ├── suggested-solution.sql
+    │       ├── suggested-indexes.sql
     │       └── baseline-explain.txt
     └── ...
 
@@ -160,7 +160,7 @@ src/
 │       ├── benchmark-file.ts
 │       ├── validate-file.ts
 │       ├── diff-results.ts
-│       └── compare-with-official-solution.ts
+│       └── compare-with-suggested-solution.ts
 ├── challenges/
 │   ├── registry.ts
 │   └── types.ts
@@ -175,7 +175,7 @@ tests/
 ├── challenge-registry.test.ts
 ├── cli-smoke.test.ts
 ├── manual-workflow.test.ts
-├── official-solution-gating.test.ts
+├── suggested-solution-gating.test.ts
 ├── result-validation.test.ts
 ├── benchmark-output.test.ts
 ├── explain-parser.test.ts
@@ -186,7 +186,7 @@ tests/
 SQL-first challenge layout. Migrate challenge assets in place under
 `sql/challenges/<id>/` to minimize disruption and preserve datasets, while
 moving participant experiments into top-level `workspace/` so learner files are
-never confused with official artifacts.
+never confused with suggested artifacts.
 
 ## Incremental Refactor Sequence
 
@@ -199,32 +199,32 @@ never confused with official artifacts.
 3. **Migrate challenge contract**: For each challenge, rename or copy
    `README.md` to `challenge.md`, `bad.sql` to `baseline.sql`, convert
    `expected.sql` into `expected-result.json`, split `solution.sql` into
-   `optional/official-solution.sql` and `optional/official-indexes.sql`, and
+   `optional/suggested-solution.sql` and `optional/suggested-indexes.sql`, and
    move `baseline-plan.txt` to `optional/baseline-explain.txt` only if it
    contains solution-revealing plan evidence.
 4. **Update registry and loaders**: Replace `QueryVariant`-driven loading with
-   explicit baseline, expected result, hints, and optional official solution
+   explicit baseline, expected result, hints, and optional suggested solution
    paths. Add generic participant SQL file loading with path validation.
 5. **Replace default CLI flow**: Remove solution variants from `run` and
    `explain`; add `run-sql`, `explain-file`, `benchmark-file`,
    `validate-file`, and `diff-results`.
-6. **Gate official comparison**: Remove `apply-solution` and old automatic
+6. **Gate suggested comparison**: Remove `apply-solution` and old automatic
    bad-versus-solution benchmark/compare defaults, or reintroduce them only as
-   `compare-with-official-solution` with explicit warning and opt-in behavior.
+   `compare-with-suggested-solution` with explicit warning and opt-in behavior.
 7. **Preserve reusable infrastructure**: Reuse connection handling, seed
    checks, explain parsing, benchmark timing, row normalization, and timeout
    handling behind the new file-based commands.
 8. **Update Makefile and docs**: Make the default path teach investigation:
    read challenge, run baseline manually, run `EXPLAIN ANALYZE`, create SQL or
    index hypotheses in workspace files, benchmark, validate, and optionally
-   reveal/compare the official solution.
+   reveal/compare the suggested solution.
 9. **Add regression tests**: Verify no default command reads optional solution
-   files, default README paths do not link to official solution replay, and
+   files, default README paths do not link to suggested solution replay, and
    participant SQL files work across run, explain, benchmark, validate, and
    diff workflows.
 10. **Prove every challenge remains iterative**: Run repeated participant-SQL
     benchmarks and fixture-based validation for every challenge baseline and at
-    least one workspace SQL attempt, without executing official solutions.
+    least one workspace SQL attempt, without executing suggested solutions.
 
 ## Analyze Findings Resolved
 
@@ -232,9 +232,9 @@ never confused with official artifacts.
 |---------|--------------------------------|------------|
 | C1: Default CLI registers solution commands | Learners can apply or replay the answer instead of investigating plans. | Make solution commands absent from default registration; only explicit solution comparison may access optional files. |
 | C2: README and Makefile guide solution replay | The first path teaches demonstration replay rather than performance engineering practice. | Rewrite default docs and Makefile around baseline, explain, workspace experiments, validation, and benchmark-file. |
-| C3: Registry treats solutions as active metadata | Solution paths and index names become normal challenge data instead of gated reference artifacts. | Replace variant metadata with baseline, expected-result, hints, and optional official paths. |
-| C4: Benchmark auto-runs official solution | Benchmarking becomes an answer reveal instead of iterative hypothesis testing. | Benchmark participant SQL and optional baseline by default; official benchmark only behind explicit solution comparison. |
-| C5: Validation executes official solution | Correctness checks depend on the answer and can leak solution behavior. | Validate participant SQL against deterministic expected-result fixtures only. |
+| C3: Registry treats solutions as active metadata | Solution paths and index names become normal challenge data instead of gated reference artifacts. | Replace variant metadata with baseline, expected-result, hints, and optional suggested paths. |
+| C4: Benchmark auto-runs suggested solution | Benchmarking becomes an answer reveal instead of iterative hypothesis testing. | Benchmark participant SQL and optional baseline by default; suggested benchmark only behind explicit solution comparison. |
+| C5: Validation executes suggested solution | Correctness checks depend on the answer and can leak solution behavior. | Validate participant SQL against deterministic expected-result fixtures only. |
 | C6: Run/explain cannot accept arbitrary SQL | Learners cannot practice with their own hypotheses. | Add file-based run and explain commands for participant-selected SQL. |
 | C7: Docs still say compare bad and solution | Workflow language reduces exploration and skips manual tuning loops. | Rewrite workflow docs around EXPLAIN ANALYZE, hypotheses, scratch files, validation, and benchmark iteration. |
 | C8: Benchmark coverage sampled challenges only | Success criteria require every challenge to support repeated benchmark attempts. | Add all-challenge repeated benchmark regression coverage. |

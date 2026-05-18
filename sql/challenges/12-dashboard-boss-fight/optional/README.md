@@ -6,8 +6,8 @@ This directory contains suggested solutions and is outside the default learner w
 
 Files:
 
-- `official-indexes.sql`: reference schema/index changes.
-- `official-solution.sql`: reference query.
+- `suggested-indexes.sql`: reference schema/index changes.
+- `suggested-solution.sql`: reference query.
 - `baseline-explain.txt`: maintained baseline plan evidence.
 
 Trade-offs to review: write overhead, extra storage, query specificity, maintenance cost, and cases where the approach may not help.

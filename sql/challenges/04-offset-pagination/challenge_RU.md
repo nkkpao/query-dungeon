@@ -32,6 +32,6 @@ make benchmark-file CHALLENGE=04-offset-pagination SQL=workspace/sql/04-offset-p
 
 Подсказки: см. `hints/hints_RU.md`.
 
-Доступ к решению: предлагаемые решения находятся в `optional/` и не входят в обычный ход упражнения. Открывайте их только через явную команду `compare-with-official-solution` после собственной попытки.
+Доступ к решению: предлагаемые решения находятся в `optional/` и не входят в обычный ход упражнения. Открывайте их только через явную команду `compare-with-suggested-solution` после собственной попытки.
 
 Документация: см. `docs/how-to-explain.md`, `docs/indexing-cheatsheet.md` и `docs/query-optimization-workflow.md`.
