@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "Extend the existing PostgreSQL optimization training repository with advanced challenge variants based on larger skewed datasets and recorded EXPLAIN plans for SEED_SCALE=medium. Add more realistic and difficult variants of selected challenges where PostgreSQL planner behavior becomes visible only on sufficiently large and skewed data. This feature must improve the repository as a hands-on performance lab, not as an auto-solved tutorial."
 
+## Clarifications
+
+### Session 2026-05-19
+
+- Q: How should advanced variants relate to existing challenges? → A: Advanced variants are additive, never replacements, and use `challenge-XX-advanced` or `variants/advanced` naming.
+- Q: Which seed scales define recorded-plan evidence and default checks? → A: `SEED_SCALE=medium` is canonical for recorded baseline plans; `SEED_SCALE=small` remains the default for CI and quick local smoke tests.
+- Q: How are recorded baseline plans stored and used? → A: Recorded plans are committed text artifacts, not dynamically generated during normal challenge execution, and participants use them only as baseline reference after their own investigation.
+- Q: How strict must recorded plan reproducibility be? → A: Recorded plans must be reproducible enough for learning, exact timings may vary, and exact execution time equality must never be asserted.
+- Q: How should recorded plans be validated? → A: Validation checks stable structural markers such as Seq Scan, row estimate problems, shared buffers, expensive Sort, Hash Join or Nested Loop behavior, and rows removed by filter.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Practice Advanced Planner Investigation (Priority: P1)
@@ -18,7 +28,7 @@ As a learner, I want advanced variants of familiar challenges that use larger, s
 **Acceptance Scenarios**:
 
 1. **Given** the repository contains existing baseline challenges, **When** a learner lists or opens challenges, **Then** advanced variants appear as additional variants and the original challenge IDs and baseline workflows remain unchanged.
-2. **Given** a learner opens an advanced variant, **When** they read its materials, **Then** they see the challenge description, baseline bad query, data skew assumptions, expected planner symptoms, recorded medium-scale baseline plan, hints, and any explicit solution-access path.
+2. **Given** a learner opens an advanced variant, **When** they read its materials, **Then** they see the challenge description, baseline bad query, data skew assumptions, expected planner symptoms, recorded medium-scale baseline plan text artifact, hints, and any explicit solution-access path.
 3. **Given** a learner follows the normal advanced variant workflow, **When** they run or explain the baseline bad query, **Then** the lab uses the learner-selected query artifacts and does not apply, reveal, compare against, or depend on official solution SQL.
 
 ---
@@ -36,6 +46,7 @@ As a maintainer or learner, I want each advanced variant to include a committed 
 1. **Given** an advanced variant exists, **When** a reviewer inspects its recorded plan, **Then** the plan clearly states it was captured for the medium-scale dataset and includes actual execution and buffer information.
 2. **Given** a maintainer follows the documented regeneration instructions, **When** they regenerate recorded plans locally, **Then** the process updates reference plan artifacts without requiring CI to run medium-scale benchmarks by default.
 3. **Given** local hardware or planner versions differ, **When** the regenerated plan differs slightly, **Then** the challenge documentation still identifies the expected planner symptoms rather than requiring byte-for-byte runtime equality.
+4. **Given** recorded plan validation runs, **When** it checks the committed plan artifact, **Then** it validates stable structural markers instead of exact execution timings.
 
 ---
 
@@ -60,6 +71,7 @@ As a learner, I want optional official solutions to remain available only for co
 - Medium-scale seeding takes longer than normal development checks and should not become mandatory in CI.
 - A learner attempts to run an advanced variant before loading the required data profile.
 - Official solution artifacts exist for comparison but must not be referenced by default challenge execution, validation, or benchmarking.
+- Recorded plan validation encounters a valid timing difference while the structural planner symptoms remain present.
 
 ## Requirements *(mandatory)*
 
@@ -83,10 +95,15 @@ As a learner, I want optional official solutions to remain available only for co
 - **FR-016**: The README MUST make clear that medium-scale recorded plan regeneration is not part of the default CI requirement.
 - **FR-017**: CI MUST continue to verify normal challenge integrity without requiring medium-scale benchmark runs by default.
 - **FR-018**: Existing normal challenges MUST continue to work unchanged through their current learner-facing workflow.
-- **FR-019**: Advanced variant artifacts MUST be organized so learners can distinguish normal and advanced variants while still recognizing the relationship to the original challenge.
+- **FR-019**: Advanced variant artifacts MUST use a consistent naming convention of either `challenge-XX-advanced` or `variants/advanced` so learners can distinguish normal and advanced variants while still recognizing the relationship to the original challenge.
 - **FR-020**: Each advanced variant MUST keep the baseline bad query separate from optional solution artifacts.
 - **FR-021**: Each advanced variant MUST include enough metadata or documentation for reviewers to verify the required dataset scale, skew assumption, baseline query, and recorded plan relationship.
 - **FR-022**: Hints for advanced variants MUST guide learners toward investigating data distribution, row estimates, scan choices, join choices, sorts, aggregations, buffers, or statistics without revealing the official solution by default.
+- **FR-023**: Recorded baseline plans MUST be stored as committed text artifacts and MUST NOT be generated dynamically during normal challenge execution.
+- **FR-024**: Recorded plan validation MUST check stable structural markers rather than exact execution time equality.
+- **FR-025**: Structural markers for recorded plans MUST include one or more relevant symptoms from Seq Scan, bad row estimates, high shared buffer reads or hits, expensive Sort, Hash Join behavior, Nested Loop behavior, or rows removed by filter.
+- **FR-026**: Default CI and quick local smoke tests MUST use the small seed profile unless a maintainer explicitly requests medium-scale recorded-plan regeneration or validation.
+- **FR-027**: Learner-facing guidance MUST position recorded plans as baseline reference material to consult after the learner's own investigation, not as the first step in solving the challenge.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -95,6 +112,7 @@ As a learner, I want optional official solutions to remain available only for co
 - **Skew Assumption**: The documented data distribution characteristic that makes the advanced variant realistic and affects planner behavior.
 - **Recorded Baseline Plan**: The committed reference `EXPLAIN (ANALYZE, BUFFERS)` output for an advanced variant on the medium-scale dataset.
 - **Planner Symptom**: The expected observable plan behavior learners should investigate, such as poor row estimates, sequential scans, expensive nested loops, sort pressure, hash spill risk, or unexpectedly high buffer usage.
+- **Structural Plan Marker**: A stable recorded-plan indicator used for validation, such as Seq Scan, estimate mismatch, shared buffer reads or hits, Sort, Hash Join, Nested Loop, or rows removed by filter.
 - **Baseline Bad Query**: The intentionally inefficient starting query for the advanced variant.
 - **Hint Set**: Learner-facing clues that preserve investigation while focusing attention on likely symptoms.
 - **Official Solution**: Optional comparison material that is separate from the default learner workflow and never required to execute an advanced variant.
@@ -103,12 +121,12 @@ As a learner, I want optional official solutions to remain available only for co
 
 - **Business Task**: Each advanced variant describes the realistic reporting, lookup, ranking, filtering, or operational task the bad query is intended to answer.
 - **Bad Query**: Each advanced variant provides its own baseline bad query or clearly points to the inherited bad query when unchanged, without altering the normal challenge baseline.
-- **Seed Data**: Each advanced variant documents the medium-scale data requirement and the larger or skewed distribution needed to reproduce planner symptoms.
+- **Seed Data**: Each advanced variant documents the medium-scale data requirement and the larger or skewed distribution needed to reproduce planner symptoms. The small seed profile remains the default for CI and quick local smoke tests.
 - **Expected Result**: Each advanced variant defines the correctness target needed to validate learner attempts.
-- **Baseline Plan**: Each advanced variant commits a recorded `EXPLAIN (ANALYZE, BUFFERS)` baseline plan generated on the medium-scale seed profile and lists the notable symptoms learners should look for.
+- **Baseline Plan**: Each advanced variant commits a text artifact containing a recorded `EXPLAIN (ANALYZE, BUFFERS)` baseline plan generated on the medium-scale seed profile and lists the notable symptoms learners should look for. The recorded plan is reference evidence for post-investigation comparison, not a dynamically generated normal-execution dependency.
 - **Hints**: Each advanced variant provides hints that guide investigation without revealing official solution SQL.
 - **Reference Optimization**: Optional official solutions are separate comparison artifacts and are never part of default execution.
-- **Benchmark Evidence**: Learners can benchmark the baseline and their own attempts; medium-scale official solution benchmarking is not required by default CI.
+- **Benchmark Evidence**: Learners can benchmark the baseline and their own attempts; medium-scale recorded-plan regeneration and official solution benchmarking are not required by default CI.
 - **Trade-offs**: Optional official solutions explain operational trade-offs when provided.
 
 ## Success Criteria *(mandatory)*
@@ -123,6 +141,8 @@ As a learner, I want optional official solutions to remain available only for co
 - **SC-006**: 100% of default advanced variant commands and instructions avoid revealing, applying, or comparing against official solution SQL unless the learner explicitly chooses a solution path.
 - **SC-007**: CI completes by default without requiring medium-scale benchmark execution.
 - **SC-008**: At least 90% of reviewed advanced variant materials are judged to support manual investigation rather than scripted tutorial completion.
+- **SC-009**: 100% of recorded plan validation checks rely on structural planner markers rather than exact execution time equality.
+- **SC-010**: 100% of advanced variant recorded plans are stored as committed text artifacts and are not generated during normal challenge execution.
 
 ## Assumptions
 
@@ -131,3 +151,4 @@ As a learner, I want optional official solutions to remain available only for co
 - Recorded plan timings may vary by machine; the important requirement is that actual execution, buffers, and planner symptoms are captured and documented.
 - Official solutions are useful comparison material but are not required for learners to run, validate, explain, or benchmark advanced variants.
 - The first release can select any three existing challenges whose planner behavior becomes more instructive under larger or skewed data.
+- Structural planner symptoms are more stable than wall-clock timings and are the appropriate basis for recorded-plan validation.
