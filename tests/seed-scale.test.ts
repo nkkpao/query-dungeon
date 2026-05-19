@@ -39,6 +39,47 @@ describe('seed scale validation', () => {
 
     expect(mediumSeed).toContain("WHEN o.id % 5 = 0 THEN 1 + ((((o.id / 5)::bigint) + n - 1) % 20)");
     expect(mediumSeed).not.toContain('WHEN o.id % 5 = 0 THEN 1 + (o.id % 20)');
+
+    const hotProductIds = new Set<number>();
+    for (let orderId = 5001; orderId <= 100000; orderId += 1) {
+      if (orderId % 5 !== 0) {
+        continue;
+      }
+      for (let n = 1; n <= 4; n += 1) {
+        hotProductIds.add(1 + ((Math.trunc(orderId / 5) + n - 1) % 20));
+      }
+    }
+
+    expect([...hotProductIds].sort((a, b) => a - b)).toEqual(Array.from({length: 20}, (_, index) => index + 1));
+  });
+
+  it('preserves the intended medium event skew shape', () => {
+    let hotUserEvents = 0;
+    let viewOrSearchEvents = 0;
+    let nullDeviceEvents = 0;
+    let springCampaignEvents = 0;
+    let totalEvents = 0;
+
+    for (let gs = 12001; gs <= 250000; gs += 1) {
+      totalEvents += 1;
+      if (gs % 2 === 0 || gs % 7 === 0 || gs % 13 === 0) {
+        hotUserEvents += 1;
+      }
+      if (gs % 20 <= 15) {
+        viewOrSearchEvents += 1;
+      }
+      if (gs % 5 === 0) {
+        nullDeviceEvents += 1;
+      }
+      if (gs % 17 === 0) {
+        springCampaignEvents += 1;
+      }
+    }
+
+    expect(hotUserEvents / totalEvents).toBeGreaterThan(0.55);
+    expect(viewOrSearchEvents / totalEvents).toBeGreaterThan(0.75);
+    expect(nullDeviceEvents / totalEvents).toBeCloseTo(0.2, 2);
+    expect(springCampaignEvents / totalEvents).toBeGreaterThan(0.05);
   });
 
   it('keeps CI-style defaults away from medium recorded-plan generation', () => {
