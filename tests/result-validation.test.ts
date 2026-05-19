@@ -35,10 +35,11 @@ describe('result validation', () => {
     expect(diff.changedRows.length + diff.missingRows.length + diff.extraRows.length).toBeGreaterThan(0);
   });
 
-  it('uses advanced baselines as advanced variant correctness fixtures', async () => {
+  it('uses independent advanced variant correctness fixtures', async () => {
     for (const variant of advancedVariants()) {
       const expected = await loadExpectedResult(variant.expectedResultPath);
-      expect(expected.fixtureSqlPath, variant.parentChallengeId).toBe(variant.baselineSqlPath);
+      expect(expected.fixtureSqlPath, variant.parentChallengeId).not.toBe(variant.baselineSqlPath);
+      expect(expected.fixtureSqlPath, variant.parentChallengeId).toContain('/variants/advanced/result-fixture.sql');
       expect(expected.columns.length, variant.parentChallengeId).toBeGreaterThan(0);
     }
   });

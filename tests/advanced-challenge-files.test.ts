@@ -1,4 +1,5 @@
 import {existsSync, readFileSync} from 'node:fs';
+import path from 'node:path';
 import {describe, expect, it} from 'vitest';
 import {loadExpectedResult} from '../src/challenges/expected-result.js';
 import {advancedVariants, challenges} from '../src/challenges/registry.js';
@@ -20,7 +21,9 @@ describe('advanced challenge variants', () => {
       }
 
       const expected = await loadExpectedResult(variant.expectedResultPath);
-      expect(expected.fixtureSqlPath, variant.parentChallengeId).toBe(variant.baselineSqlPath);
+      expect(expected.fixtureSqlPath, variant.parentChallengeId).toContain('/variants/advanced/result-fixture.sql');
+      expect(existsSync(expected.fixtureSqlPath!), `${variant.parentChallengeId}: ${expected.fixtureSqlPath}`).toBe(true);
+      expect(path.basename(expected.fixtureSqlPath!), variant.parentChallengeId).not.toBe('baseline.sql');
     }
   });
 

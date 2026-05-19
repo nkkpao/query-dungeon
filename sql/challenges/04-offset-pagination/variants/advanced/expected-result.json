@@ -7,5 +7,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/04-offset-pagination/variants/advanced/baseline.sql"
+  "fixtureSqlPath": "sql/challenges/04-offset-pagination/variants/advanced/result-fixture.sql"
 }

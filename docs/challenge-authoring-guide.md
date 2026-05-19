@@ -44,6 +44,7 @@ sql/challenges/challenge-XX/
       data-profile.md
       expected-result.json
       hints.md
+      result-fixture.sql
       recorded-plan.medium.txt
       optional/
         official-solution.sql
@@ -61,6 +62,7 @@ Advanced variant prompts must include:
 - expected planner symptoms
 - reference to `recorded-plan.medium.txt`
 - hints that preserve manual investigation
+- a correctness fixture query that is independent from `baseline.sql`
 - optional official files only inside `optional/`
 
 Recorded plans are text artifacts captured with

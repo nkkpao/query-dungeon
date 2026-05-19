@@ -7,5 +7,5 @@
     "numericStrings": true,
     "datesToIso": true
   },
-  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/variants/advanced/baseline.sql"
+  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/variants/advanced/result-fixture.sql"
 }
