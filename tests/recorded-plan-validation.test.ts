@@ -33,4 +33,14 @@ describe('recorded plan artifacts', () => {
     expect(command).not.toContain('loadSuggestedSolutionQuery');
     expect(command).not.toContain('optionalOfficialSolutionSqlPath');
   });
+
+  it('keeps dashboard recorded plan aligned with baseline order_items indexes', () => {
+    const plan = readFileSync(
+      'sql/challenges/12-dashboard-boss-fight/variants/advanced/recorded-plan.medium.txt',
+      'utf8',
+    );
+
+    expect(plan).toContain('Index Scan using idx_order_items_product_id on order_items');
+    expect(plan).not.toContain('Seq Scan on order_items');
+  });
 });

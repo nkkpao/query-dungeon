@@ -104,7 +104,7 @@ export const challenges: Challenge[] = [
       'Advanced dashboard over hot products and skewed order items',
       ['over_joining', 'low_selectivity', 'sort_spill', 'stale_stats'],
       ['Hash Join pressure', 'Nested Loop risk', 'bad row estimates', 'high shared buffers'],
-      ['Hash Join', 'Nested Loop', 'Buffers: shared', 'actual time'],
+      ['Hash Join', 'Nested Loop', 'Index Scan using idx_order_items_product_id', 'Buffers: shared', 'actual time'],
     ),
   }),
 ];

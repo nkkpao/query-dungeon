@@ -23,6 +23,10 @@ make seed SEED_SCALE=medium
 make record-plans SCALE=medium
 ```
 
+Regenerate from a clean schema and seed state. The recorded plan should reflect
+the repository baseline indexes, not an ad hoc session with solution indexes
+installed or baseline indexes missing.
+
 Equivalent npm command:
 
 ```bash
