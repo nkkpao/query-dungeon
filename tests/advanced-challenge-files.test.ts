@@ -36,6 +36,16 @@ describe('advanced challenge variants', () => {
     }
   });
 
+  it('keeps advanced official solutions distinct and documents trade-offs', () => {
+    for (const variant of advancedVariants()) {
+      const advancedSql = readFileSync(variant.baselineSqlPath, 'utf8').trim();
+      const solutionSql = readFileSync(variant.optionalOfficialSolutionSqlPath, 'utf8').trim();
+
+      expect(solutionSql, variant.parentChallengeId).not.toBe(advancedSql);
+      expect(solutionSql, variant.parentChallengeId).toMatch(/\bTrade-off:/i);
+    }
+  });
+
   it('documents medium-scale skew assumptions and planner symptoms', () => {
     for (const variant of advancedVariants()) {
       const challenge = readFileSync(variant.challengePath, 'utf8');
