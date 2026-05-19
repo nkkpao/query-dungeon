@@ -1,3 +1,3 @@
-SELECT count(*) AS premium_products
+SELECT count(*) AS premium_fragile_products
 FROM products
-WHERE attributes @> '{"tier":"premium"}'::jsonb
+WHERE attributes @> '{"tier":"premium","fragile":true}'::jsonb

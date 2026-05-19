@@ -10,4 +10,4 @@ Files:
 - `suggested-solution.sql`: reference query.
 - `baseline-explain.txt`: maintained baseline plan evidence.
 
-Trade-offs to review: write overhead, extra storage, query specificity, maintenance cost, and cases where the approach may not help.
+Trade-offs to review: the query rewrite removes the unnecessary `users` join; the covering `order_items` index supports the category-to-items access path without relying on low-selectivity order statuses. It adds write overhead and storage, and may not help reports that start from orders instead of products/categories.

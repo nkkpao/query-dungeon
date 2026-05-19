@@ -1,9 +1,17 @@
-WITH page AS (
+WITH cursor_params AS (
+  -- Values from the last row of the previous page on the small seed.
+  -- In an application this cursor is supplied by the previous response.
+  SELECT
+    TIMESTAMPTZ '2024-11-07 15:00:00+00' AS cursor_created_at,
+    879::bigint AS cursor_id
+),
+page AS (
   SELECT id, user_id, total_cents, created_at
   FROM orders
+  CROSS JOIN cursor_params c
   WHERE status IN ('paid', 'shipped', 'delivered')
+    AND (created_at, id) < (c.cursor_created_at, c.cursor_id)
   ORDER BY created_at DESC, id DESC
-  OFFSET 500
   LIMIT 25
 ),
 event_counts AS (

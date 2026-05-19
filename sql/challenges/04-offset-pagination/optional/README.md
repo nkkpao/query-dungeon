@@ -10,4 +10,4 @@ Files:
 - `suggested-solution.sql`: reference query.
 - `baseline-explain.txt`: maintained baseline plan evidence.
 
-Trade-offs to review: write overhead, extra storage, query specificity, maintenance cost, and cases where the approach may not help.
+Trade-offs to review: keyset pagination is fast for next/previous navigation but cannot jump to an arbitrary page number without first obtaining a cursor. The covering order index adds write overhead and storage.

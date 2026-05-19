@@ -41,7 +41,7 @@ diff-results:
 	$(CLI) diff-results $(CHALLENGE) $(VARIANT_FLAG) --left $(LEFT) --right $(RIGHT)
 
 compare-with-suggested-solution:
-	$(CLI) compare-with-suggested-solution $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL)
+	$(CLI) compare-with-suggested-solution $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL) --benchmark --iterations $(ITERATIONS)
 
 record-plans:
 	$(CLI) record-plans --scale $(SCALE)

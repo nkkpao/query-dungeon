@@ -10,4 +10,4 @@ Files:
 - `suggested-solution.sql`: reference query.
 - `baseline-explain.txt`: maintained baseline plan evidence.
 
-Trade-offs to review: write overhead, extra storage, query specificity, maintenance cost, and cases where the approach may not help.
+Trade-offs to review: `jsonb_path_ops` is compact and effective for JSONB containment, but it is narrower than the default GIN operator class. The index adds write overhead and is most useful when the combined JSONB predicate is selective enough.

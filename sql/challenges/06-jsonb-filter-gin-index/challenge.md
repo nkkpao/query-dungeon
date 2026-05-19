@@ -2,9 +2,9 @@
 
 Capture the baseline plan yourself with `make explain-file`.
 
-Business task: Catalog reporting counts premium products stored inside JSONB attributes.
+Business task: Catalog reporting counts premium fragile products stored inside JSONB attributes.
 
-Expected output: One row with `premium_products`.
+Expected output: One row with `premium_fragile_products`.
 
 Symptoms to investigate:
 

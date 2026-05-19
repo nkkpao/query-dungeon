@@ -10,4 +10,4 @@ Files:
 - `suggested-solution.sql`: reference query.
 - `baseline-explain.txt`: maintained baseline plan evidence.
 
-Trade-offs to review: write overhead, extra storage, query specificity, maintenance cost, and cases where the approach may not help.
+Trade-offs to review: the reference uses keyset pagination plus narrow partial indexes for the exact dashboard counts. This is fast for cursor-based navigation, but the indexes are query-specific and add write/storage overhead.
