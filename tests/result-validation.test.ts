@@ -1,5 +1,6 @@
 import {describe, expect, it} from 'vitest';
-import {parseExpectedResult} from '../src/challenges/expected-result.js';
+import {loadExpectedResult, parseExpectedResult} from '../src/challenges/expected-result.js';
+import {advancedVariants} from '../src/challenges/registry.js';
 import {diffRows, validateRows} from '../src/db/result-compare.js';
 
 describe('result validation', () => {
@@ -32,5 +33,14 @@ describe('result validation', () => {
     const diff = diffRows([{id: 1}, {id: 2}], [{id: 1}, {id: 3}], {orderSensitive: false});
     expect(diff.equal).toBe(false);
     expect(diff.changedRows.length + diff.missingRows.length + diff.extraRows.length).toBeGreaterThan(0);
+  });
+
+  it('uses independent advanced variant correctness fixtures', async () => {
+    for (const variant of advancedVariants()) {
+      const expected = await loadExpectedResult(variant.expectedResultPath);
+      expect(expected.fixtureSqlPath, variant.parentChallengeId).not.toBe(variant.baselineSqlPath);
+      expect(expected.fixtureSqlPath, variant.parentChallengeId).toContain('/variants/advanced/result-fixture.sql');
+      expect(expected.columns.length, variant.parentChallengeId).toBeGreaterThan(0);
+    }
   });
 });

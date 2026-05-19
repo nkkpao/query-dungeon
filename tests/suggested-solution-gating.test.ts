@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {describe, expect, it} from 'vitest';
-import {challenges} from '../src/challenges/registry.js';
+import {advancedVariants, challenges} from '../src/challenges/registry.js';
 import {listCommand} from '../src/cli/commands/list.js';
 import {benchmarkFileCommand} from '../src/cli/commands/benchmark-file.js';
 import {diffResultsCommand} from '../src/cli/commands/diff-results.js';
@@ -14,6 +14,15 @@ describe('suggested solution gating', () => {
       expect(challenge).not.toHaveProperty('solutionSqlPath');
       expect(challenge).not.toHaveProperty('solutionIndexes');
       expect(challenge).not.toHaveProperty('badSqlPath');
+    }
+  });
+
+  it('keeps advanced official solutions in optional-only paths', () => {
+    for (const variant of advancedVariants()) {
+      expect(variant.baselineSqlPath, variant.parentChallengeId).not.toContain('/optional/');
+      expect(variant.challengePath, variant.parentChallengeId).not.toContain('/optional/');
+      expect(variant.optionalOfficialSolutionSqlPath, variant.parentChallengeId).toContain('/optional/');
+      expect(variant.optionalOfficialIndexesSqlPath, variant.parentChallengeId).toContain('/optional/');
     }
   });
 

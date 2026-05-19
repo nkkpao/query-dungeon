@@ -1,0 +1,434 @@
+Limit  (cost=9540842.64..9540843.89 rows=10 width=368) (actual time=45439.266..45439.314 rows=20 loops=1)
+  Buffers: shared hit=22667929 read=570355
+  CTE params
+    ->  Result  (cost=0.00..0.01 rows=1 width=120) (actual time=0.010..0.011 rows=1 loops=1)
+  CTE seller_profiles
+    ->  HashAggregate  (cost=136.67..138.67 rows=200 width=70) (actual time=18.885..18.903 rows=104 loops=1)
+          Group Key: s.id, s.user_id, s.name, s.email, s.country, s.status, p.category_id, r.rating
+          Batches: 1  Memory Usage: 48kB
+          Buffers: shared hit=39443 read=5
+          ->  Nested Loop Left Join  (cost=0.61..132.67 rows=200 width=70) (actual time=0.090..13.393 rows=22483 loops=1)
+                Buffers: shared hit=39443 read=5
+                ->  Nested Loop Left Join  (cost=0.32..39.30 rows=100 width=74) (actual time=0.074..3.468 rows=8187 loops=1)
+                      Buffers: shared hit=8021 read=5
+                      ->  Hash Join  (cost=0.03..18.00 rows=1 width=58) (actual time=0.064..0.233 rows=83 loops=1)
+                            Hash Cond: (s.country = prm.country)
+                            Join Filter: ((lower(s.email) ~~ (('%'::text || lower(prm.seller_search)) || '%'::text)) OR (lower(s.name) ~~ (('%'::text || lower(prm.seller_search)) || '%'::text)))
+                            Buffers: shared hit=2 read=5
+                            ->  Seq Scan on sellers s  (cost=0.00..13.25 rows=494 width=58) (actual time=0.008..0.082 rows=494 loops=1)
+                                  Filter: (status = ANY ('{active,paused}'::text[]))
+                                  Rows Removed by Filter: 6
+                                  Buffers: shared hit=2 read=5
+                            ->  Hash  (cost=0.02..0.02 rows=1 width=64) (actual time=0.005..0.006 rows=1 loops=1)
+                                  Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                  ->  CTE Scan on params prm  (cost=0.00..0.02 rows=1 width=64) (actual time=0.002..0.002 rows=1 loops=1)
+                      ->  Index Scan using idx_products_seller_id_basic on products p  (cost=0.29..20.30 rows=100 width=24) (actual time=0.002..0.031 rows=99 loops=83)
+                            Index Cond: (seller_id = s.id)
+                            Buffers: shared hit=8019
+                ->  Index Scan using idx_reviews_product_id on reviews r  (cost=0.29..0.73 rows=20 width=12) (actual time=0.000..0.001 rows=2 loops=8187)
+                      Index Cond: (product_id = p.id)
+                      Buffers: shared hit=31422
+  InitPlan 3 (returns $4)
+    ->  CTE Scan on params  (cost=0.00..0.02 rows=1 width=4) (actual time=0.022..0.023 rows=1 loops=1)
+  InitPlan 4 (returns $5)
+    ->  CTE Scan on params params_1  (cost=0.00..0.02 rows=1 width=4) (actual time=0.002..0.003 rows=1 loops=1)
+  ->  Result  (cost=9540702.67..9540715.17 rows=100 width=368) (actual time=44023.985..44024.026 rows=20 loops=1)
+        Buffers: shared hit=22667929 read=570355
+        ->  Sort  (cost=9540702.67..9540702.92 rows=100 width=336) (actual time=44023.963..44024.000 rows=20 loops=1)
+              Sort Key: (((((((((((dashboard_rows.paid_orders_count * 2))::numeric + (dashboard_rows.gross_revenue / '1000'::numeric)) - (dashboard_rows.refunded_revenue / '500'::numeric)) + ((dashboard_rows.late_shipments_count * 3))::numeric) + ((dashboard_rows.support_tickets_count * 2))::numeric) + ((dashboard_rows.negative_reviews_count * 2))::numeric) + ((dashboard_rows.inventory_risk_score / 10))::numeric) - (COALESCE(dashboard_rows.avg_review_rating, '0'::numeric) * '4'::numeric)) - (dashboard_rows.conversion_rate * '10'::numeric))) DESC, dashboard_rows.seller_id
+              Sort Method: top-N heapsort  Memory: 30kB
+              Buffers: shared hit=22667929 read=570355
+              ->  Subquery Scan on dashboard_rows  (cost=176.65..9540699.35 rows=100 width=336) (actual time=740.754..44023.781 rows=83 loops=1)
+                    Buffers: shared hit=22667926 read=570355
+                    ->  Group  (cost=176.65..9540692.85 rows=100 width=376) (actual time=740.744..44023.441 rows=83 loops=1)
+                          Group Key: seller_profiles.seller_id, seller_profiles.seller_name, seller_profiles.seller_email, seller_profiles.user_id, seller_profiles.country, seller_profiles.status
+                          Buffers: shared hit=22667926 read=570355
+                          ->  Incremental Sort  (cost=176.65..2924.93 rows=30000 width=144) (actual time=30.027..43.020 rows=24561 loops=1)
+                                Sort Key: seller_profiles.seller_id, seller_profiles.seller_name, seller_profiles.seller_email, seller_profiles.user_id, seller_profiles.country, seller_profiles.status
+                                Presorted Key: seller_profiles.seller_id
+                                Full-sort Groups: 83  Sort Method: quicksort  Average Memory: 32kB  Peak Memory: 32kB
+                                Pre-sorted Groups: 83  Sort Method: quicksort  Average Memory: 133kB  Peak Memory: 133kB
+                                Buffers: shared hit=39675 read=168
+                                ->  Nested Loop Left Join  (cost=152.70..1313.61 rows=30000 width=144) (actual time=29.660..34.946 rows=24561 loops=1)
+                                      Buffers: shared hit=39672 read=168
+                                      ->  Nested Loop Left Join  (cost=152.40..443.86 rows=300 width=144) (actual time=29.649..30.819 rows=249 loops=1)
+                                            Buffers: shared hit=39583 read=90
+                                            ->  Unique  (cost=152.11..153.86 rows=100 width=144) (actual time=29.619..29.747 rows=83 loops=1)
+                                                  Buffers: shared hit=39501 read=5
+                                                  ->  Sort  (cost=152.11..152.36 rows=100 width=144) (actual time=29.618..29.672 rows=104 loops=1)
+                                                        Sort Key: seller_profiles.seller_id, seller_profiles.user_id, seller_profiles.seller_name, seller_profiles.seller_email, seller_profiles.country, seller_profiles.status
+                                                        Sort Method: quicksort  Memory: 34kB
+                                                        Buffers: shared hit=39501 read=5
+                                                        ->  CTE Scan on seller_profiles  (cost=144.29..148.79 rows=100 width=144) (actual time=29.546..29.597 rows=104 loops=1)
+                                                              Filter: (NOT (hashed SubPlan 20))
+                                                              Buffers: shared hit=39501 read=5
+                                                              SubPlan 20
+                                                                ->  Nested Loop  (cost=0.00..144.28 rows=1 width=8) (actual time=10.514..10.515 rows=0 loops=1)
+                                                                      Join Filter: (po_1.created_at >= (prm_14.start_date - '180 days'::interval))
+                                                                      Buffers: shared hit=58
+                                                                      ->  Seq Scan on payouts po_1  (cost=0.00..144.25 rows=1 width=16) (actual time=10.514..10.514 rows=0 loops=1)
+                                                                            Filter: (status = ANY ('{failed,cancelled}'::text[]))
+                                                                            Rows Removed by Filter: 6900
+                                                                            Buffers: shared hit=58
+                                                                      ->  CTE Scan on params prm_14  (cost=0.00..0.02 rows=1 width=8) (never executed)
+                                            ->  Index Only Scan using idx_support_tickets_user_id on support_tickets noisy_tickets  (cost=0.29..2.86 rows=3 width=8) (actual time=0.010..0.011 rows=3 loops=83)
+                                                  Index Cond: (user_id = seller_profiles.user_id)
+                                                  Heap Fetches: 0
+                                                  Buffers: shared hit=82 read=85
+                                      ->  Memoize  (cost=0.30..4.89 rows=100 width=8) (actual time=0.002..0.010 rows=99 loops=249)
+                                            Cache Key: seller_profiles.seller_id
+                                            Cache Mode: logical
+                                            Hits: 166  Misses: 83  Evictions: 0  Overflows: 0  Memory Usage: 326kB
+                                            Buffers: shared hit=89 read=78
+                                            ->  Index Only Scan using idx_products_seller_id_basic on products noisy_products  (cost=0.29..4.88 rows=100 width=8) (actual time=0.005..0.012 rows=99 loops=83)
+                                                  Index Cond: (seller_id = seller_profiles.seller_id)
+                                                  Heap Fetches: 0
+                                                  Buffers: shared hit=89 read=78
+                          SubPlan 5
+                            ->  Aggregate  (cost=8446.68..8446.69 rows=1 width=8) (actual time=36.727..36.727 rows=1 loops=83)
+                                  Buffers: shared hit=465641 read=1413
+                                  ->  Sort  (cost=8446.26..8446.47 rows=84 width=8) (actual time=36.712..36.717 rows=187 loops=83)
+                                        Sort Key: o.id
+                                        Sort Method: quicksort  Memory: 25kB
+                                        Buffers: shared hit=465641 read=1413
+                                        ->  Nested Loop  (cost=283.65..8443.57 rows=84 width=8) (actual time=30.122..36.694 rows=187 loops=83)
+                                              Join Filter: ((o.created_at >= prm_1.start_date) AND (o.created_at < prm_1.end_date))
+                                              Rows Removed by Join Filter: 654
+                                              Buffers: shared hit=465641 read=1413
+                                              ->  CTE Scan on params prm_1  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                              ->  Nested Loop  (cost=283.65..8432.18 rows=758 width=16) (actual time=30.121..36.654 rows=841 loops=83)
+                                                    Buffers: shared hit=465641 read=1413
+                                                    ->  Hash Join  (cost=283.36..8175.29 rows=790 width=8) (actual time=30.116..35.811 rows=875 loops=83)
+                                                          Hash Cond: (oi.product_id = p_1.id)
+                                                          Buffers: shared hit=247877 read=1257
+                                                          ->  Seq Scan on order_items oi  (cost=0.00..6854.97 rows=394997 width=16) (actual time=0.001..15.490 rows=395000 loops=83)
+                                                                Buffers: shared hit=241115
+                                                          ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.079..0.079 rows=99 loops=83)
+                                                                Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                                Buffers: shared hit=6762 read=1257
+                                                                ->  Index Scan using idx_products_seller_id_basic on products p_1  (cost=0.29..282.11 rows=100 width=8) (actual time=0.004..0.069 rows=99 loops=83)
+                                                                      Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                      Buffers: shared hit=6762 read=1257
+                                                    ->  Index Scan using orders_pkey on orders o  (cost=0.29..0.33 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=72640)
+                                                          Index Cond: (id = oi.order_id)
+                                                          Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                                          Rows Removed by Filter: 0
+                                                          Buffers: shared hit=217764 read=156
+                          SubPlan 6
+                            ->  Aggregate  (cost=8443.99..8444.01 rows=1 width=32) (actual time=36.396..36.396 rows=1 loops=83)
+                                  Buffers: shared hit=467054
+                                  ->  Nested Loop  (cost=283.65..8443.57 rows=84 width=8) (actual time=29.862..36.386 rows=187 loops=83)
+                                        Join Filter: ((o_1.created_at >= prm_2.start_date) AND (o_1.created_at < prm_2.end_date))
+                                        Rows Removed by Join Filter: 654
+                                        Buffers: shared hit=467054
+                                        ->  CTE Scan on params prm_2  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Nested Loop  (cost=283.65..8432.18 rows=758 width=16) (actual time=29.860..36.347 rows=841 loops=83)
+                                              Buffers: shared hit=467054
+                                              ->  Hash Join  (cost=283.36..8175.29 rows=790 width=16) (actual time=29.856..35.522 rows=875 loops=83)
+                                                    Hash Cond: (oi_1.product_id = p_2.id)
+                                                    Buffers: shared hit=249134
+                                                    ->  Seq Scan on order_items oi_1  (cost=0.00..6854.97 rows=394997 width=24) (actual time=0.001..15.294 rows=395000 loops=83)
+                                                          Buffers: shared hit=241115
+                                                    ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.051..0.051 rows=99 loops=83)
+                                                          Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                          Buffers: shared hit=8019
+                                                          ->  Index Scan using idx_products_seller_id_basic on products p_2  (cost=0.29..282.11 rows=100 width=8) (actual time=0.004..0.041 rows=99 loops=83)
+                                                                Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                Buffers: shared hit=8019
+                                              ->  Index Scan using orders_pkey on orders o_1  (cost=0.29..0.33 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=72640)
+                                                    Index Cond: (id = oi_1.order_id)
+                                                    Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                                    Rows Removed by Filter: 0
+                                                    Buffers: shared hit=217920
+                          SubPlan 7
+                            ->  Aggregate  (cost=7233.25..7233.26 rows=1 width=32) (actual time=25.253..25.253 rows=1 loops=83)
+                                  Buffers: shared hit=1954598 read=64835
+                                  ->  GroupAggregate  (cost=7232.86..7233.08 rows=13 width=16) (actual time=25.240..25.249 rows=48 loops=83)
+                                        Group Key: o_2.id
+                                        Buffers: shared hit=1954598 read=64835
+                                        ->  Sort  (cost=7232.86..7232.89 rows=13 width=12) (actual time=25.237..25.238 rows=50 loops=83)
+                                              Sort Key: o_2.id, pay.amount_cents
+                                              Sort Method: quicksort  Memory: 25kB
+                                              Buffers: shared hit=1954598 read=64835
+                                              ->  Hash Join  (cost=3109.47..7232.62 rows=13 width=12) (actual time=21.565..25.225 rows=50 loops=83)
+                                                    Hash Cond: (oi_2.product_id = p_3.id)
+                                                    Buffers: shared hit=1954595 read=64835
+                                                    ->  Nested Loop  (cost=2826.11..6932.01 rows=6570 width=20) (actual time=0.119..24.475 rows=13156 loops=83)
+                                                          Buffers: shared hit=1946576 read=64835
+                                                          ->  Nested Loop  (cost=2825.69..5787.81 rows=1663 width=20) (actual time=0.114..17.627 rows=3404 loops=83)
+                                                                Join Filter: ((o_2.created_at >= prm_3.start_date) AND (o_2.created_at < prm_3.end_date))
+                                                                Rows Removed by Join Filter: 11574
+                                                                Buffers: shared hit=8314 read=63553
+                                                                ->  CTE Scan on params prm_3  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                                                ->  Hash Join  (cost=2825.69..5563.22 rows=14971 width=28) (actual time=0.096..16.998 rows=14978 loops=83)
+                                                                      Hash Cond: (o_2.id = pay.order_id)
+                                                                      Buffers: shared hit=8314 read=63553
+                                                                      ->  Seq Scan on orders o_2  (cost=0.00..2228.00 rows=95953 width=16) (actual time=0.005..8.529 rows=95937 loops=83)
+                                                                            Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                                                            Rows Removed by Filter: 4063
+                                                                            Buffers: shared hit=8314 read=62485
+                                                                      ->  Hash  (cost=2630.66..2630.66 rows=15602 width=12) (actual time=7.119..7.119 rows=15561 loops=1)
+                                                                            Buckets: 16384  Batches: 1  Memory Usage: 858kB
+                                                                            Buffers: shared read=1068
+                                                                            ->  Seq Scan on payments pay  (cost=0.00..2630.66 rows=15602 width=12) (actual time=0.013..5.761 rows=15561 loops=1)
+                                                                                  Filter: (status = 'refunded'::text)
+                                                                                  Rows Removed by Filter: 109439
+                                                                                  Buffers: shared read=1068
+                                                          ->  Index Scan using idx_order_items_order_id on order_items oi_2  (cost=0.42..0.65 rows=4 width=16) (actual time=0.001..0.002 rows=4 loops=282532)
+                                                                Index Cond: (order_id = o_2.id)
+                                                                Buffers: shared hit=1938262 read=1282
+                                                    ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.048..0.048 rows=99 loops=83)
+                                                          Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                          Buffers: shared hit=8019
+                                                          ->  Index Scan using idx_products_seller_id_basic on products p_3  (cost=0.29..282.11 rows=100 width=8) (actual time=0.004..0.039 rows=99 loops=83)
+                                                                Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                Buffers: shared hit=8019
+                          SubPlan 8
+                            ->  Aggregate  (cost=8448.99..8449.00 rows=1 width=32) (actual time=36.632..36.632 rows=1 loops=83)
+                                  Buffers: shared hit=467054
+                                  ->  GroupAggregate  (cost=8446.26..8447.94 rows=84 width=16) (actual time=36.585..36.623 rows=182 loops=83)
+                                        Group Key: o_3.id
+                                        Buffers: shared hit=467054
+                                        ->  Sort  (cost=8446.26..8446.47 rows=84 width=16) (actual time=36.582..36.588 rows=187 loops=83)
+                                              Sort Key: o_3.id
+                                              Sort Method: quicksort  Memory: 25kB
+                                              Buffers: shared hit=467054
+                                              ->  Nested Loop  (cost=283.65..8443.57 rows=84 width=16) (actual time=30.032..36.555 rows=187 loops=83)
+                                                    Join Filter: ((o_3.created_at >= prm_4.start_date) AND (o_3.created_at < prm_4.end_date))
+                                                    Rows Removed by Join Filter: 654
+                                                    Buffers: shared hit=467054
+                                                    ->  CTE Scan on params prm_4  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                                    ->  Nested Loop  (cost=283.65..8432.18 rows=758 width=24) (actual time=30.030..36.515 rows=841 loops=83)
+                                                          Buffers: shared hit=467054
+                                                          ->  Hash Join  (cost=283.36..8175.29 rows=790 width=16) (actual time=30.026..35.699 rows=875 loops=83)
+                                                                Hash Cond: (oi_3.product_id = p_4.id)
+                                                                Buffers: shared hit=249134
+                                                                ->  Seq Scan on order_items oi_3  (cost=0.00..6854.97 rows=394997 width=24) (actual time=0.001..15.308 rows=395000 loops=83)
+                                                                      Buffers: shared hit=241115
+                                                                ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.042..0.042 rows=99 loops=83)
+                                                                      Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                                      Buffers: shared hit=8019
+                                                                      ->  Index Scan using idx_products_seller_id_basic on products p_4  (cost=0.29..282.11 rows=100 width=8) (actual time=0.003..0.032 rows=99 loops=83)
+                                                                            Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                            Buffers: shared hit=8019
+                                                          ->  Index Scan using orders_pkey on orders o_3  (cost=0.29..0.33 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=72640)
+                                                                Index Cond: (id = oi_3.order_id)
+                                                                Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                                                Rows Removed by Filter: 0
+                                                                Buffers: shared hit=217920
+                          SubPlan 9
+                            ->  Aggregate  (cost=8446.68..8446.69 rows=1 width=8) (actual time=36.559..36.559 rows=1 loops=83)
+                                  Buffers: shared hit=467054
+                                  ->  Sort  (cost=8446.26..8446.47 rows=84 width=8) (actual time=36.544..36.550 rows=187 loops=83)
+                                        Sort Key: o_4.user_id
+                                        Sort Method: quicksort  Memory: 25kB
+                                        Buffers: shared hit=467054
+                                        ->  Nested Loop  (cost=283.65..8443.57 rows=84 width=8) (actual time=30.036..36.524 rows=187 loops=83)
+                                              Join Filter: ((o_4.created_at >= prm_5.start_date) AND (o_4.created_at < prm_5.end_date))
+                                              Rows Removed by Join Filter: 654
+                                              Buffers: shared hit=467054
+                                              ->  CTE Scan on params prm_5  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                              ->  Nested Loop  (cost=283.65..8432.18 rows=758 width=16) (actual time=30.035..36.484 rows=841 loops=83)
+                                                    Buffers: shared hit=467054
+                                                    ->  Hash Join  (cost=283.36..8175.29 rows=790 width=8) (actual time=30.031..35.703 rows=875 loops=83)
+                                                          Hash Cond: (oi_4.product_id = p_5.id)
+                                                          Buffers: shared hit=249134
+                                                          ->  Seq Scan on order_items oi_4  (cost=0.00..6854.97 rows=394997 width=16) (actual time=0.001..15.335 rows=395000 loops=83)
+                                                                Buffers: shared hit=241115
+                                                          ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.044..0.044 rows=99 loops=83)
+                                                                Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                                Buffers: shared hit=8019
+                                                                ->  Index Scan using idx_products_seller_id_basic on products p_5  (cost=0.29..282.11 rows=100 width=8) (actual time=0.004..0.035 rows=99 loops=83)
+                                                                      Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                      Buffers: shared hit=8019
+                                                    ->  Index Scan using orders_pkey on orders o_4  (cost=0.29..0.33 rows=1 width=24) (actual time=0.001..0.001 rows=1 loops=72640)
+                                                          Index Cond: (id = oi_4.order_id)
+                                                          Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                                          Rows Removed by Filter: 0
+                                                          Buffers: shared hit=217920
+                          SubPlan 10
+                            ->  Aggregate  (cost=9725.59..9725.60 rows=1 width=8) (actual time=14.947..14.948 rows=1 loops=83)
+                                  Buffers: shared hit=3256 read=313306
+                                  ->  Nested Loop  (cost=0.00..9725.17 rows=166 width=0) (actual time=12.700..14.945 rows=3 loops=83)
+                                        Join Filter: ((sh.created_at >= prm_6.start_date) AND (sh.created_at < prm_6.end_date) AND (COALESCE(sh.delivered_at, sh.shipped_at, prm_6.end_date) > sh.promised_at))
+                                        Rows Removed by Join Filter: 819
+                                        Buffers: shared hit=3256 read=313306
+                                        ->  CTE Scan on params prm_6  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Seq Scan on shipments sh  (cost=0.00..9646.63 rows=4487 width=32) (actual time=12.558..14.907 rows=822 loops=83)
+                                              Filter: ((seller_id = seller_profiles.seller_id) AND (status = ANY ('{shipped,delivered,returned}'::text[])))
+                                              Rows Removed by Filter: 358109
+                                              Buffers: shared hit=3256 read=313306
+                          SubPlan 11
+                            ->  Aggregate  (cost=4890.78..4890.79 rows=1 width=8) (actual time=62.116..62.116 rows=1 loops=83)
+                                  Buffers: shared hit=17024548 read=5739
+                                  ->  Sort  (cost=4890.65..4890.71 rows=26 width=8) (actual time=62.096..62.104 rows=247 loops=83)
+                                        Sort Key: st.id
+                                        Sort Method: quicksort  Memory: 25kB
+                                        Buffers: shared hit=17024548 read=5739
+                                        ->  Hash Join  (cost=1674.12..4890.04 rows=26 width=8) (actual time=52.434..62.077 rows=247 loops=83)
+                                              Hash Cond: (oi_5.product_id = p_6.id)
+                                              Buffers: shared hit=17024548 read=5739
+                                              ->  Nested Loop  (cost=1390.76..4572.11 rows=13167 width=16) (actual time=0.098..56.312 rows=115001 loops=83)
+                                                    Buffers: shared hit=17016529 read=5739
+                                                    ->  Merge Join  (cost=1390.34..2299.87 rows=3333 width=24) (actual time=0.093..8.133 rows=30000 loops=83)
+                                                          Merge Cond: (o_5.id = st.order_id)
+                                                          Buffers: shared hit=1446 read=5739
+                                                          ->  Index Only Scan using orders_pkey on orders o_5  (cost=0.29..2604.29 rows=100000 width=8) (actual time=0.010..2.055 rows=30002 loops=83)
+                                                                Heap Fetches: 0
+                                                                Buffers: shared hit=1151 read=5739
+                                                          ->  Sort  (cost=1390.04..1398.38 rows=3333 width=16) (actual time=0.081..1.143 rows=30000 loops=83)
+                                                                Sort Key: st.order_id
+                                                                Sort Method: quicksort  Memory: 1940kB
+                                                                Buffers: shared hit=295
+                                                                ->  Nested Loop  (cost=0.00..1195.02 rows=3333 width=16) (actual time=0.010..4.480 rows=30000 loops=1)
+                                                                      Join Filter: ((st.created_at >= prm_7.start_date) AND (st.created_at < prm_7.end_date))
+                                                                      Buffers: shared hit=295
+                                                                      ->  CTE Scan on params prm_7  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=1)
+                                                                      ->  Seq Scan on support_tickets st  (cost=0.00..745.00 rows=30000 width=24) (actual time=0.005..2.456 rows=30000 loops=1)
+                                                                            Filter: (status = ANY ('{open,pending,resolved,closed}'::text[]))
+                                                                            Buffers: shared hit=295
+                                                    ->  Index Scan using idx_order_items_order_id on order_items oi_5  (cost=0.42..0.64 rows=4 width=16) (actual time=0.001..0.001 rows=4 loops=2490000)
+                                                          Index Cond: (order_id = o_5.id)
+                                                          Buffers: shared hit=17015083
+                                              ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.054..0.054 rows=99 loops=83)
+                                                    Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                    Buffers: shared hit=8019
+                                                    ->  Index Scan using idx_products_seller_id_basic on products p_6  (cost=0.29..282.11 rows=100 width=8) (actual time=0.007..0.045 rows=99 loops=83)
+                                                          Index Cond: (seller_id = seller_profiles.seller_id)
+                                                          Buffers: shared hit=8019
+                          SubPlan 12
+                            ->  Aggregate  (cost=2570.96..2570.97 rows=1 width=32) (actual time=9.298..9.298 rows=1 loops=83)
+                                  Buffers: shared hit=92845
+                                  ->  Nested Loop  (cost=283.36..2570.90 rows=22 width=4) (actual time=7.814..9.295 rows=3 loops=83)
+                                        Join Filter: ((r_1.created_at >= prm_8.start_date) AND (r_1.created_at < prm_8.end_date))
+                                        Rows Removed by Join Filter: 178
+                                        Buffers: shared hit=92845
+                                        ->  CTE Scan on params prm_8  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Hash Join  (cost=283.36..2567.88 rows=200 width=12) (actual time=7.809..9.284 rows=181 loops=83)
+                                              Hash Cond: (r_1.product_id = p_7.id)
+                                              Buffers: shared hit=92845
+                                              ->  Seq Scan on reviews r_1  (cost=0.00..2022.00 rows=100000 width=20) (actual time=0.001..3.879 rows=100000 loops=83)
+                                                    Buffers: shared hit=84826
+                                              ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.041..0.041 rows=99 loops=83)
+                                                    Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                    Buffers: shared hit=8019
+                                                    ->  Index Scan using idx_products_seller_id_basic on products p_7  (cost=0.29..282.11 rows=100 width=8) (actual time=0.003..0.032 rows=99 loops=83)
+                                                          Index Cond: (seller_id = seller_profiles.seller_id)
+                                                          Buffers: shared hit=8019
+                          SubPlan 13
+                            ->  Aggregate  (cost=2661.96..2661.97 rows=1 width=8) (actual time=6.367..6.367 rows=1 loops=83)
+                                  Buffers: shared hit=92845
+                                  ->  Nested Loop  (cost=283.36..2661.94 rows=9 width=0) (actual time=5.889..6.366 rows=2 loops=83)
+                                        Join Filter: ((r_2.created_at >= prm_9.start_date) AND (r_2.created_at < prm_9.end_date))
+                                        Rows Removed by Join Filter: 115
+                                        Buffers: shared hit=92845
+                                        ->  CTE Scan on params prm_9  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.000 rows=1 loops=83)
+                                        ->  Hash Join  (cost=283.36..2660.72 rows=80 width=8) (actual time=5.886..6.359 rows=117 loops=83)
+                                              Hash Cond: (r_2.product_id = p_8.id)
+                                              Buffers: shared hit=92845
+                                              ->  Seq Scan on reviews r_2  (cost=0.00..2272.00 rows=40133 width=16) (actual time=0.002..4.319 rows=40000 loops=83)
+                                                    Filter: (rating = ANY ('{1,2}'::integer[]))
+                                                    Rows Removed by Filter: 60000
+                                                    Buffers: shared hit=84826
+                                              ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.036..0.036 rows=99 loops=83)
+                                                    Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                    Buffers: shared hit=8019
+                                                    ->  Index Scan using idx_products_seller_id_basic on products p_8  (cost=0.29..282.11 rows=100 width=8) (actual time=0.003..0.027 rows=99 loops=83)
+                                                          Index Cond: (seller_id = seller_profiles.seller_id)
+                                                          Buffers: shared hit=8019
+                          SubPlan 14
+                            ->  Aggregate  (cost=38.17..38.18 rows=1 width=8) (actual time=0.050..0.050 rows=1 loops=83)
+                                  Buffers: shared hit=130 read=1154
+                                  ->  Bitmap Heap Scan on payouts po  (cost=4.39..38.14 rows=13 width=8) (actual time=0.015..0.045 rows=13 loops=83)
+                                        Recheck Cond: (seller_id = seller_profiles.seller_id)
+                                        Filter: (status = 'paid'::text)
+                                        Rows Removed by Filter: 1
+                                        Heap Blocks: exact=1118
+                                        Buffers: shared hit=130 read=1154
+                                        ->  Bitmap Index Scan on idx_payouts_seller_id_basic  (cost=0.00..4.39 rows=14 width=0) (actual time=0.008..0.008 rows=14 loops=83)
+                                              Index Cond: (seller_id = seller_profiles.seller_id)
+                                              Buffers: shared hit=6 read=160
+                          SubPlan 16
+                            ->  Aggregate  (cost=5522.96..5522.98 rows=1 width=8) (actual time=19.286..19.286 rows=1 loops=83)
+                                  Buffers: shared hit=104069 read=84941
+                                  InitPlan 15 (returns $23)
+                                    ->  Aggregate  (cost=2661.96..2661.98 rows=1 width=8) (actual time=7.070..7.070 rows=1 loops=83)
+                                          Buffers: shared hit=92845
+                                          ->  Nested Loop  (cost=283.36..2661.94 rows=9 width=0) (actual time=6.544..7.069 rows=2 loops=83)
+                                                Join Filter: ((r2.created_at >= prm_10.start_date) AND (r2.created_at < prm_10.end_date))
+                                                Rows Removed by Join Filter: 115
+                                                Buffers: shared hit=92845
+                                                ->  CTE Scan on params prm_10  (cost=0.00..0.02 rows=1 width=16) (actual time=0.000..0.000 rows=1 loops=83)
+                                                ->  Hash Join  (cost=283.36..2660.72 rows=80 width=8) (actual time=6.541..7.061 rows=117 loops=83)
+                                                      Hash Cond: (r2.product_id = p2.id)
+                                                      Buffers: shared hit=92845
+                                                      ->  Seq Scan on reviews r2  (cost=0.00..2272.00 rows=40133 width=16) (actual time=0.001..4.952 rows=40000 loops=83)
+                                                            Filter: (rating = ANY ('{1,2}'::integer[]))
+                                                            Rows Removed by Filter: 60000
+                                                            Buffers: shared hit=84826
+                                                      ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.036..0.036 rows=99 loops=83)
+                                                            Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                                            Buffers: shared hit=8019
+                                                            ->  Index Scan using idx_products_seller_id_basic on products p2  (cost=0.29..282.11 rows=100 width=8) (actual time=0.003..0.026 rows=99 loops=83)
+                                                                  Index Cond: (seller_id = seller_profiles.seller_id)
+                                                                  Buffers: shared hit=8019
+                                  ->  Hash Join  (cost=283.36..2860.38 rows=240 width=4) (actual time=10.283..12.203 rows=218 loops=83)
+                                        Hash Cond: (im.product_id = p_9.id)
+                                        Buffers: shared hit=11224 read=84941
+                                        ->  Seq Scan on inventory_movements im  (cost=0.00..2262.00 rows=120000 width=12) (actual time=0.003..6.003 rows=120000 loops=83)
+                                              Buffers: shared hit=3205 read=84941
+                                        ->  Hash  (cost=282.11..282.11 rows=100 width=8) (actual time=0.035..0.035 rows=99 loops=83)
+                                              Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                              Buffers: shared hit=8019
+                                              ->  Index Scan using idx_products_seller_id_basic on products p_9  (cost=0.29..282.11 rows=100 width=8) (actual time=0.002..0.026 rows=99 loops=83)
+                                                    Index Cond: (seller_id = seller_profiles.seller_id)
+                                                    Buffers: shared hit=8019
+                          SubPlan 17
+                            ->  Aggregate  (cost=10756.79..10756.80 rows=1 width=8) (actual time=110.174..110.174 rows=1 loops=83)
+                                  Buffers: shared hit=486740 read=41970
+                                  ->  Nested Loop  (cost=0.00..10756.79 rows=2 width=0) (actual time=25.258..110.162 rows=122 loops=83)
+                                        Join Filter: ((e.created_at >= prm_11.start_date) AND (e.created_at < prm_11.end_date) AND (e.metadata @> jsonb_build_object('region', prm_11.traffic_region)))
+                                        Rows Removed by Join Filter: 265
+                                        Buffers: shared hit=486740 read=41970
+                                        ->  CTE Scan on params prm_11  (cost=0.00..0.02 rows=1 width=48) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Seq Scan on user_events e  (cost=0.00..10718.23 rows=1927 width=151) (actual time=20.696..109.960 rows=387 loops=83)
+                                              Filter: ((event_type = ANY ('{view,search}'::text[])) AND (metadata @> jsonb_build_object('seller_id', seller_profiles.seller_id)))
+                                              Rows Removed by Filter: 249613
+                                              Buffers: shared hit=486740 read=41970
+                          SubPlan 18
+                            ->  Aggregate  (cost=7116.05..7116.06 rows=1 width=8) (actual time=19.816..19.816 rows=1 loops=83)
+                                  Buffers: shared hit=473707 read=56829
+                                  ->  Nested Loop  (cost=284.10..7116.05 rows=1 width=0) (actual time=17.961..19.813 rows=16 loops=83)
+                                        Join Filter: ((e_1.created_at >= prm_12.start_date) AND (e_1.created_at < prm_12.end_date) AND (e_1.metadata @> jsonb_build_object('region', prm_12.traffic_region)))
+                                        Rows Removed by Join Filter: 34
+                                        Buffers: shared hit=473707 read=56829
+                                        ->  CTE Scan on params prm_12  (cost=0.00..0.02 rows=1 width=48) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Bitmap Heap Scan on user_events e_1  (cost=284.10..7110.81 rows=261 width=151) (actual time=17.940..19.782 rows=49 loops=83)
+                                              Recheck Cond: (event_type = 'cart_add'::text)
+                                              Filter: (metadata @> jsonb_build_object('seller_id', seller_profiles.seller_id))
+                                              Rows Removed by Filter: 25751
+                                              Heap Blocks: exact=528710
+                                              Buffers: shared hit=473707 read=56829
+                                              ->  Bitmap Index Scan on idx_user_events_event_type  (cost=0.00..284.03 rows=26098 width=0) (actual time=0.638..0.638 rows=25800 loops=83)
+                                                    Index Cond: (event_type = 'cart_add'::text)
+                                                    Buffers: shared hit=880 read=946
+                          SubPlan 19
+                            ->  Aggregate  (cost=11070.15..11070.18 rows=1 width=32) (actual time=116.202..116.202 rows=1 loops=83)
+                                  Buffers: shared hit=528710
+                                  ->  Nested Loop  (cost=0.00..11070.13 rows=2 width=6) (actual time=16.646..116.181 rows=136 loops=83)
+                                        Join Filter: ((e_2.created_at >= prm_13.start_date) AND (e_2.created_at < prm_13.end_date) AND (e_2.metadata @> jsonb_build_object('region', prm_13.traffic_region)))
+                                        Rows Removed by Join Filter: 295
+                                        Buffers: shared hit=528710
+                                        ->  CTE Scan on params prm_13  (cost=0.00..0.02 rows=1 width=48) (actual time=0.000..0.001 rows=1 loops=83)
+                                        ->  Seq Scan on user_events e_2  (cost=0.00..11028.81 rows=2065 width=157) (actual time=13.054..115.960 rows=431 loops=83)
+                                              Filter: ((event_type = ANY ('{view,search,purchase}'::text[])) AND (metadata @> jsonb_build_object('seller_id', seller_profiles.seller_id)))
+                                              Rows Removed by Filter: 249569
+                                              Buffers: shared hit=528710
+Planning:
+  Buffers: shared hit=962 read=72
+Planning Time: 4.832 ms
+JIT:
+  Functions: 396
+  Options: Inlining true, Optimization true, Expressions true, Deforming true
+  Timing: Generation 10.211 ms, Inlining 56.709 ms, Optimization 789.583 ms, Emission 579.646 ms, Total 1436.149 ms
+Execution Time: 45463.623 ms

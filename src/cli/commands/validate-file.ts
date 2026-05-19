@@ -1,9 +1,9 @@
 import {Command} from 'commander';
 import {loadExpectedResult} from '../../challenges/expected-result.js';
-import {getChallenge} from '../../challenges/registry.js';
+import {getChallengeForVariant} from '../../challenges/registry.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
 import {validateRows} from '../../db/result-compare.js';
-import {timeoutMs} from '../options.js';
+import {timeoutMs, validateVariant} from '../options.js';
 import {loadParticipantSql} from '../query-loader.js';
 
 export function validateFileCommand(): Command {
@@ -11,9 +11,11 @@ export function validateFileCommand(): Command {
     .description('Validate a participant-selected SQL file against expected-result.json')
     .argument('<challenge-id>')
     .requiredOption('--file <path>', 'SQL file to validate')
-    .action(async function (this: Command, challengeId: string, localOptions: {file: string}) {
+    .option('--variant <variant>', 'challenge variant, e.g. advanced')
+    .action(async function (this: Command, challengeId: string, localOptions: {file: string; variant?: string}) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
-      const challenge = getChallenge(challengeId);
+      validateVariant(localOptions.variant);
+      const challenge = getChallengeForVariant(challengeId, localOptions.variant);
       const [querySql, expected] = await Promise.all([
         loadParticipantSql(localOptions.file),
         loadExpectedResult(challenge.expectedResultPath),

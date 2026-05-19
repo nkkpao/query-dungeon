@@ -1,8 +1,8 @@
 import {Command} from 'commander';
-import {getChallenge} from '../../challenges/registry.js';
+import {getChallengeForVariant} from '../../challenges/registry.js';
 import {benchmarkQuery} from '../../db/benchmark.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
-import {seedScale, timeoutMs} from '../options.js';
+import {seedScale, timeoutMs, validateVariant} from '../options.js';
 import {loadBaselineQuery, loadParticipantSql} from '../query-loader.js';
 
 export function benchmarkFileCommand(): Command {
@@ -12,13 +12,15 @@ export function benchmarkFileCommand(): Command {
     .requiredOption('--file <path>', 'SQL file to benchmark')
     .option('--baseline', 'also benchmark the challenge baseline')
     .option('--iterations <n>', 'iterations', '3')
+    .option('--variant <variant>', 'challenge variant, e.g. advanced')
     .action(async function (
       this: Command,
       challengeId: string,
-      localOptions: {file: string; baseline?: boolean; iterations: string},
+      localOptions: {file: string; baseline?: boolean; iterations: string; variant?: string},
     ) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
-      const challenge = getChallenge(challengeId);
+      validateVariant(localOptions.variant);
+      const challenge = getChallengeForVariant(challengeId, localOptions.variant);
       const iterations = Number(localOptions.iterations);
       if (!Number.isInteger(iterations) || iterations < 1) {
         throw new Error('INVALID_ITERATIONS: --iterations must be a positive integer.');

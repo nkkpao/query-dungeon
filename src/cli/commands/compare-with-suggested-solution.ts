@@ -1,9 +1,9 @@
 import {Command} from 'commander';
-import {getChallenge} from '../../challenges/registry.js';
+import {getChallengeForVariant} from '../../challenges/registry.js';
 import {benchmarkQuery} from '../../db/benchmark.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
 import {splitSqlStatements} from '../../db/sql-files.js';
-import {seedScale, timeoutMs} from '../options.js';
+import {seedScale, timeoutMs, validateVariant} from '../options.js';
 import {
   loadBaselineQuery,
   loadSuggestedSolutionIndexes,
@@ -19,13 +19,15 @@ export function compareWithSuggestedSolutionCommand(): Command {
     .option('--benchmark', 'benchmark participant, baseline, and suggested solution inside a rolled-back transaction')
     .option('--show-sql', 'print suggested SQL')
     .option('--iterations <n>', 'benchmark iterations', '3')
+    .option('--variant <variant>', 'challenge variant, e.g. advanced')
     .action(async function (
       this: Command,
       challengeId: string,
-      localOptions: {file: string; benchmark?: boolean; showSql?: boolean; iterations: string},
+      localOptions: {file: string; benchmark?: boolean; showSql?: boolean; iterations: string; variant?: string},
     ) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
-      const challenge = getChallenge(challengeId);
+      validateVariant(localOptions.variant);
+      const challenge = getChallengeForVariant(challengeId, localOptions.variant);
       console.warn('SOLUTION_ACCESS_OPT_IN: You are leaving the default exercise flow and reading suggested solution material.');
       const [participantSql, suggestedSql, suggestedIndexes] = await Promise.all([
         loadParticipantSql(localOptions.file),

@@ -1,8 +1,8 @@
 import {Command} from 'commander';
-import {getChallenge} from '../../challenges/registry.js';
+import {getChallengeForVariant} from '../../challenges/registry.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
 import {diffRows} from '../../db/result-compare.js';
-import {timeoutMs} from '../options.js';
+import {timeoutMs, validateVariant} from '../options.js';
 import {loadParticipantSql} from '../query-loader.js';
 
 export function diffResultsCommand(): Command {
@@ -11,9 +11,11 @@ export function diffResultsCommand(): Command {
     .argument('<challenge-id>')
     .requiredOption('--left <path>', 'left SQL file')
     .requiredOption('--right <path>', 'right SQL file')
-    .action(async function (this: Command, challengeId: string, localOptions: {left: string; right: string}) {
+    .option('--variant <variant>', 'challenge variant, e.g. advanced')
+    .action(async function (this: Command, challengeId: string, localOptions: {left: string; right: string; variant?: string}) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
-      getChallenge(challengeId);
+      validateVariant(localOptions.variant);
+      getChallengeForVariant(challengeId, localOptions.variant);
       const [leftSql, rightSql] = await Promise.all([
         loadParticipantSql(localOptions.left),
         loadParticipantSql(localOptions.right),

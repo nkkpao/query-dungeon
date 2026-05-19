@@ -6,8 +6,10 @@ import {compareWithSuggestedSolutionCommand} from './commands/compare-with-sugge
 import {diffResultsCommand} from './commands/diff-results.js';
 import {explainFileCommand} from './commands/explain-file.js';
 import {listCommand} from './commands/list.js';
+import {recordPlansCommand} from './commands/record-plans.js';
 import {runSqlCommand} from './commands/run-sql.js';
 import {seedCommand} from './commands/seed.js';
+import {validateRecordedPlansCommand} from './commands/validate-recorded-plans.js';
 import {validateFileCommand} from './commands/validate-file.js';
 
 const program = new Command()
@@ -26,7 +28,9 @@ program
   .addCommand(benchmarkFileCommand())
   .addCommand(validateFileCommand())
   .addCommand(diffResultsCommand())
-  .addCommand(compareWithSuggestedSolutionCommand());
+  .addCommand(compareWithSuggestedSolutionCommand())
+  .addCommand(recordPlansCommand())
+  .addCommand(validateRecordedPlansCommand());
 
 program.parseAsync(process.argv).catch((error: unknown) => {
   let message = error instanceof Error && error.message ? error.message : String(error);

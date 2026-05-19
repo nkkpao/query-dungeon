@@ -1,4 +1,5 @@
 import {describe, expect, it} from 'vitest';
+import {advancedVariants} from '../src/challenges/registry.js';
 import type {BenchmarkResult} from '../src/challenges/types.js';
 
 describe('benchmark output shape', () => {
@@ -26,5 +27,28 @@ describe('benchmark output shape', () => {
       'planningTimeMs',
       'executionTimeMs',
     ]));
+  });
+
+  it('can represent advanced variant learner benchmark attempts without solution paths', () => {
+    for (const variant of advancedVariants()) {
+      const result: BenchmarkResult = {
+        challengeId: variant.parentChallengeId,
+        label: 'participant',
+        sqlPath: variant.baselineSqlPath,
+        seedScale: 'medium',
+        latencyMs: 1,
+        planningTimeMs: 0.1,
+        executionTimeMs: 0.9,
+        rows: 20,
+        sharedHitBlocks: 1,
+        sharedReadBlocks: 2,
+        tempReadBlocks: 0,
+        tempWrittenBlocks: 0,
+        planText: 'QUERY PLAN',
+      };
+
+      expect(result.sqlPath).toContain('/variants/advanced/baseline.sql');
+      expect(result.sqlPath).not.toContain('/optional/');
+    }
   });
 });

@@ -1,0 +1,11 @@
+{
+  "columns": ["id", "user_id", "event_type", "created_at"],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/04-offset-pagination/variants/advanced/result-fixture.sql"
+}

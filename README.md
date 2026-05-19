@@ -74,10 +74,35 @@ when you intentionally want to leave the exercise flow.
 
 ## Challenge Catalog
 
-The catalog contains 12 PostgreSQL optimization challenges covering missing
+The catalog contains 13 PostgreSQL optimization challenges covering missing
 indexes, low selectivity, expression indexes, correlated subqueries,
 over-joining, bad pagination, JSONB scans, sort spills, CTE materialization,
-window overuse, N+1-style query shape, and stale statistics.
+window overuse, N+1-style query shape, stale statistics, and a cumulative
+marketplace operations dashboard boss fight after the first 12 challenges.
+
+## Advanced Variants
+
+Some challenges also include additive advanced variants under
+`variants/advanced/`. They keep the original challenge IDs and baselines intact,
+but use `SEED_SCALE=medium` skew profiles and committed
+`recorded-plan.medium.txt` reference plans.
+
+Run one explicitly:
+
+```bash
+make seed SEED_SCALE=medium
+make explain-file CHALLENGE=04-offset-pagination VARIANT=advanced \
+  SQL=sql/challenges/04-offset-pagination/variants/advanced/baseline.sql
+```
+
+Recorded plans are reference artifacts only. They are not generated during
+normal challenge execution and exact timings are not correctness criteria.
+Regenerate them manually when maintaining the repository:
+
+```bash
+make record-plans SCALE=medium
+make validate-recorded-plans
+```
 
 ## Guides
 
@@ -85,6 +110,8 @@ window overuse, N+1-style query shape, and stale statistics.
 - [Indexing Cheatsheet](docs/indexing-cheatsheet.md)
 - [Optimization Workflow](docs/query-optimization-workflow.md)
 - [Challenge Authoring Guide](docs/challenge-authoring-guide.md)
+- [Data Skew Profiles](docs/data-skew.md)
+- [Recorded Plans](docs/recorded-plans.md)
 - [Contributor Workflow](docs/contributor-workflow.md)
 - [Migration Notes](docs/migration-notes.md)
 - [Roadmap](docs/roadmap.md)

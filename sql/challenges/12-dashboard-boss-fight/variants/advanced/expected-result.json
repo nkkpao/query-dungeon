@@ -1,0 +1,11 @@
+{
+  "columns": ["product_id", "product_name", "order_count", "units_sold", "gross_cents"],
+  "rows": [],
+  "orderSensitive": true,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/12-dashboard-boss-fight/variants/advanced/result-fixture.sql"
+}
