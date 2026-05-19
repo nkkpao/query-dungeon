@@ -74,10 +74,11 @@ when you intentionally want to leave the exercise flow.
 
 ## Challenge Catalog
 
-The catalog contains 12 PostgreSQL optimization challenges covering missing
+The catalog contains 13 PostgreSQL optimization challenges covering missing
 indexes, low selectivity, expression indexes, correlated subqueries,
 over-joining, bad pagination, JSONB scans, sort spills, CTE materialization,
-window overuse, N+1-style query shape, and stale statistics.
+window overuse, N+1-style query shape, stale statistics, and a cumulative
+marketplace operations dashboard boss fight after the first 12 challenges.
 
 ## Advanced Variants
 

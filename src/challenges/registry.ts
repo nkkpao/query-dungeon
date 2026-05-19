@@ -107,6 +107,30 @@ export const challenges: Challenge[] = [
       ['Hash Join', 'Nested Loop', 'Index Scan using idx_order_items_product_id', 'Buffers: shared', 'actual time'],
     ),
   }),
+  challenge(
+    '13-boss-fight-marketplace-operations-dashboard',
+    'Boss Fight: Marketplace Operations Dashboard',
+    'boss',
+    [
+      'missing_index',
+      'low_selectivity',
+      'function_on_column',
+      'correlated_subquery',
+      'over_joining',
+      'bad_pagination',
+      'jsonb_scan',
+      'sort_spill',
+      'cte_materialization',
+      'n_plus_one',
+    ],
+    [
+      'multiple SubPlan scans',
+      'Seq Scan on user_events',
+      'bad row estimates',
+      'row multiplication before GROUP BY',
+      'Sort on computed dashboard_score',
+    ],
+  ),
 ];
 
 export function getChallenge(id: string): Challenge {

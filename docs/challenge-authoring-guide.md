@@ -70,3 +70,23 @@ Recorded plans are text artifacts captured with
 timings. Normal challenge commands must not regenerate recorded plans or compare
 participant SQL with official solutions unless the user invokes an explicit
 solution-comparison command.
+
+## Cumulative Boss Fights
+
+Top-level boss fights, such as
+`sql/challenges/13-boss-fight-marketplace-operations-dashboard/`, should remain
+normal registered challenges rather than advanced variants when they are meant
+to come after the numbered catalog. They must preserve all earlier challenge
+IDs and the default manual workflow.
+
+For a cumulative challenge:
+
+- Combine several earlier anti-patterns in one production-like query.
+- Keep the bad query in `baseline.sql`; do not make default commands apply
+  reference indexes or run the suggested solution.
+- Put the reference rewrite, index set, and captured plan evidence only under
+  `optional/`.
+- Document what participants may change, what they must not change, and how to
+  validate a scratch SQL file.
+- Prefer `SEED_SCALE=medium` for investigation when the small seed is only a
+  fast correctness smoke test.

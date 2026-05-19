@@ -10,8 +10,23 @@ INSERT INTO categories (id, parent_id, name, slug)
 SELECT gs, NULL, 'Category ' || gs, 'category-' || gs
 FROM generate_series(1, 20) AS gs;
 
-INSERT INTO products (id, category_id, sku, name, price_cents, attributes, created_at)
+INSERT INTO sellers (id, user_id, name, email, status, country, created_at)
 SELECT gs,
+       1 + (gs % 1000),
+       CASE WHEN gs <= 8 THEN 'Marketplace Ops Seller ' || gs ELSE 'Seller ' || gs END,
+       CASE WHEN gs <= 8 THEN 'marketplace-seller-' || gs || '@example.com' ELSE 'seller' || gs || '@example.com' END,
+       CASE WHEN gs % 41 = 0 THEN 'suspended' WHEN gs % 29 = 0 THEN 'paused' ELSE 'active' END,
+       (ARRAY['US','DE','BR','IN','JP','GB'])[1 + (gs % 6)],
+       TIMESTAMPTZ '2024-01-15' + (gs % 90) * INTERVAL '1 day'
+FROM generate_series(1, 80) AS gs;
+
+INSERT INTO products (id, seller_id, category_id, sku, name, price_cents, attributes, created_at)
+SELECT gs,
+       CASE
+         WHEN gs <= 50 THEN 1 + (gs % 5)
+         WHEN gs <= 150 THEN 6 + (gs % 10)
+         ELSE 1 + (gs % 80)
+       END,
        1 + (gs % 20),
        'SKU-' || gs,
        'Product ' || gs,
@@ -80,7 +95,13 @@ FROM generate_series(1, 6000) AS gs;
 INSERT INTO user_events (user_id, event_type, metadata, created_at)
 SELECT CASE WHEN gs % 4 = 0 THEN 42 ELSE 1 + (gs % 1000) END,
        (ARRAY['view','search','cart_add','checkout_start','purchase','support_opened'])[1 + (gs % 6)],
-       jsonb_build_object('device', (ARRAY['web','ios','android'])[1 + (gs % 3)], 'campaign', CASE WHEN gs % 13 = 0 THEN 'spring' ELSE 'organic' END),
+       jsonb_build_object(
+         'device', (ARRAY['web','ios','android'])[1 + (gs % 3)],
+         'campaign', CASE WHEN gs % 13 = 0 THEN 'spring' ELSE 'organic' END,
+         'region', (ARRAY['na','eu','apac'])[1 + (gs % 3)],
+         'product_id', 1 + (gs % 500),
+         'seller_id', CASE WHEN gs % 5 = 0 THEN 1 + (gs % 5) ELSE 1 + (gs % 80) END
+       ),
        TIMESTAMPTZ '2024-08-01' + (gs % 90) * INTERVAL '1 day' + (gs % 24) * INTERVAL '1 hour'
 FROM generate_series(1, 12000) AS gs;
 
@@ -93,7 +114,33 @@ SELECT 1 + (gs % 1000),
        CASE WHEN gs % 4 IN (2,3) THEN TIMESTAMPTZ '2024-09-01' + (gs % 60) * INTERVAL '1 day' + INTERVAL '2 days' ELSE NULL END
 FROM generate_series(1, 700) AS gs;
 
+INSERT INTO shipments (order_id, seller_id, status, promised_at, shipped_at, delivered_at, created_at)
+SELECT DISTINCT ON (o.id, p.seller_id)
+       o.id,
+       p.seller_id,
+       CASE WHEN o.status IN ('paid', 'shipped') THEN 'shipped' WHEN o.status = 'delivered' THEN 'delivered' ELSE 'pending' END,
+       o.created_at + INTERVAL '5 days',
+       o.created_at + INTERVAL '1 day',
+       CASE
+         WHEN o.status = 'delivered' THEN o.created_at + CASE WHEN o.id % 9 = 0 THEN INTERVAL '8 days' ELSE INTERVAL '4 days' END
+         ELSE NULL
+       END,
+       o.created_at + INTERVAL '1 hour'
+FROM orders o
+JOIN order_items oi ON oi.order_id = o.id
+JOIN products p ON p.id = oi.product_id
+WHERE o.status IN ('paid', 'shipped', 'delivered');
+
+INSERT INTO payouts (seller_id, status, amount_cents, created_at)
+SELECT s.id,
+       CASE WHEN gs % 37 = 0 THEN 'failed' WHEN gs % 11 = 0 THEN 'processing' ELSE 'paid' END,
+       5000 + ((s.id * gs * 137) % 250000),
+       TIMESTAMPTZ '2024-07-01' + (gs % 120) * INTERVAL '1 day'
+FROM sellers s
+CROSS JOIN generate_series(1, 5) AS gs;
+
 SELECT setval('users_id_seq', (SELECT max(id) FROM users));
 SELECT setval('categories_id_seq', (SELECT max(id) FROM categories));
+SELECT setval('sellers_id_seq', (SELECT max(id) FROM sellers));
 SELECT setval('products_id_seq', (SELECT max(id) FROM products));
 SELECT setval('orders_id_seq', (SELECT max(id) FROM orders));

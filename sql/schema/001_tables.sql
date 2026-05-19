@@ -13,8 +13,19 @@ CREATE TABLE IF NOT EXISTS categories (
   slug TEXT NOT NULL UNIQUE
 );
 
+CREATE TABLE IF NOT EXISTS sellers (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  status TEXT NOT NULL CHECK (status IN ('active', 'paused', 'suspended', 'deleted')),
+  country TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS products (
   id BIGSERIAL PRIMARY KEY,
+  seller_id BIGINT REFERENCES sellers(id),
   category_id BIGINT NOT NULL REFERENCES categories(id),
   sku TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
@@ -82,4 +93,23 @@ CREATE TABLE IF NOT EXISTS support_tickets (
   priority TEXT NOT NULL CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
   created_at TIMESTAMPTZ NOT NULL,
   resolved_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS shipments (
+  id BIGSERIAL PRIMARY KEY,
+  order_id BIGINT NOT NULL REFERENCES orders(id),
+  seller_id BIGINT NOT NULL REFERENCES sellers(id),
+  status TEXT NOT NULL CHECK (status IN ('pending', 'shipped', 'delivered', 'lost', 'returned')),
+  promised_at TIMESTAMPTZ NOT NULL,
+  shipped_at TIMESTAMPTZ,
+  delivered_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS payouts (
+  id BIGSERIAL PRIMARY KEY,
+  seller_id BIGINT NOT NULL REFERENCES sellers(id),
+  status TEXT NOT NULL CHECK (status IN ('scheduled', 'processing', 'paid', 'failed', 'cancelled')),
+  amount_cents INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
 );

@@ -7,8 +7,8 @@ import {
 } from '../src/challenges/registry.js';
 
 describe('challenge registry', () => {
-  it('contains exactly 12 challenges with required metadata', () => {
-    expect(challenges).toHaveLength(12);
+  it('contains exactly 13 challenges with required metadata', () => {
+    expect(challenges).toHaveLength(13);
     for (const challenge of challenges) {
       expect(challenge.id).toMatch(/^\d{2}-/);
       expect(challenge.title).toBeTruthy();
@@ -31,7 +31,7 @@ describe('challenge registry', () => {
   });
 
   it('registers advanced variants additively without changing baseline IDs', () => {
-    expect(challenges).toHaveLength(12);
+    expect(challenges).toHaveLength(13);
     expect(advancedVariants()).toHaveLength(3);
 
     for (const variant of advancedVariants()) {
