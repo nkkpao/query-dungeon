@@ -171,23 +171,30 @@ metadata.
 4. **Extend medium seed skew**: Update medium seed generation to create
    deterministic skew profiles: hot users, hot products, heavy categories,
    long-tail products, uneven order volumes, NULL-heavy columns,
-   low-selectivity statuses, and time-based clustering. Keep small seed fast
-   and suitable for CI.
+   low-selectivity statuses, and time-based clustering. Add lightweight
+   distribution-shape validation for the relevant skew profiles. Keep small
+   seed fast and suitable for CI.
 5. **Add three advanced variants**: Implement advanced bad pagination on skewed
    events, advanced dashboard query with hot products and `order_items` skew,
-   and advanced JSONB/event filtering with skewed event types.
+   and advanced JSONB/event filtering with skewed event types. Each variant
+   documents how it differs materially from the parent baseline challenge.
 6. **Record baseline plans**: Add maintainer-only `record-plans` support via
    `make record-plans SCALE=medium` and `npm run record-plans -- --scale medium`.
-   The command writes `recorded-plan.medium.txt` text artifacts and is never
-   called by normal learner commands.
+   The command writes captured `recorded-plan.medium.txt` text artifacts and is
+   never called by normal learner commands. Placeholder plans are acceptable
+   only during local drafting and must not satisfy completion criteria.
 7. **Validate recorded plans lightly**: Add tests or command support that checks
    recorded plan files exist, contain `EXPLAIN (ANALYZE, BUFFERS)` evidence,
    include expected structural markers, and do not assert exact timing equality.
-8. **Update docs**: Update README, challenge authoring guide,
+8. **Validate correctness and learner benchmarks**: Add per-variant validation
+   tasks proving expected results can be checked without official solution SQL,
+   plus documented learner-run baseline and participant benchmark paths that do
+   not compare against official solutions by default.
+9. **Update docs**: Update README, challenge authoring guide,
    `docs/recorded-plans.md`, and `docs/data-skew.md` with regeneration,
    validation, skew-profile, and learner workflow guidance. Recorded plans are
    described as post-investigation reference evidence.
-9. **Keep CI small**: Ensure default CI-style test commands run small-scale
+10. **Keep CI small**: Ensure default CI-style test commands run small-scale
    smoke checks, file-structure validation, syntax checks where available, and
    recorded-plan marker validation only. Medium-scale full plan generation
    remains explicit maintainer work.

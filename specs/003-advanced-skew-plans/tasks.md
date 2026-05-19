@@ -30,7 +30,7 @@
 - [ ] T010 Wire `--variant advanced` through run, explain, benchmark, validate, and diff commands in `src/cli/commands/run-sql.ts`, `src/cli/commands/explain-file.ts`, `src/cli/commands/benchmark-file.ts`, `src/cli/commands/validate-file.ts`, and `src/cli/commands/diff-results.ts`
 - [ ] T011 Update challenge listing to show variants only when explicitly requested in `src/cli/commands/list.ts`
 - [ ] T012 Add `VARIANT ?=` support to Makefile learner command wrappers without changing default behavior in `Makefile`
-- [ ] T013 Add `record-plans` and `validate-recorded-plans` script entries without adding them to default learner flow in `package.json`
+- [ ] T013 Reserve maintainer command naming and confirm no default learner script invokes recorded-plan generation in `package.json`
 - [ ] T014 Extend medium seed data with deterministic hot users distribution in `sql/seeds/002_seed_medium.sql`
 - [ ] T015 Extend medium seed data with deterministic hot products and long-tail products distribution in `sql/seeds/002_seed_medium.sql`
 - [ ] T016 Extend medium seed data with deterministic skewed event types and time-based clustering in `sql/seeds/002_seed_medium.sql`
@@ -50,33 +50,34 @@
 
 ### Tests for User Story 1
 
-- [ ] T020 [P] [US1] Add advanced variant file-existence tests for `challenge.md`, `baseline.sql`, `data-profile.md`, `hints.md`, `expected-result.json`, and `recorded-plan.medium.txt` in `tests/advanced-challenge-files.test.ts`
+- [ ] T020 [P] [US1] Add advanced variant file-existence tests for `challenge.md`, `baseline.sql`, `data-profile.md`, `hints.md`, and `expected-result.json` in `tests/advanced-challenge-files.test.ts`
 - [ ] T021 [P] [US1] Add registry tests proving advanced variants map to existing parent challenge IDs in `tests/challenge-registry.test.ts`
 - [ ] T022 [P] [US1] Add default-flow tests proving omitted `--variant` still resolves standard baseline SQL in `tests/manual-workflow.test.ts`
 - [ ] T023 [P] [US1] Add variant-flow tests proving `--variant advanced` resolves advanced baseline SQL in `tests/manual-workflow.test.ts`
+- [ ] T024 [P] [US1] Add material-distinction tests proving each advanced variant documents larger data requirements, skew assumptions, and harder planner symptoms than its parent challenge in `tests/advanced-challenge-files.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T024 [P] [US1] Create advanced bad pagination variant structure in `sql/challenges/04-offset-pagination/variants/advanced/`
-- [ ] T025 [P] [US1] Add advanced bad pagination challenge description in `sql/challenges/04-offset-pagination/variants/advanced/challenge.md`
-- [ ] T026 [P] [US1] Add advanced bad pagination baseline SQL over skewed `user_events` in `sql/challenges/04-offset-pagination/variants/advanced/baseline.sql`
-- [ ] T027 [P] [US1] Add advanced bad pagination data profile in `sql/challenges/04-offset-pagination/variants/advanced/data-profile.md`
-- [ ] T028 [P] [US1] Add advanced bad pagination hints in `sql/challenges/04-offset-pagination/variants/advanced/hints.md`
-- [ ] T029 [P] [US1] Add advanced bad pagination expected-result fixture in `sql/challenges/04-offset-pagination/variants/advanced/expected-result.json`
-- [ ] T030 [P] [US1] Create advanced dashboard variant structure in `sql/challenges/12-dashboard-boss-fight/variants/advanced/`
-- [ ] T031 [P] [US1] Add advanced dashboard challenge description in `sql/challenges/12-dashboard-boss-fight/variants/advanced/challenge.md`
-- [ ] T032 [P] [US1] Add advanced dashboard baseline SQL over skewed `orders`, `order_items`, and `products` in `sql/challenges/12-dashboard-boss-fight/variants/advanced/baseline.sql`
-- [ ] T033 [P] [US1] Add advanced dashboard data profile in `sql/challenges/12-dashboard-boss-fight/variants/advanced/data-profile.md`
-- [ ] T034 [P] [US1] Add advanced dashboard hints in `sql/challenges/12-dashboard-boss-fight/variants/advanced/hints.md`
-- [ ] T035 [P] [US1] Add advanced dashboard expected-result fixture in `sql/challenges/12-dashboard-boss-fight/variants/advanced/expected-result.json`
-- [ ] T036 [P] [US1] Create advanced JSONB event filtering variant structure in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/`
-- [ ] T037 [P] [US1] Add advanced JSONB event filtering challenge description in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/challenge.md`
-- [ ] T038 [P] [US1] Add advanced JSONB event filtering baseline SQL over skewed `user_events.metadata` in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/baseline.sql`
-- [ ] T039 [P] [US1] Add advanced JSONB event filtering data profile in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/data-profile.md`
-- [ ] T040 [P] [US1] Add advanced JSONB event filtering hints in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/hints.md`
-- [ ] T041 [P] [US1] Add advanced JSONB event filtering expected-result fixture in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/expected-result.json`
-- [ ] T042 [US1] Register all three advanced variants and their expected planner symptoms in `src/challenges/registry.ts`
-- [ ] T043 [US1] Verify advanced variants are listed only with explicit variant display in `src/cli/commands/list.ts`
+- [ ] T025 [P] [US1] Create advanced bad pagination variant structure in `sql/challenges/04-offset-pagination/variants/advanced/`
+- [ ] T026 [P] [US1] Add advanced bad pagination challenge description in `sql/challenges/04-offset-pagination/variants/advanced/challenge.md`
+- [ ] T027 [P] [US1] Add advanced bad pagination baseline SQL over skewed `user_events` in `sql/challenges/04-offset-pagination/variants/advanced/baseline.sql`
+- [ ] T028 [P] [US1] Add advanced bad pagination data profile in `sql/challenges/04-offset-pagination/variants/advanced/data-profile.md`
+- [ ] T029 [P] [US1] Add advanced bad pagination hints in `sql/challenges/04-offset-pagination/variants/advanced/hints.md`
+- [ ] T030 [P] [US1] Add advanced bad pagination expected-result fixture in `sql/challenges/04-offset-pagination/variants/advanced/expected-result.json`
+- [ ] T031 [P] [US1] Create advanced dashboard variant structure in `sql/challenges/12-dashboard-boss-fight/variants/advanced/`
+- [ ] T032 [P] [US1] Add advanced dashboard challenge description in `sql/challenges/12-dashboard-boss-fight/variants/advanced/challenge.md`
+- [ ] T033 [P] [US1] Add advanced dashboard baseline SQL over skewed `orders`, `order_items`, and `products` in `sql/challenges/12-dashboard-boss-fight/variants/advanced/baseline.sql`
+- [ ] T034 [P] [US1] Add advanced dashboard data profile in `sql/challenges/12-dashboard-boss-fight/variants/advanced/data-profile.md`
+- [ ] T035 [P] [US1] Add advanced dashboard hints in `sql/challenges/12-dashboard-boss-fight/variants/advanced/hints.md`
+- [ ] T036 [P] [US1] Add advanced dashboard expected-result fixture in `sql/challenges/12-dashboard-boss-fight/variants/advanced/expected-result.json`
+- [ ] T037 [P] [US1] Create advanced JSONB event filtering variant structure in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/`
+- [ ] T038 [P] [US1] Add advanced JSONB event filtering challenge description in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/challenge.md`
+- [ ] T039 [P] [US1] Add advanced JSONB event filtering baseline SQL over skewed `user_events.metadata` in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/baseline.sql`
+- [ ] T040 [P] [US1] Add advanced JSONB event filtering data profile in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/data-profile.md`
+- [ ] T041 [P] [US1] Add advanced JSONB event filtering hints in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/hints.md`
+- [ ] T042 [P] [US1] Add advanced JSONB event filtering expected-result fixture in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/expected-result.json`
+- [ ] T043 [US1] Register all three advanced variants and their expected planner symptoms in `src/challenges/registry.ts`
+- [ ] T044 [US1] Verify advanced variants are listed only with explicit variant display in `src/cli/commands/list.ts`
 
 **Checkpoint**: US1 is independently testable with advanced variant files present, explicit variant selection working, and normal challenges unchanged.
 
@@ -90,24 +91,25 @@
 
 ### Tests for User Story 2
 
-- [ ] T044 [P] [US2] Add recorded plan existence tests for every advanced variant in `tests/recorded-plan-validation.test.ts`
-- [ ] T045 [P] [US2] Add recorded plan marker tests for `QUERY PLAN`, `actual time`, and `Buffers` in `tests/recorded-plan-validation.test.ts`
-- [ ] T046 [P] [US2] Add structural symptom marker tests for Seq Scan, bad estimates, shared buffers, Sort, Hash Join, Nested Loop, or rows removed by filter in `tests/recorded-plan-validation.test.ts`
-- [ ] T047 [P] [US2] Add regression test proving recorded plan tests do not assert exact planning or execution timings in `tests/recorded-plan-validation.test.ts`
-- [ ] T048 [P] [US2] Add CLI smoke test proving `record-plans` is explicit and absent from the normal learner workflow in `tests/cli-smoke.test.ts`
+- [ ] T045 [US2] Add recorded plan existence tests for every advanced variant in `tests/recorded-plan-validation.test.ts`
+- [ ] T046 [US2] Add recorded plan marker tests for `QUERY PLAN`, `actual time`, and `Buffers` in `tests/recorded-plan-validation.test.ts`
+- [ ] T047 [US2] Add structural symptom marker tests for Seq Scan, bad estimates, shared buffers, Sort, Hash Join, Nested Loop, or rows removed by filter in `tests/recorded-plan-validation.test.ts`
+- [ ] T048 [US2] Add regression test proving recorded plan tests do not assert exact planning or execution timings in `tests/recorded-plan-validation.test.ts`
+- [ ] T049 [P] [US2] Add CLI smoke test proving `record-plans` is explicit and absent from the normal learner workflow in `tests/cli-smoke.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T049 [US2] Add recorded plan validation helper for text artifacts and structural markers in `src/challenges/recorded-plan-validation.ts`
-- [ ] T050 [US2] Add `validate-recorded-plans` CLI command in `src/cli/commands/validate-recorded-plans.ts`
-- [ ] T051 [US2] Register `validate-recorded-plans` as a maintainer validation command in `src/cli/index.ts`
-- [ ] T052 [US2] Add `record-plans` CLI command that runs `EXPLAIN (ANALYZE, BUFFERS)` for advanced baselines in `src/cli/commands/record-plans.ts`
-- [ ] T053 [US2] Add recorded plan writing support for `recorded-plan.medium.txt` in `src/db/explain.ts`
-- [ ] T054 [US2] Add `record-plans` Makefile target using `SCALE=medium` and no default invocation in `Makefile`
-- [ ] T055 [US2] Add placeholder or generated advanced bad pagination recorded plan artifact in `sql/challenges/04-offset-pagination/variants/advanced/recorded-plan.medium.txt`
-- [ ] T056 [US2] Add placeholder or generated advanced dashboard recorded plan artifact in `sql/challenges/12-dashboard-boss-fight/variants/advanced/recorded-plan.medium.txt`
-- [ ] T057 [US2] Add placeholder or generated advanced JSONB event filtering recorded plan artifact in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/recorded-plan.medium.txt`
-- [ ] T058 [US2] Document recorded plan regeneration and timing variation in `docs/recorded-plans.md`
+- [ ] T050 [US2] Add recorded plan validation helper for text artifacts and structural markers in `src/challenges/recorded-plan-validation.ts`
+- [ ] T051 [US2] Add `validate-recorded-plans` CLI command in `src/cli/commands/validate-recorded-plans.ts`
+- [ ] T052 [US2] Register `validate-recorded-plans` as a maintainer validation command in `src/cli/index.ts`
+- [ ] T053 [US2] Add `record-plans` CLI command that runs `EXPLAIN (ANALYZE, BUFFERS)` for advanced baselines in `src/cli/commands/record-plans.ts`
+- [ ] T054 [US2] Add recorded plan writing support for `recorded-plan.medium.txt` in `src/db/explain.ts`
+- [ ] T055 [US2] Add `record-plans` Makefile target using `SCALE=medium` and no default invocation in `Makefile`
+- [ ] T056 [US2] Add captured advanced bad pagination `EXPLAIN (ANALYZE, BUFFERS)` recorded plan artifact in `sql/challenges/04-offset-pagination/variants/advanced/recorded-plan.medium.txt`
+- [ ] T057 [US2] Add captured advanced dashboard `EXPLAIN (ANALYZE, BUFFERS)` recorded plan artifact in `sql/challenges/12-dashboard-boss-fight/variants/advanced/recorded-plan.medium.txt`
+- [ ] T058 [US2] Add captured advanced JSONB event filtering `EXPLAIN (ANALYZE, BUFFERS)` recorded plan artifact in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/recorded-plan.medium.txt`
+- [ ] T059 [US2] Document recorded plan regeneration and timing variation in `docs/recorded-plans.md`
+- [ ] T060 [US2] Add package scripts for explicit `record-plans` and `validate-recorded-plans` maintainer commands after CLI command files exist in `package.json`
 
 **Checkpoint**: US2 is independently testable with committed text plans, explicit maintainer regeneration, and structural validation only.
 
@@ -121,20 +123,20 @@
 
 ### Tests for User Story 3
 
-- [ ] T059 [P] [US3] Add solution-gating tests for advanced variant optional paths in `tests/suggested-solution-gating.test.ts`
-- [ ] T060 [P] [US3] Add default README workflow guardrail tests for advanced official solution references in `tests/manual-workflow.test.ts`
-- [ ] T061 [P] [US3] Add recorded-plan command test proving official solution SQL is not executed in `tests/recorded-plan-validation.test.ts`
+- [ ] T061 [P] [US3] Add solution-gating tests for advanced variant optional paths in `tests/suggested-solution-gating.test.ts`
+- [ ] T062 [P] [US3] Add default README workflow guardrail tests for advanced official solution references in `tests/manual-workflow.test.ts`
+- [ ] T063 [P] [US3] Add recorded-plan command test proving official solution SQL is not executed in `tests/recorded-plan-validation.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T062 [P] [US3] Add advanced bad pagination optional official solution SQL in `sql/challenges/04-offset-pagination/variants/advanced/optional/official-solution.sql`
-- [ ] T063 [P] [US3] Add advanced bad pagination optional official indexes SQL in `sql/challenges/04-offset-pagination/variants/advanced/optional/official-indexes.sql`
-- [ ] T064 [P] [US3] Add advanced dashboard optional official solution SQL in `sql/challenges/12-dashboard-boss-fight/variants/advanced/optional/official-solution.sql`
-- [ ] T065 [P] [US3] Add advanced dashboard optional official indexes SQL in `sql/challenges/12-dashboard-boss-fight/variants/advanced/optional/official-indexes.sql`
-- [ ] T066 [P] [US3] Add advanced JSONB event filtering optional official solution SQL in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/optional/official-solution.sql`
-- [ ] T067 [P] [US3] Add advanced JSONB event filtering optional official indexes SQL in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/optional/official-indexes.sql`
-- [ ] T068 [US3] Extend explicit solution comparison to accept `--variant advanced` in `src/cli/commands/compare-with-suggested-solution.ts`
-- [ ] T069 [US3] Ensure default run, explain, benchmark, validate, diff, and record-plan commands never resolve `variants/advanced/optional/` in `src/cli/query-loader.ts`
+- [ ] T064 [P] [US3] Add advanced bad pagination optional official solution SQL in `sql/challenges/04-offset-pagination/variants/advanced/optional/official-solution.sql`
+- [ ] T065 [P] [US3] Add advanced bad pagination optional official indexes SQL in `sql/challenges/04-offset-pagination/variants/advanced/optional/official-indexes.sql`
+- [ ] T066 [P] [US3] Add advanced dashboard optional official solution SQL in `sql/challenges/12-dashboard-boss-fight/variants/advanced/optional/official-solution.sql`
+- [ ] T067 [P] [US3] Add advanced dashboard optional official indexes SQL in `sql/challenges/12-dashboard-boss-fight/variants/advanced/optional/official-indexes.sql`
+- [ ] T068 [P] [US3] Add advanced JSONB event filtering optional official solution SQL in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/optional/official-solution.sql`
+- [ ] T069 [P] [US3] Add advanced JSONB event filtering optional official indexes SQL in `sql/challenges/06-jsonb-filter-gin-index/variants/advanced/optional/official-indexes.sql`
+- [ ] T070 [US3] Extend explicit solution comparison to accept `--variant advanced` in `src/cli/commands/compare-with-suggested-solution.ts`
+- [ ] T071 [US3] Ensure default run, explain, benchmark, validate, diff, and record-plan commands never resolve `variants/advanced/optional/` in `src/cli/query-loader.ts`
 
 **Checkpoint**: US3 is independently testable with optional solutions present but hidden from normal learner workflows.
 
@@ -144,18 +146,25 @@
 
 **Purpose**: Documentation, CI behavior, syntax checks, and final regression coverage across all stories.
 
-- [ ] T070 [P] Update README advanced variants section and plan-regeneration notes in `README.md`
-- [ ] T071 [P] Update Russian README advanced variants summary without exposing solution paths as default workflow in `README_RU.md`
-- [ ] T072 [P] Update challenge authoring guide with `variants/advanced/` file contract in `docs/challenge-authoring-guide.md`
-- [ ] T073 [P] Update advanced skew documentation with all skew profiles in `docs/data-skew.md`
-- [ ] T074 [P] Update recorded plan documentation with structural-marker validation and timing variation rules in `docs/recorded-plans.md`
-- [ ] T075 Add SQL syntax or dry-run validation for advanced variant baseline SQL where supported in `tests/advanced-challenge-files.test.ts`
-- [ ] T076 Add regression test that default CI-style test commands use `SEED_SCALE=small` and do not run medium recorded-plan generation in `tests/seed-scale.test.ts`
-- [ ] T077 Add regression test that existing normal challenge files and IDs remain unchanged after advanced variant registration in `tests/challenge-registry.test.ts`
-- [ ] T078 Run TypeScript build and fix type errors in `src/challenges/types.ts`, `src/challenges/registry.ts`, and `src/cli/commands/record-plans.ts`
-- [ ] T079 Run the full test suite and fix failing tests in `tests/advanced-challenge-files.test.ts`, `tests/recorded-plan-validation.test.ts`, `tests/suggested-solution-gating.test.ts`, and `tests/cli-smoke.test.ts`
-- [ ] T080 Run small-scale smoke workflow from `specs/003-advanced-skew-plans/quickstart.md`
-- [ ] T081 Optionally regenerate medium recorded plans with `make record-plans SCALE=medium` and review diffs in `sql/challenges/*/variants/advanced/recorded-plan.medium.txt`
+- [ ] T072 [P] Update README advanced variants section and plan-regeneration notes in `README.md`
+- [ ] T073 [P] Update Russian README advanced variants summary without exposing solution paths as default workflow in `README_RU.md`
+- [ ] T074 [P] Update challenge authoring guide with `variants/advanced/` file contract in `docs/challenge-authoring-guide.md`
+- [ ] T075 [P] Update advanced skew documentation with all skew profiles in `docs/data-skew.md`
+- [ ] T076 [P] Update recorded plan documentation with structural-marker validation and timing variation rules in `docs/recorded-plans.md`
+- [ ] T077 Add SQL syntax or dry-run validation for advanced variant baseline SQL where supported in `tests/advanced-challenge-files.test.ts`
+- [ ] T078 Add regression test that default CI-style test commands use `SEED_SCALE=small` and do not run medium recorded-plan generation in `tests/seed-scale.test.ts`
+- [ ] T079 Add regression test that existing normal challenge files and IDs remain unchanged after advanced variant registration in `tests/challenge-registry.test.ts`
+- [ ] T080 Add deterministic skew-shape validation for hot users and skewed event volumes in `tests/seed-scale.test.ts`
+- [ ] T081 Add deterministic skew-shape validation for hot products and long-tail product distribution in `tests/seed-scale.test.ts`
+- [ ] T082 Add deterministic skew-shape validation for low-selectivity statuses and NULL-heavy metadata patterns in `tests/seed-scale.test.ts`
+- [ ] T083 Add advanced bad pagination correctness validation and learner benchmark command coverage in `tests/result-validation.test.ts` and `tests/benchmark-output.test.ts`
+- [ ] T084 Add advanced dashboard correctness validation and learner benchmark command coverage in `tests/result-validation.test.ts` and `tests/benchmark-output.test.ts`
+- [ ] T085 Add advanced JSONB event filtering correctness validation and learner benchmark command coverage in `tests/result-validation.test.ts` and `tests/benchmark-output.test.ts`
+- [ ] T086 Add final guardrail test rejecting placeholder recorded plan content in `tests/recorded-plan-validation.test.ts`
+- [ ] T087 Run TypeScript build and fix type errors in `src/challenges/types.ts`, `src/challenges/registry.ts`, and `src/cli/commands/record-plans.ts`
+- [ ] T088 Run the full test suite and fix failing tests in `tests/advanced-challenge-files.test.ts`, `tests/recorded-plan-validation.test.ts`, `tests/suggested-solution-gating.test.ts`, and `tests/cli-smoke.test.ts`
+- [ ] T089 Run small-scale smoke workflow from `specs/003-advanced-skew-plans/quickstart.md`
+- [ ] T090 Regenerate medium recorded plans with `make record-plans SCALE=medium` and review diffs in `sql/challenges/*/variants/advanced/recorded-plan.medium.txt`
 
 ---
 
@@ -181,10 +190,12 @@
 - T003-T005 can run in parallel after T001-T002 are understood.
 - T014-T018 can be split only if changes to `sql/seeds/002_seed_medium.sql` are carefully sequenced; otherwise treat them as one-file serial edits.
 - T024-T029, T030-T035, and T036-T041 can run in parallel by variant because they touch separate directories.
-- T044-T048 can run in parallel because they target separate test concerns.
-- T055-T057 can run in parallel after `record-plans` support exists because they touch separate artifact files.
-- T062-T067 can run in parallel because they touch separate optional solution files.
-- T070-T074 can run in parallel because they touch separate documentation files.
+- T049 can run in parallel with T045-T048, but T045-T048 should be sequenced because they edit `tests/recorded-plan-validation.test.ts`.
+- T056-T058 can run in parallel after `record-plans` support exists because they touch separate artifact files.
+- T080-T082 should be sequenced because they edit `tests/seed-scale.test.ts`.
+- T083-T085 can run in parallel if split by variant or carefully coordinated across `tests/result-validation.test.ts` and `tests/benchmark-output.test.ts`.
+- T064-T069 can run in parallel because they touch separate optional solution files.
+- T072-T076 can run in parallel because they touch separate documentation files.
 
 ---
 
@@ -199,17 +210,17 @@ Task: "T036-T041 build sql/challenges/06-jsonb-filter-gin-index/variants/advance
 ## Parallel Example: User Story 2
 
 ```text
-Task: "T044 add existence tests in tests/recorded-plan-validation.test.ts"
-Task: "T048 add CLI explicit-command smoke test in tests/cli-smoke.test.ts"
-Task: "T058 write docs/recorded-plans.md"
+Task: "T045 add existence tests in tests/recorded-plan-validation.test.ts"
+Task: "T049 add CLI explicit-command smoke test in tests/cli-smoke.test.ts"
+Task: "T059 write docs/recorded-plans.md"
 ```
 
 ## Parallel Example: User Story 3
 
 ```text
-Task: "T062-T063 add optional solution files for 04-offset-pagination"
-Task: "T064-T065 add optional solution files for 12-dashboard-boss-fight"
-Task: "T066-T067 add optional solution files for 06-jsonb-filter-gin-index"
+Task: "T064-T065 add optional solution files for 04-offset-pagination"
+Task: "T066-T067 add optional solution files for 12-dashboard-boss-fight"
+Task: "T068-T069 add optional solution files for 06-jsonb-filter-gin-index"
 ```
 
 ---

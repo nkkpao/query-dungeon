@@ -104,6 +104,11 @@ As a learner, I want optional official solutions to remain available only for co
 - **FR-025**: Structural markers for recorded plans MUST include one or more relevant symptoms from Seq Scan, bad row estimates, high shared buffer reads or hits, expensive Sort, Hash Join behavior, Nested Loop behavior, or rows removed by filter.
 - **FR-026**: Default CI and quick local smoke tests MUST use the small seed profile unless a maintainer explicitly requests medium-scale recorded-plan regeneration or validation.
 - **FR-027**: Learner-facing guidance MUST position recorded plans as baseline reference material to consult after the learner's own investigation, not as the first step in solving the challenge.
+- **FR-028**: Each advanced variant MUST include correctness validation coverage for its expected result without executing official solution SQL.
+- **FR-029**: Each advanced variant MUST include a documented learner-run benchmark path for the baseline and participant attempts without requiring official solution comparison.
+- **FR-030**: Medium-scale skew validation MUST verify deterministic distribution shape for relevant hot users, hot products, long-tail products, low-selectivity statuses, NULL-heavy data, and skewed event or order distributions.
+- **FR-031**: Each advanced variant MUST be materially distinct from its parent baseline challenge through documented larger data requirements, skew assumptions, harder planner symptoms, or changed bad-query behavior.
+- **FR-032**: Recorded baseline plan artifacts MUST be captured or regenerated before completion; placeholder plan artifacts are not acceptable as completed feature evidence.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -113,6 +118,7 @@ As a learner, I want optional official solutions to remain available only for co
 - **Recorded Baseline Plan**: The committed reference `EXPLAIN (ANALYZE, BUFFERS)` output for an advanced variant on the medium-scale dataset.
 - **Planner Symptom**: The expected observable plan behavior learners should investigate, such as poor row estimates, sequential scans, expensive nested loops, sort pressure, hash spill risk, or unexpectedly high buffer usage.
 - **Structural Plan Marker**: A stable recorded-plan indicator used for validation, such as Seq Scan, estimate mismatch, shared buffer reads or hits, Sort, Hash Join, Nested Loop, or rows removed by filter.
+- **Skew Shape Validation**: A lightweight deterministic check that confirms intended data concentration, long-tail distribution, low-selectivity values, and NULL-heavy patterns exist without requiring medium-scale plan generation in CI.
 - **Baseline Bad Query**: The intentionally inefficient starting query for the advanced variant.
 - **Hint Set**: Learner-facing clues that preserve investigation while focusing attention on likely symptoms.
 - **Official Solution**: Optional comparison material that is separate from the default learner workflow and never required to execute an advanced variant.
@@ -123,10 +129,12 @@ As a learner, I want optional official solutions to remain available only for co
 - **Bad Query**: Each advanced variant provides its own baseline bad query or clearly points to the inherited bad query when unchanged, without altering the normal challenge baseline.
 - **Seed Data**: Each advanced variant documents the medium-scale data requirement and the larger or skewed distribution needed to reproduce planner symptoms. The small seed profile remains the default for CI and quick local smoke tests.
 - **Expected Result**: Each advanced variant defines the correctness target needed to validate learner attempts.
+- **Correctness Test**: Each advanced variant has automated or documented validation coverage proving the baseline and learner attempts can be checked against the expected result without consulting official solution SQL.
 - **Baseline Plan**: Each advanced variant commits a text artifact containing a recorded `EXPLAIN (ANALYZE, BUFFERS)` baseline plan generated on the medium-scale seed profile and lists the notable symptoms learners should look for. The recorded plan is reference evidence for post-investigation comparison, not a dynamically generated normal-execution dependency.
 - **Hints**: Each advanced variant provides hints that guide investigation without revealing official solution SQL.
 - **Reference Optimization**: Optional official solutions are separate comparison artifacts and are never part of default execution.
 - **Benchmark Evidence**: Learners can benchmark the baseline and their own attempts; medium-scale recorded-plan regeneration and official solution benchmarking are not required by default CI.
+- **Variant Distinction**: Each advanced variant documents how it is harder or more realistic than the corresponding normal challenge.
 - **Trade-offs**: Optional official solutions explain operational trade-offs when provided.
 
 ## Success Criteria *(mandatory)*
@@ -143,6 +151,9 @@ As a learner, I want optional official solutions to remain available only for co
 - **SC-008**: At least 90% of reviewed advanced variant materials are judged to support manual investigation rather than scripted tutorial completion.
 - **SC-009**: 100% of recorded plan validation checks rely on structural planner markers rather than exact execution time equality.
 - **SC-010**: 100% of advanced variant recorded plans are stored as committed text artifacts and are not generated during normal challenge execution.
+- **SC-011**: 100% of advanced variants have correctness validation coverage and a learner-run benchmark path that do not execute official solution SQL.
+- **SC-012**: 100% of advanced variants document a material difference from the parent baseline challenge and pass skew-shape validation for their relevant medium-scale data profile.
+- **SC-013**: 0 completed advanced variants rely on placeholder recorded plan artifacts.
 
 ## Assumptions
 
