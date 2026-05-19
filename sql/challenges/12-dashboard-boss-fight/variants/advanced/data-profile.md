@@ -8,7 +8,7 @@ because it emphasizes hot-product and long-tail skew in `order_items` and
 
 Skew requirements:
 
-- hot products: product IDs `1` through `20` appear disproportionately often
+- hot products: product IDs `1` through `20` all appear disproportionately often
 - long-tail products: most products appear rarely
 - heavy categories: early categories hold many hot and warm products
 - low-selectivity statuses: `paid`, `shipped`, and `delivered` match most orders

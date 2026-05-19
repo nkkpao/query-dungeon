@@ -7,7 +7,7 @@ tiny uniform dataset.
 Medium scale is deterministic and intentionally uneven:
 
 - hot users: a small set of users receives a disproportionate share of events
-- hot products: products `1..20` appear far more often in order items
+- hot products: every product in `1..20` appears far more often in order items
 - heavy categories: early product categories are overrepresented
 - long-tail products: most products still exist but appear less frequently
 - uneven order volumes: order items are concentrated around hot products

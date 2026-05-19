@@ -40,7 +40,7 @@ FROM generate_series(5001, 100000) AS gs;
 INSERT INTO order_items (order_id, product_id, quantity, unit_price_cents)
 SELECT o.id,
        CASE
-         WHEN o.id % 5 = 0 THEN 1 + (o.id % 20)
+         WHEN o.id % 5 = 0 THEN 1 + ((((o.id / 5)::bigint) + n - 1) % 20)
          WHEN o.id % 11 = 0 THEN 21 + (o.id % 80)
          ELSE 101 + ((o.id * n) % 4900)
        END,

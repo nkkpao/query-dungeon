@@ -34,6 +34,13 @@ describe('seed scale validation', () => {
     expect(mediumSeed).toMatch(/gs % 14/);
   });
 
+  it('spreads hot order-item skew across all documented hot products', () => {
+    const mediumSeed = readFileSync('sql/seeds/002_seed_medium.sql', 'utf8');
+
+    expect(mediumSeed).toContain("WHEN o.id % 5 = 0 THEN 1 + ((((o.id / 5)::bigint) + n - 1) % 20)");
+    expect(mediumSeed).not.toContain('WHEN o.id % 5 = 0 THEN 1 + (o.id % 20)');
+  });
+
   it('keeps CI-style defaults away from medium recorded-plan generation', () => {
     const makefile = readFileSync('Makefile', 'utf8');
     const packageJson = readFileSync('package.json', 'utf8');
