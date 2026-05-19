@@ -20,8 +20,12 @@ export function parseExplainText(planText: string): ParsedExplain {
 }
 
 export async function explainAnalyze(client: pg.PoolClient, querySql: string): Promise<ParsedExplain> {
+  return parseExplainText(await explainAnalyzeText(client, querySql));
+}
+
+export async function explainAnalyzeText(client: pg.PoolClient, querySql: string): Promise<string> {
   const result = await client.query<{['QUERY PLAN']: string}>(`EXPLAIN (ANALYZE, BUFFERS) ${querySql}`);
-  return parseExplainText(result.rows.map((row) => row['QUERY PLAN']).join('\n'));
+  return result.rows.map((row) => row['QUERY PLAN']).join('\n');
 }
 
 function numberMatch(text: string, regex: RegExp): number | null {

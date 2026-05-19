@@ -79,9 +79,35 @@
 плохая пагинация, JSONB-сканирование, sort spill, материализация CTE, избыток
 оконных функций, форма N+1 и устаревшая статистика.
 
+## Продвинутые варианты
+
+Некоторые задачи имеют дополнительные варианты в `variants/advanced/`. Они не
+меняют исходные ID и базовые задания, но рассчитаны на перекошенные данные
+`SEED_SCALE=medium` и включают справочные планы
+`recorded-plan.medium.txt`.
+
+Запуск выполняется явно:
+
+```bash
+make seed SEED_SCALE=medium
+make explain-file CHALLENGE=04-offset-pagination VARIANT=advanced \
+  SQL=sql/challenges/04-offset-pagination/variants/advanced/baseline.sql
+```
+
+Записанные планы нужны как справка после собственного расследования. Обычные
+команды их не пересоздают, а точные времена выполнения не являются критерием
+корректности. Для сопровождения репозитория:
+
+```bash
+make record-plans SCALE=medium
+make validate-recorded-plans
+```
+
 ## Руководства
 
 - [Как читать EXPLAIN](docs/how-to-explain_RU.md)
 - [Шпаргалка по индексам](docs/indexing-cheatsheet_RU.md)
 - [Рабочий процесс оптимизации](docs/query-optimization-workflow_RU.md)
+- [Data Skew Profiles](docs/data-skew.md)
+- [Recorded Plans](docs/recorded-plans.md)
 - [Дорожная карта](docs/roadmap_RU.md)

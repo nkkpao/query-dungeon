@@ -1,5 +1,10 @@
 import {describe, expect, it} from 'vitest';
-import {canonicalAntiPatternTags, challenges} from '../src/challenges/registry.js';
+import {
+  advancedVariants,
+  canonicalAntiPatternTags,
+  challenges,
+  getChallengeForVariant,
+} from '../src/challenges/registry.js';
 
 describe('challenge registry', () => {
   it('contains exactly 12 challenges with required metadata', () => {
@@ -23,5 +28,32 @@ describe('challenge registry', () => {
   it('covers all canonical tags', () => {
     const covered = new Set(challenges.flatMap((challenge) => challenge.antiPatternTags));
     expect(canonicalAntiPatternTags.every((tag) => covered.has(tag))).toBe(true);
+  });
+
+  it('registers advanced variants additively without changing baseline IDs', () => {
+    expect(challenges).toHaveLength(12);
+    expect(advancedVariants()).toHaveLength(3);
+
+    for (const variant of advancedVariants()) {
+      const parent = challenges.find((challenge) => challenge.id === variant.parentChallengeId);
+      expect(parent, variant.id).toBeDefined();
+      expect(variant.id).toBe('advanced');
+      expect(variant.baselineSqlPath).toContain(`${variant.parentChallengeId}/variants/advanced/baseline.sql`);
+      expect(variant.challengePath).toContain(`${variant.parentChallengeId}/variants/advanced/challenge.md`);
+      expect(variant.recordedPlanPath).toContain('recorded-plan.medium.txt');
+      expect(variant.optionalOfficialSolutionSqlPath).toContain('/variants/advanced/optional/');
+      expect(variant.optionalOfficialIndexesSqlPath).toContain('/variants/advanced/optional/');
+    }
+  });
+
+  it('keeps default challenge lookup on the baseline unless a variant is explicit', () => {
+    const baseline = getChallengeForVariant('04-offset-pagination');
+    const advanced = getChallengeForVariant('04-offset-pagination', 'advanced');
+
+    expect(baseline.id).toBe('04-offset-pagination');
+    expect(baseline.baselineSqlPath).toContain('04-offset-pagination/baseline.sql');
+    expect(baseline.baselineSqlPath).not.toContain('/variants/');
+    expect(advanced.id).toBe('04-offset-pagination');
+    expect(advanced.baselineSqlPath).toContain('04-offset-pagination/variants/advanced/baseline.sql');
   });
 });

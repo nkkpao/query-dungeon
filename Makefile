@@ -6,10 +6,13 @@ SQL ?= sql/challenges/$(CHALLENGE)/baseline.sql
 LEFT ?= workspace/sql/attempt-1.sql
 RIGHT ?= workspace/sql/attempt-2.sql
 ITERATIONS ?= 3
+VARIANT ?=
+SCALE ?= $(SEED_SCALE)
 
 CLI = node dist/src/cli/index.js --database-url $(DATABASE_URL) --scale $(SEED_SCALE) --timeout-ms $(QUERY_TIMEOUT_MS)
+VARIANT_FLAG = $(if $(VARIANT),--variant $(VARIANT),)
 
-.PHONY: setup seed list run-sql explain-file benchmark-file validate-file diff-results compare-with-suggested-solution reset test build
+.PHONY: setup seed list run-sql explain-file benchmark-file validate-file diff-results compare-with-suggested-solution record-plans validate-recorded-plans reset test build
 
 setup:
 	npm install
@@ -23,22 +26,28 @@ list:
 	$(CLI) list
 
 run-sql:
-	$(CLI) run-sql $(CHALLENGE) --file $(SQL)
+	$(CLI) run-sql $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL)
 
 explain-file:
-	$(CLI) explain-file $(CHALLENGE) --file $(SQL)
+	$(CLI) explain-file $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL)
 
 benchmark-file:
-	$(CLI) benchmark-file $(CHALLENGE) --file $(SQL) --baseline --iterations $(ITERATIONS)
+	$(CLI) benchmark-file $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL) --baseline --iterations $(ITERATIONS)
 
 validate-file:
-	$(CLI) validate-file $(CHALLENGE) --file $(SQL)
+	$(CLI) validate-file $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL)
 
 diff-results:
-	$(CLI) diff-results $(CHALLENGE) --left $(LEFT) --right $(RIGHT)
+	$(CLI) diff-results $(CHALLENGE) $(VARIANT_FLAG) --left $(LEFT) --right $(RIGHT)
 
 compare-with-suggested-solution:
-	$(CLI) compare-with-suggested-solution $(CHALLENGE) --file $(SQL)
+	$(CLI) compare-with-suggested-solution $(CHALLENGE) $(VARIANT_FLAG) --file $(SQL)
+
+record-plans:
+	$(CLI) record-plans --scale $(SCALE)
+
+validate-recorded-plans:
+	$(CLI) validate-recorded-plans
 
 reset: seed
 

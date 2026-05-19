@@ -5,8 +5,18 @@ export interface GlobalOptions {
   json?: boolean;
 }
 
+export interface VariantOptions {
+  variant?: string;
+}
+
 export function timeoutMs(options: GlobalOptions): number {
   return Number(options.timeoutMs ?? process.env.QUERY_TIMEOUT_MS ?? 15000);
+}
+
+export function validateVariant(variant?: string): void {
+  if (variant && variant !== 'advanced') {
+    throw new Error(`INVALID_VARIANT: Expected advanced, got "${variant}".`);
+  }
 }
 
 export function seedScale(options: GlobalOptions): string {

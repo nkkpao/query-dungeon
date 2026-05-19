@@ -39,7 +39,11 @@ FROM generate_series(5001, 100000) AS gs;
 
 INSERT INTO order_items (order_id, product_id, quantity, unit_price_cents)
 SELECT o.id,
-       1 + ((o.id * n) % 5000),
+       CASE
+         WHEN o.id % 5 = 0 THEN 1 + (o.id % 20)
+         WHEN o.id % 11 = 0 THEN 21 + (o.id % 80)
+         ELSE 101 + ((o.id * n) % 4900)
+       END,
        1 + ((o.id + n) % 3),
        500 + (((o.id + n) * 37) % 20000)
 FROM orders o
@@ -79,11 +83,44 @@ SELECT 1 + (gs % 5000),
 FROM generate_series(6001, 120000) AS gs;
 
 INSERT INTO user_events (user_id, event_type, metadata, created_at)
-SELECT CASE WHEN gs % 4 = 0 THEN 42 ELSE 1 + (gs % 10000) END,
-       (ARRAY['view','search','cart_add','checkout_start','purchase','support_opened'])[1 + (gs % 6)],
-       jsonb_build_object('device', (ARRAY['web','ios','android'])[1 + (gs % 3)], 'campaign', CASE WHEN gs % 13 = 0 THEN 'spring' ELSE 'organic' END),
-       TIMESTAMPTZ '2024-10-01' + (gs % 90) * INTERVAL '1 day'
+SELECT CASE
+         WHEN gs % 2 = 0 THEN 42
+         WHEN gs % 7 = 0 THEN 77
+         WHEN gs % 13 = 0 THEN 123
+         ELSE 1 + (gs % 10000)
+       END,
+       CASE
+         WHEN gs % 20 IN (0,1,2,3,4,5,6,7,8,9,10,11) THEN 'view'
+         WHEN gs % 20 IN (12,13,14,15) THEN 'search'
+         WHEN gs % 20 IN (16,17) THEN 'cart_add'
+         WHEN gs % 20 = 18 THEN 'checkout_start'
+         ELSE 'purchase'
+       END,
+       jsonb_build_object(
+         'device', CASE WHEN gs % 5 = 0 THEN NULL ELSE (ARRAY['web','ios','android'])[1 + (gs % 3)] END,
+         'campaign', CASE WHEN gs % 17 = 0 THEN 'spring' WHEN gs % 19 = 0 THEN 'flash' ELSE 'organic' END,
+         'experiment', CASE WHEN gs % 23 = 0 THEN NULL ELSE 'control' END,
+         'region', CASE WHEN gs % 29 = 0 THEN NULL ELSE (ARRAY['na','eu','apac'])[1 + (gs % 3)] END
+       ),
+       TIMESTAMPTZ '2024-10-01' + (gs % 14) * INTERVAL '1 day' + (gs % 86400) * INTERVAL '1 second'
 FROM generate_series(12001, 250000) AS gs;
+
+-- Medium-scale skew profile for advanced variants:
+-- hot users (42, 77, 123), hot products (1-20), long-tail products (101+),
+-- low-selectivity paid/shipped/delivered order statuses, NULL-heavy event
+-- metadata keys, and clustered recent event timestamps.
+UPDATE products
+SET category_id = CASE
+    WHEN id <= 100 THEN 1
+    WHEN id <= 500 THEN 2
+    WHEN id <= 2000 THEN 3
+    ELSE category_id
+  END,
+  attributes = attributes || jsonb_build_object(
+    'demand_band', CASE WHEN id <= 20 THEN 'hot' WHEN id <= 100 THEN 'warm' ELSE 'long_tail' END,
+    'promo', CASE WHEN id % 31 = 0 THEN NULL ELSE 'none' END
+  )
+WHERE id BETWEEN 1 AND 50000;
 
 INSERT INTO support_tickets (user_id, order_id, status, priority, created_at, resolved_at)
 SELECT 1 + (gs % 10000),

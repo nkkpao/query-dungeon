@@ -27,3 +27,44 @@ Authoring checklist:
    solution comparison.
 6. Trade-offs document storage, write cost, specificity, maintenance, and
    limits of the reference approach.
+
+## Advanced Variants
+
+Advanced variants are additive packets under an existing challenge:
+
+```text
+sql/challenges/challenge-XX/
+  baseline.sql
+  challenge.md
+  hints/
+  variants/
+    advanced/
+      baseline.sql
+      challenge.md
+      data-profile.md
+      expected-result.json
+      hints.md
+      recorded-plan.medium.txt
+      optional/
+        official-solution.sql
+        official-indexes.sql
+```
+
+Do not replace or renumber the parent challenge. The parent baseline remains the
+default learner workflow; the advanced variant is selected explicitly with
+`--variant advanced` or `VARIANT=advanced`.
+
+Advanced variant prompts must include:
+
+- challenge description and baseline bad query location
+- `SEED_SCALE=medium` data assumptions
+- expected planner symptoms
+- reference to `recorded-plan.medium.txt`
+- hints that preserve manual investigation
+- optional official files only inside `optional/`
+
+Recorded plans are text artifacts captured with
+`EXPLAIN (ANALYZE, BUFFERS)`. Validate them by structural markers, not exact
+timings. Normal challenge commands must not regenerate recorded plans or compare
+participant SQL with official solutions unless the user invokes an explicit
+solution-comparison command.

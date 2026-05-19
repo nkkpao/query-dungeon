@@ -1,7 +1,7 @@
 import {Command} from 'commander';
-import {getChallenge} from '../../challenges/registry.js';
+import {getChallengeForVariant} from '../../challenges/registry.js';
 import {assertSeeded, withClient} from '../../db/connection.js';
-import {timeoutMs} from '../options.js';
+import {timeoutMs, validateVariant} from '../options.js';
 import {loadParticipantSql} from '../query-loader.js';
 
 export function runSqlCommand(): Command {
@@ -9,9 +9,11 @@ export function runSqlCommand(): Command {
     .description('Run a participant-selected SQL file')
     .argument('<challenge-id>')
     .requiredOption('--file <path>', 'SQL file to run')
-    .action(async function (this: Command, challengeId: string, localOptions: {file: string}) {
+    .option('--variant <variant>', 'challenge variant, e.g. advanced')
+    .action(async function (this: Command, challengeId: string, localOptions: {file: string; variant?: string}) {
       const options: any = {...(this.parent?.opts() ?? {}), ...localOptions};
-      getChallenge(challengeId);
+      validateVariant(localOptions.variant);
+      getChallengeForVariant(challengeId, localOptions.variant);
       const querySql = await loadParticipantSql(localOptions.file);
       await withClient({databaseUrl: options.databaseUrl, timeoutMs: timeoutMs(options)}, async (client) => {
         await assertSeeded(client);

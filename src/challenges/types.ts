@@ -28,6 +28,25 @@ export interface Challenge {
   optionalSuggestedSolutionSqlPath: string;
   optionalSuggestedIndexesSqlPath: string;
   optionalBaselineExplainPath: string;
+  variants?: Record<string, ChallengeVariant>;
+}
+
+export interface ChallengeVariant {
+  id: string;
+  parentChallengeId: string;
+  title: string;
+  difficulty: Difficulty;
+  antiPatternTags: AntiPatternTag[];
+  planSymptoms: string[];
+  challengePath: string;
+  baselineSqlPath: string;
+  expectedResultPath: string;
+  dataProfilePath: string;
+  hintsPath: string;
+  recordedPlanPath: string;
+  optionalOfficialSolutionSqlPath: string;
+  optionalOfficialIndexesSqlPath: string;
+  structuralMarkers: string[];
 }
 
 export interface ParsedExplain {

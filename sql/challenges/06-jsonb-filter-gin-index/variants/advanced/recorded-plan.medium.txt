@@ -1,0 +1,11 @@
+Captured with SEED_SCALE=medium for 06-jsonb-filter-gin-index:advanced
+Command: EXPLAIN (ANALYZE, BUFFERS)
+QUERY PLAN
+Aggregate  (cost=8110.00..8110.01 rows=1 width=8) (actual time=166.724..166.725 rows=1 loops=1)
+  Buffers: shared hit=9132 read=428
+  ->  Seq Scan on user_events  (cost=0.00..8105.00 rows=2000 width=0) (actual time=0.117..165.902 rows=1412 loops=1)
+        Filter: ((metadata @> '{"campaign": "spring"}'::jsonb) AND ((metadata ->> 'device'::text) = 'web'::text) AND (event_type = ANY ('{view,search}'::text[])))
+        Rows Removed by Filter: 236588
+        Buffers: shared hit=9132 read=428
+Planning Time: 0.681 ms
+Execution Time: 166.812 ms

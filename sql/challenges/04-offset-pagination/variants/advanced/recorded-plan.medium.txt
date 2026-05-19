@@ -1,0 +1,15 @@
+Captured with SEED_SCALE=medium for 04-offset-pagination:advanced
+Command: EXPLAIN (ANALYZE, BUFFERS)
+QUERY PLAN
+Limit  (cost=20590.00..20590.13 rows=50 width=32) (actual time=418.120..418.138 rows=50 loops=1)
+  Buffers: shared hit=9138 read=428
+  ->  Sort  (cost=20465.00..20815.00 rows=140000 width=32) (actual time=407.884..415.942 rows=50050 loops=1)
+        Sort Key: created_at DESC, id DESC
+        Sort Method: external merge  Disk: 12720kB
+        Buffers: shared hit=9138 read=428
+        ->  Seq Scan on user_events  (cost=0.00..6412.00 rows=140000 width=32) (actual time=0.051..122.447 rows=184000 loops=1)
+              Filter: (event_type = ANY ('{view,search}'::text[]))
+              Rows Removed by Filter: 54000
+              Buffers: shared hit=9132 read=428
+Planning Time: 0.442 ms
+Execution Time: 420.117 ms

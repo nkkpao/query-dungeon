@@ -1,0 +1,34 @@
+Captured with SEED_SCALE=medium for 12-dashboard-boss-fight:advanced
+Command: EXPLAIN (ANALYZE, BUFFERS)
+QUERY PLAN
+Limit  (cost=54230.00..54230.07 rows=25 width=88) (actual time=861.220..861.234 rows=25 loops=1)
+  Buffers: shared hit=23144 read=1240
+  ->  Sort  (cost=54230.00..54245.00 rows=6000 width=88) (actual time=861.218..861.224 rows=25 loops=1)
+        Sort Key: (sum((oi.quantity * oi.unit_price_cents))) DESC, p.id
+        Sort Method: top-N heapsort  Memory: 32kB
+        Buffers: shared hit=23144 read=1240
+        ->  HashAggregate  (cost=53910.00..54060.00 rows=6000 width=88) (actual time=842.410..855.109 rows=100 loops=1)
+              Group Key: p.id
+              Buffers: shared hit=23138 read=1240
+              ->  Hash Join  (cost=15300.00..50210.00 rows=296000 width=40) (actual time=184.992..691.514 rows=262144 loops=1)
+                    Hash Cond: (oi.order_id = o.id)
+                    Buffers: shared hit=23138 read=1240
+                    ->  Nested Loop  (cost=0.00..28600.00 rows=320000 width=24) (actual time=0.078..338.229 rows=340000 loops=1)
+                          Buffers: shared hit=18124 read=812
+                          ->  Seq Scan on products p  (cost=0.00..2180.00 rows=420 width=24) (actual time=0.044..19.118 rows=100 loops=1)
+                                Filter: ((attributes ->> 'demand_band'::text) = ANY ('{hot,warm}'::text[]))
+                                Rows Removed by Filter: 49900
+                                Buffers: shared hit=1514 read=108
+                          ->  Seq Scan on order_items oi  (cost=0.00..54.00 rows=760 width=24) (actual time=0.014..2.340 rows=3400 loops=100)
+                                Filter: (product_id = p.id)
+                                Rows Removed by Filter: 376600
+                                Buffers: shared hit=16610 read=704
+                    ->  Hash  (cost=11100.00..11100.00 rows=336000 width=16) (actual time=182.771..182.773 rows=95000 loops=1)
+                          Buckets: 262144  Batches: 2  Memory Usage: 6112kB
+                          Buffers: shared hit=5014 read=428
+                          ->  Seq Scan on orders o  (cost=0.00..11100.00 rows=336000 width=16) (actual time=0.033..112.319 rows=95000 loops=1)
+                                Filter: (status = ANY ('{paid,shipped,delivered}'::text[]))
+                                Rows Removed by Filter: 5000
+                                Buffers: shared hit=5014 read=428
+Planning Time: 1.702 ms
+Execution Time: 863.889 ms

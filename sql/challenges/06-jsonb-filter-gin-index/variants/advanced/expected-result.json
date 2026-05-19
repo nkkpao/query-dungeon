@@ -1,0 +1,11 @@
+{
+  "columns": ["matching_events"],
+  "rows": [],
+  "orderSensitive": false,
+  "numericTolerance": 0,
+  "normalization": {
+    "numericStrings": true,
+    "datesToIso": true
+  },
+  "fixtureSqlPath": "sql/challenges/06-jsonb-filter-gin-index/variants/advanced/baseline.sql"
+}
