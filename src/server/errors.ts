@@ -32,6 +32,10 @@ export async function handleError(error: FastifyError | Error, _request: Fastify
     await reply.status(400).send(errorResponse('INVALID_REQUEST', 'Request body or parameters do not match the API contract.'));
     return;
   }
+  if ('code' in error && error.code === 'FST_ERR_CTP_BODY_TOO_LARGE') {
+    await reply.status(413).send(errorResponse('REQUEST_TOO_LARGE', 'Request body exceeds the server limit.'));
+    return;
+  }
   if (isDatabaseUnavailable(error)) {
     await reply.status(503).send(errorResponse('DATABASE_UNAVAILABLE', 'Cannot connect to PostgreSQL. Run "docker compose up -d" and "make seed" first.'));
     return;

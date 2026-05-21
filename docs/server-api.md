@@ -24,6 +24,10 @@ Defaults:
 - `SERVER_PORT=3000`
 - `SERVER_SQL_MAX_BYTES=65536`
 
+The HTTP JSON body limit is `SERVER_SQL_MAX_BYTES + 8192` bytes. This keeps
+normal oversized SQL attempts eligible for stored failed submissions while
+rejecting very large request bodies before they reach PostgreSQL.
+
 ## Endpoints
 
 ### `GET /health`
@@ -105,8 +109,12 @@ The MVP accepts one participant SQL statement and requires it to be a `SELECT`
 or `WITH ... SELECT` query. It rejects multiple statements, SQL over
 `SERVER_SQL_MAX_BYTES`, DDL, DML, transaction control, `COPY`, `CALL`, `DO`,
 `CREATE`, `ALTER`, `DROP`, `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `GRANT`,
-`REVOKE`, `SELECT INTO`, data-modifying CTEs, and known semicolon/comment
-bypass shapes.
+`REVOKE`, `SELECT INTO`, data-modifying CTEs, known semicolon/comment bypass
+shapes, and side-effecting functions such as `set_config`, `nextval`, `setval`,
+`pg_sleep`, `pg_notify`, advisory locks, server-control functions, and
+filesystem-reading PostgreSQL helpers.
 
 Executable participant SQL runs inside a transaction with `statement_timeout`
-configured and is always rolled back after evaluation.
+configured and is always rolled back after evaluation. The transaction is
+opened as read-only, and pooled session state is reset before the connection is
+released.

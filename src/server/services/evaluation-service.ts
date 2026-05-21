@@ -41,17 +41,18 @@ export class EvaluationService {
     const client = await this.pool.connect();
     const submissions = new SubmissionRepository(client);
     const results = new EvaluationResultRepository(client);
-    const submission = await submissions.create({
-      challengeId: challenge.id,
-      variant: request.variant ?? null,
-      participantName: request.participantName ?? null,
-      participantId: request.participantId ?? null,
-      sqlText: request.sql,
-      sqlHash: initialHash,
-      notes: request.notes ?? null,
-    });
 
     try {
+      const submission = await submissions.create({
+        challengeId: challenge.id,
+        variant: request.variant ?? null,
+        participantName: request.participantName ?? null,
+        participantId: request.participantId ?? null,
+        sqlText: request.sql,
+        sqlHash: initialHash,
+        notes: request.notes ?? null,
+      });
+
       const safety = validateSqlSafety(request.sql, this.options.sqlMaxBytes);
       if (!safety.ok) {
         await submissions.updateStatus(submission.id, 'failed', safety.errorMessage);
@@ -66,7 +67,7 @@ export class EvaluationService {
       await submissions.updateStatus(submission.id, 'running');
       let transactionStarted = false;
       try {
-        await client.query('BEGIN');
+        await client.query('BEGIN READ ONLY');
         transactionStarted = true;
         await client.query('SELECT set_config($1, $2, true)', ['statement_timeout', String(this.options.queryTimeoutMs)]);
 
@@ -108,6 +109,7 @@ export class EvaluationService {
 
       return this.response((await submissions.findById(submission.id))!);
     } finally {
+      await resetSession(client);
       client.release();
     }
   }
@@ -161,4 +163,9 @@ function participantSafeError(message: string): string {
     return 'SQL_SYNTAX_ERROR: Submitted SQL has a syntax error.';
   }
   return message.replace(/\s+/g, ' ').slice(0, 500);
+}
+
+async function resetSession(client: pg.PoolClient): Promise<void> {
+  await client.query('RESET ALL').catch(() => undefined);
+  await client.query('SELECT pg_advisory_unlock_all()').catch(() => undefined);
 }

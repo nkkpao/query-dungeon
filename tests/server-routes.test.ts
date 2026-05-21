@@ -39,6 +39,18 @@ describe('server routes', () => {
     await app.close();
   });
 
+  it('rejects request bodies above the server envelope limit', async () => {
+    const app = await buildApp({...config, sqlMaxBytes: 8}, fakeServices());
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/submissions',
+      payload: {challengeId: '01-user-orders-missing-index', participantName: 'Ada', sql: `SELECT '${'x'.repeat(9000)}'`},
+    });
+    expect(response.statusCode).toBe(413);
+    expect(response.json()).toEqual({error: {code: 'REQUEST_TOO_LARGE', message: 'Request body exceeds the server limit.'}});
+    await app.close();
+  });
+
   it('fetches failed submissions without hidden solution material', async () => {
     const app = await buildApp(config, fakeServices());
     const response = await app.inject({method: 'GET', url: '/api/submissions/00000000-0000-4000-8000-000000000002'});

@@ -25,6 +25,14 @@ describe('SQL safety validation', () => {
     'SELECT 1; -- SELECT only?',
     "SELECT 'drop table users'",
     'SELECT 1 /* delete from users */',
+    "SELECT set_config('statement_timeout', '0', false)",
+    "SELECT nextval('orders_id_seq')",
+    "SELECT setval('orders_id_seq', 1)",
+    'SELECT pg_sleep(10)',
+    "SELECT pg_advisory_lock(42)",
+    "SELECT pg_notify('submissions', 'done')",
+    "SELECT pg_catalog.set_config('statement_timeout', '0', false)",
+    "SELECT pg_read_file('/etc/passwd')",
   ])('rejects unsafe SQL: %s', (sql) => {
     expect(validateSqlSafety(sql, 1000).ok).toBe(false);
   });

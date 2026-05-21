@@ -29,6 +29,28 @@ const forbidden = [
   'lock',
 ];
 
+const sideEffectingFunctions = [
+  'dblink',
+  'lo_export',
+  'lo_import',
+  'nextval',
+  'pg_advisory_lock',
+  'pg_advisory_xact_lock',
+  'pg_cancel_backend',
+  'pg_export_snapshot',
+  'pg_logdir_ls',
+  'pg_ls_dir',
+  'pg_notify',
+  'pg_read_binary_file',
+  'pg_read_file',
+  'pg_reload_conf',
+  'pg_sleep',
+  'pg_stat_file',
+  'pg_terminate_backend',
+  'set_config',
+  'setval',
+];
+
 export function sqlHash(sql: string): string {
   return createHash('sha256').update(sql).digest('hex');
 }
@@ -64,6 +86,11 @@ export function validateSqlSafety(sql: string, maxBytes: number): SqlSafetyResul
   }
   if (/\bwith\b[\s\S]*\b(insert|update|delete|merge)\b/i.test(normalized)) {
     return fail(hash, 'SQL_FORBIDDEN_STATEMENT: Data-modifying CTEs are not allowed.');
+  }
+  for (const functionName of sideEffectingFunctions) {
+    if (new RegExp(`(?:\\b|\\.)${functionName}\\s*\\(`, 'i').test(normalized)) {
+      return fail(hash, `SQL_FORBIDDEN_FUNCTION: "${functionName}" is not allowed.`);
+    }
   }
 
   return {ok: true, sqlHash: hash, errorMessage: null};

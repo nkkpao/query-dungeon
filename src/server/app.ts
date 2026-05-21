@@ -8,6 +8,8 @@ import {ChallengeCatalog} from './services/challenge-catalog.js';
 import {EvaluationService} from './services/evaluation-service.js';
 import {LeaderboardService} from './services/leaderboard-service.js';
 
+const requestEnvelopeBytes = 8192;
+
 export interface AppServices {
   submissions: SubmissionRouteServices;
   challenges: ChallengeRouteServices;
@@ -37,7 +39,7 @@ export function defaultServices(config: ServerConfig): AppServices {
 }
 
 export async function buildApp(config: ServerConfig, services: AppServices = defaultServices(config)): Promise<FastifyInstance> {
-  const app = Fastify({logger: false});
+  const app = Fastify({logger: false, bodyLimit: config.sqlMaxBytes + requestEnvelopeBytes});
   app.setErrorHandler(handleError);
   app.addHook('onClose', async () => {
     await services.close?.();

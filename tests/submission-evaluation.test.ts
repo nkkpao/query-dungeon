@@ -33,6 +33,21 @@ describe('submission evaluation service', () => {
     expect(correct).toMatchObject({status: 'completed', correctness: true, rowsReturned: 1});
     expect(incorrect).toMatchObject({status: 'completed', correctness: false});
   });
+
+  it('evaluates inside a read-only transaction and resets pooled session state', async () => {
+    const pool = new FakePool();
+    const service = new EvaluationService({
+      databaseUrl: 'postgresql://example',
+      queryTimeoutMs: 15000,
+      sqlMaxBytes: 65536,
+      pool: pool as any,
+      challengeCatalog: fakeCatalog(),
+    });
+    await service.submit({challengeId: '01-user-orders-missing-index', participantName: 'Ada', sql: 'SELECT 1 AS id'});
+    expect(pool.client.queries).toContain('BEGIN READ ONLY');
+    expect(pool.client.queries).toContain('RESET ALL');
+    expect(pool.client.queries).toContain('SELECT pg_advisory_unlock_all()');
+  });
 });
 
 function fakeCatalog(): any {
@@ -52,10 +67,12 @@ class FakePool {
 class FakeClient {
   submissions = new Map<string, any>();
   results = new Map<string, any>();
+  queries: string[] = [];
 
   release() {}
 
   async query(sql: string, params: any[] = []): Promise<any> {
+    this.queries.push(sql.replace(/\s+/g, ' ').trim());
     const normalized = sql.replace(/\s+/g, ' ').trim().toLowerCase();
     if (normalized.startsWith('insert into submissions')) {
       const row = {
@@ -121,7 +138,13 @@ class FakeClient {
     if (normalized.startsWith('explain')) {
       return {rows: [{'QUERY PLAN': 'Planning Time: 0.100 ms'}, {'QUERY PLAN': 'Execution Time: 1.000 ms'}]};
     }
-    if (normalized === 'begin' || normalized === 'rollback' || normalized.startsWith('select set_config')) {
+    if (
+      normalized === 'begin read only'
+      || normalized === 'rollback'
+      || normalized === 'reset all'
+      || normalized === 'select pg_advisory_unlock_all()'
+      || normalized.startsWith('select set_config')
+    ) {
       return {rows: [], rowCount: 0};
     }
     if (normalized.includes('select 1 as id')) return {rows: [{id: 1}], rowCount: 1};
