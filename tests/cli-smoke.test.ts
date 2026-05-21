@@ -34,4 +34,11 @@ describe('CLI smoke', () => {
     expect(learnerCommands).not.toContain('record-plans');
     expect(learnerCommands).not.toContain('validate-recorded-plans');
   });
+
+  it('does not require server modules to construct learner commands', async () => {
+    const command = runSqlCommand();
+    expect(command.name()).toBe('run-sql');
+    const server = await import('../src/server/app.js');
+    expect(typeof server.buildApp).toBe('function');
+  });
 });

@@ -16,6 +16,7 @@ export function seedCommand(): Command {
           'sql/seeds/000_reset.sql',
           'sql/schema/001_tables.sql',
           'sql/schema/002_baseline_indexes.sql',
+          'sql/schema/004_submissions.sql',
           'sql/seeds/001_seed_small.sql',
         ];
         if (scale === 'medium' || scale === 'large') files.push('sql/seeds/002_seed_medium.sql');

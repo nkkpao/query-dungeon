@@ -1,6 +1,8 @@
 DATABASE_URL ?= postgresql://dungeon:dungeon@localhost:54329/dungeon
 SEED_SCALE ?= small
 QUERY_TIMEOUT_MS ?= 15000
+SERVER_PORT ?= 3000
+SERVER_SQL_MAX_BYTES ?= 65536
 CHALLENGE ?= 01-user-orders-missing-index
 SQL ?= sql/challenges/$(CHALLENGE)/baseline.sql
 LEFT ?= workspace/sql/attempt-1.sql
@@ -12,7 +14,7 @@ SCALE ?= $(SEED_SCALE)
 CLI = node dist/src/cli/index.js --database-url $(DATABASE_URL) --scale $(SEED_SCALE) --timeout-ms $(QUERY_TIMEOUT_MS)
 VARIANT_FLAG = $(if $(VARIANT),--variant $(VARIANT),)
 
-.PHONY: setup seed list run-sql explain-file benchmark-file validate-file diff-results compare-with-suggested-solution record-plans validate-recorded-plans reset test build
+.PHONY: setup seed server list run-sql explain-file benchmark-file validate-file diff-results compare-with-suggested-solution record-plans validate-recorded-plans reset test build
 
 setup:
 	npm install
@@ -21,6 +23,9 @@ setup:
 
 seed:
 	$(CLI) seed --scale $(SEED_SCALE)
+
+server:
+	DATABASE_URL=$(DATABASE_URL) QUERY_TIMEOUT_MS=$(QUERY_TIMEOUT_MS) SERVER_PORT=$(SERVER_PORT) SERVER_SQL_MAX_BYTES=$(SERVER_SQL_MAX_BYTES) node dist/src/server/index.js
 
 list:
 	$(CLI) list

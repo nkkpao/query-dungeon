@@ -17,11 +17,11 @@
 
 **Purpose**: Add the server dependency, entrypoint skeleton, and project commands without changing existing CLI behavior.
 
-- [ ] T001 Add Fastify dependency to `package.json`
-- [ ] T002 Add `server` npm script pointing to `tsx src/server/index.ts` in `package.json`
-- [ ] T003 Add `SERVER_PORT` and `SERVER_SQL_MAX_BYTES` defaults plus `server` target using `node dist/src/server/index.js` in `Makefile`
-- [ ] T004 [P] Create server directory structure with placeholder modules in `src/server/index.ts`, `src/server/app.ts`, `src/server/config.ts`, `src/server/errors.ts`, `src/server/routes/health.ts`, `src/server/routes/challenges.ts`, `src/server/routes/submissions.ts`, `src/server/services/challenge-catalog.ts`, `src/server/services/evaluation-service.ts`, `src/server/services/leaderboard-service.ts`, `src/server/services/sql-safety.ts`, `src/server/repositories/submission-repository.ts`, `src/server/repositories/evaluation-result-repository.ts`, and `src/server/types.ts`
-- [ ] T005 [P] Add server smoke import test to ensure CLI modules do not depend on Fastify in `tests/cli-smoke.test.ts`
+- [X] T001 Add Fastify dependency to `package.json`
+- [X] T002 Add `server` npm script pointing to `tsx src/server/index.ts` in `package.json`
+- [X] T003 Add `SERVER_PORT` and `SERVER_SQL_MAX_BYTES` defaults plus `server` target using `node dist/src/server/index.js` in `Makefile`
+- [X] T004 [P] Create server directory structure with placeholder modules in `src/server/index.ts`, `src/server/app.ts`, `src/server/config.ts`, `src/server/errors.ts`, `src/server/routes/health.ts`, `src/server/routes/challenges.ts`, `src/server/routes/submissions.ts`, `src/server/services/challenge-catalog.ts`, `src/server/services/evaluation-service.ts`, `src/server/services/leaderboard-service.ts`, `src/server/services/sql-safety.ts`, `src/server/repositories/submission-repository.ts`, `src/server/repositories/evaluation-result-repository.ts`, and `src/server/types.ts`
+- [X] T005 [P] Add server smoke import test to ensure CLI modules do not depend on Fastify in `tests/cli-smoke.test.ts`
 
 ---
 
@@ -31,19 +31,19 @@
 
 **CRITICAL**: No user story endpoint work should begin until this phase is complete.
 
-- [ ] T006 [P] Define `SubmissionCreateRequest`, `SubmissionResponse`, `LeaderboardEntryResponse`, `ChallengeListResponse`, and `ErrorResponse` types in `src/server/types.ts`
-- [ ] T007 [P] Add JSON schemas for request/response validation in `src/server/routes/schemas.ts`
-- [ ] T008 [P] Add consistent `ApiError` and centralized error response helpers in `src/server/errors.ts`
-- [ ] T009 [P] Add server config loader for `DATABASE_URL`, `QUERY_TIMEOUT_MS`, `SERVER_PORT`, and `SERVER_SQL_MAX_BYTES` in `src/server/config.ts`
-- [ ] T010 Add `submissions` and `evaluation_results` tables with `sql_hash`, lifecycle checks, foreign key, and timestamps in `sql/schema/004_submissions.sql`
-- [ ] T011 Add leaderboard-friendly indexes for challenge, variant, correctness, execution time, latency, and submission time in `sql/schema/004_submissions.sql`
-- [ ] T012 Update database setup/seed path to apply `sql/schema/004_submissions.sql` in `src/cli/commands/seed.ts`
-- [ ] T013 [P] Add SQL safety unit tests for single SELECT, multiple statements, max size, DDL, DML, transaction control, COPY, CALL, DO, GRANT, and REVOKE in `tests/sql-safety.test.ts`
-- [ ] T014 Implement SQL safety validation and `sql_hash` generation in `src/server/services/sql-safety.ts`
-- [ ] T015 [P] Add repository tests for creating submissions, updating statuses, storing results, fetching by ID, and leaderboard ordering in `tests/submission-repository.test.ts`
-- [ ] T016 Implement submission persistence methods in `src/server/repositories/submission-repository.ts`
-- [ ] T017 Implement evaluation result persistence methods in `src/server/repositories/evaluation-result-repository.ts`
-- [ ] T018 Wire Fastify app creation, JSON schema registration, `/health`, and centralized error handling in `src/server/app.ts`, `src/server/index.ts`, and `src/server/routes/health.ts`
+- [X] T006 [P] Define `SubmissionCreateRequest`, `SubmissionResponse`, `LeaderboardEntryResponse`, `ChallengeListResponse`, and `ErrorResponse` types in `src/server/types.ts`
+- [X] T007 [P] Add JSON schemas for request/response validation in `src/server/routes/schemas.ts`
+- [X] T008 [P] Add consistent `ApiError` and centralized error response helpers in `src/server/errors.ts`
+- [X] T009 [P] Add server config loader for `DATABASE_URL`, `QUERY_TIMEOUT_MS`, `SERVER_PORT`, and `SERVER_SQL_MAX_BYTES` in `src/server/config.ts`
+- [X] T010 Add `submissions` and `evaluation_results` tables with `sql_hash`, lifecycle checks, foreign key, and timestamps in `sql/schema/004_submissions.sql`
+- [X] T011 Add leaderboard-friendly indexes for challenge, variant, correctness, execution time, latency, and submission time in `sql/schema/004_submissions.sql`
+- [X] T012 Update database setup/seed path to apply `sql/schema/004_submissions.sql` in `src/cli/commands/seed.ts`
+- [X] T013 [P] Add SQL safety unit tests for single SELECT, multiple statements, max size, DDL, DML, transaction control, COPY, CALL, DO, GRANT, REVOKE, `SELECT INTO`, data-modifying CTEs, semicolon/comment bypasses, and forbidden keywords hidden in comments or string literals in `tests/sql-safety.test.ts`
+- [X] T014 Implement SQL safety validation for single SELECT, max size, disallowed statement classes, bypass edge cases, and `sql_hash` generation in `src/server/services/sql-safety.ts`
+- [X] T015 [P] Add repository tests for creating submissions, updating statuses, storing results, fetching by ID, and leaderboard ordering in `tests/submission-repository.test.ts`
+- [X] T016 Implement submission persistence methods in `src/server/repositories/submission-repository.ts`
+- [X] T017 Implement evaluation result persistence methods in `src/server/repositories/evaluation-result-repository.ts`
+- [X] T018 Wire Fastify app creation, JSON schema registration, `/health`, and centralized error handling in `src/server/app.ts`, `src/server/index.ts`, and `src/server/routes/health.ts`
 
 **Checkpoint**: Foundation ready. Database, validation, repositories, and the server shell are available for user stories.
 
@@ -57,17 +57,17 @@
 
 ### Tests for User Story 1
 
-- [ ] T019 [P] [US1] Add contract tests for `POST /api/submissions` success, validation error shape, and unsafe SQL rejection in `tests/server-contract.test.ts`
-- [ ] T020 [P] [US1] Add evaluation service tests for correct submission, incorrect result, invalid SQL, destructive SQL rejection, timeout handling, rollback behavior, and stored attempts in `tests/submission-evaluation.test.ts`
-- [ ] T021 [P] [US1] Add route tests for `GET /health` and `POST /api/submissions` using Fastify injection in `tests/server-routes.test.ts`
+- [X] T019 [P] [US1] Add contract tests for `POST /api/submissions` success, malformed request `400` error shape, and unsafe well-formed SQL returning `SubmissionResponse` with `failed` status and `submissionId` in `tests/server-contract.test.ts`
+- [X] T020 [P] [US1] Add evaluation service tests for correct submission, incorrect result, invalid SQL, destructive SQL rejection, SQL size rejection, timeout handling, rollback behavior, and stored failed attempts with `submissionId` in `tests/submission-evaluation.test.ts`
+- [X] T021 [P] [US1] Add route tests for `GET /health` and `POST /api/submissions` using Fastify injection in `tests/server-routes.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T022 [P] [US1] Implement challenge metadata resolution using `getChallengeForVariant` and `loadExpectedResult` in `src/server/services/challenge-catalog.ts`
-- [ ] T023 [US1] Implement synchronous evaluation flow using SQL safety validation, submission insert, `BEGIN`, `set_config('statement_timeout', ...)`, participant SQL execution, `validateRows`, `explainAnalyze`, `ROLLBACK`, and result storage in `src/server/services/evaluation-service.ts`
-- [ ] T024 [US1] Ensure evaluation stores all failed, incorrect, and correct attempts with `sql_hash`, status, row count, latency, planning time, execution time, diff summary, and participant-safe error message in `src/server/services/evaluation-service.ts`
-- [ ] T025 [US1] Implement `POST /api/submissions` route with JSON request validation and `SubmissionResponse` mapping in `src/server/routes/submissions.ts`
-- [ ] T026 [US1] Verify no API response from `POST /api/submissions` includes official solution SQL, suggested solution SQL, raw plan text, or hidden optional material in `src/server/routes/submissions.ts`
+- [X] T022 [P] [US1] Implement challenge metadata resolution using `getChallengeForVariant` and `loadExpectedResult` in `src/server/services/challenge-catalog.ts`
+- [X] T023 [US1] Implement synchronous evaluation flow using request-schema validation, submission insert for well-formed attempts, SQL safety validation, failed-result storage for SQL safety and size failures, `BEGIN`, `set_config('statement_timeout', ...)`, participant SQL execution, `validateRows`, `explainAnalyze`, `ROLLBACK`, and result storage in `src/server/services/evaluation-service.ts`
+- [X] T024 [US1] Ensure evaluation stores all failed, incorrect, and correct attempts with `sql_hash`, status, row count, latency, planning time, execution time, diff summary, and participant-safe error message in `src/server/services/evaluation-service.ts`
+- [X] T025 [US1] Implement `POST /api/submissions` route with JSON request validation, malformed request `ErrorResponse` mapping, and well-formed attempt `SubmissionResponse` mapping including failed SQL-safety submissions in `src/server/routes/submissions.ts`
+- [X] T026 [US1] Verify no API response from `POST /api/submissions` includes official solution SQL, suggested solution SQL, raw plan text, or hidden optional material in `src/server/routes/submissions.ts`
 
 **Checkpoint**: User Story 1 is independently functional and can be demoed as the MVP.
 
@@ -81,14 +81,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T027 [P] [US2] Add contract tests for `GET /api/submissions/:id` success and not-found responses in `tests/server-contract.test.ts`
-- [ ] T028 [P] [US2] Add route tests for fetching completed, failed, and unknown submissions in `tests/server-routes.test.ts`
+- [X] T027 [P] [US2] Add contract tests for `GET /api/submissions/:id` success, not-found responses, and absence of official or suggested solution SQL in `tests/server-contract.test.ts`
+- [X] T028 [P] [US2] Add route tests for fetching completed, failed, unsafe-SQL failed, and unknown submissions without exposing raw hidden solution material in `tests/server-routes.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T029 [US2] Add repository read model for submission plus evaluation result lookup in `src/server/repositories/submission-repository.ts`
-- [ ] T030 [US2] Add response mapper for submission status/result that excludes raw SQL and notes from default status responses in `src/server/routes/submissions.ts`
-- [ ] T031 [US2] Implement `GET /api/submissions/:id` route with UUID validation and consistent not-found errors in `src/server/routes/submissions.ts`
+- [X] T029 [US2] Add repository read model for submission plus evaluation result lookup in `src/server/repositories/submission-repository.ts`
+- [X] T030 [US2] Add response mapper for submission status/result that excludes raw SQL and notes from default status responses in `src/server/routes/submissions.ts`
+- [X] T031 [US2] Implement `GET /api/submissions/:id` route with UUID validation and consistent not-found errors in `src/server/routes/submissions.ts`
 
 **Checkpoint**: User Story 2 is independently functional after a submission exists.
 
@@ -102,16 +102,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T032 [P] [US3] Add contract tests for `GET /api/challenges` and `GET /api/challenges/:challengeId/leaderboard` response shapes in `tests/server-contract.test.ts`
-- [ ] T033 [P] [US3] Add route test proving challenge list does not expose official or suggested solution paths or SQL in `tests/server-routes.test.ts`
-- [ ] T034 [P] [US3] Add leaderboard ranking test for correct-only filtering and ordering by `executionTimeMs ASC`, `latencyMs ASC`, and `submittedAt ASC` in `tests/server-routes.test.ts`
+- [X] T032 [P] [US3] Add contract tests for `GET /api/challenges` and `GET /api/challenges/:challengeId/leaderboard` response shapes in `tests/server-contract.test.ts`
+- [X] T033 [P] [US3] Add route test proving challenge list does not expose official or suggested solution paths or SQL in `tests/server-routes.test.ts`
+- [X] T034 [P] [US3] Add leaderboard ranking test for correct-only filtering, incorrect/failed exclusion, no raw SQL or solution material exposure, and ordering by `executionTimeMs ASC`, `latencyMs ASC`, and `submittedAt ASC` in `tests/server-routes.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Implement participant-safe challenge list mapping from `challenges` and variants in `src/server/services/challenge-catalog.ts`
-- [ ] T036 [US3] Implement `GET /api/challenges` route in `src/server/routes/challenges.ts`
-- [ ] T037 [US3] Implement leaderboard query for challenge ID and optional variant with correct-completed-only filtering in `src/server/services/leaderboard-service.ts`
-- [ ] T038 [US3] Implement `GET /api/challenges/:challengeId/leaderboard` route with variant validation and no raw SQL fields in `src/server/routes/challenges.ts`
+- [X] T035 [US3] Implement participant-safe challenge list mapping from `challenges` and variants in `src/server/services/challenge-catalog.ts`
+- [X] T036 [US3] Implement `GET /api/challenges` route in `src/server/routes/challenges.ts`
+- [X] T037 [US3] Implement leaderboard query for challenge ID and optional variant with correct-completed-only filtering, incorrect/failed exclusion, and deterministic timing rank order in `src/server/services/leaderboard-service.ts`
+- [X] T038 [US3] Implement `GET /api/challenges/:challengeId/leaderboard` route with variant validation and no raw SQL fields in `src/server/routes/challenges.ts`
 
 **Checkpoint**: User Story 3 is independently functional once submissions exist.
 
@@ -121,12 +121,12 @@
 
 **Purpose**: Documentation, quickstart validation, and full-regression checks across all stories.
 
-- [ ] T039 [P] Add `docs/server-api.md` with endpoint descriptions, safety rules, status/result fields, leaderboard ranking, and curl examples in `docs/server-api.md`
-- [ ] T040 [P] Add README server section covering setup, `npm run server`, `make server`, environment variables, and curl examples in `README.md`
-- [ ] T041 [P] Update API contract if implementation response names differ from the generated plan in `specs/004-submission-api/contracts/openapi.yaml`
+- [X] T039 [P] Add `docs/server-api.md` with endpoint descriptions, safety rules, status/result fields, leaderboard ranking, and curl examples in `docs/server-api.md`
+- [X] T040 [P] Add README server section covering setup, `npm run server`, `make server`, environment variables, and curl examples in `README.md`
+- [X] T041 [P] Update API contract if implementation response names differ from the generated plan in `specs/004-submission-api/contracts/openapi.yaml`
 - [ ] T042 Run quickstart validation commands and update any drift in `specs/004-submission-api/quickstart.md`
-- [ ] T043 Run `npm run build` and fix TypeScript errors in `src/server/`, `src/db/`, `src/challenges/`, and `src/cli/`
-- [ ] T044 Run `npm test` and fix failing unit, route, repository, contract, and existing CLI tests in `tests/`
+- [X] T043 Run `npm run build` and fix TypeScript errors in `src/server/`, `src/db/`, `src/challenges/`, and `src/cli/`
+- [X] T044 Run `npm test` and fix failing unit, route, repository, contract, and existing CLI tests in `tests/`
 - [ ] T045 Run existing CLI smoke commands `make list`, `make validate-file`, and `make benchmark-file` from `Makefile` to verify local workflow remains intact
 
 ---
@@ -168,7 +168,7 @@
 ## Parallel Example: User Story 1
 
 ```bash
-Task: "T019 [P] [US1] Add contract tests for POST /api/submissions success, validation error shape, and unsafe SQL rejection in tests/server-contract.test.ts"
+Task: "T019 [P] [US1] Add contract tests for POST /api/submissions success, malformed request 400 error shape, and unsafe well-formed SQL returning SubmissionResponse with failed status and submissionId in tests/server-contract.test.ts"
 Task: "T020 [P] [US1] Add evaluation service tests for correct submission, incorrect result, invalid SQL, destructive SQL rejection, timeout handling, rollback behavior, and stored attempts in tests/submission-evaluation.test.ts"
 Task: "T021 [P] [US1] Add route tests for GET /health and POST /api/submissions using Fastify injection in tests/server-routes.test.ts"
 ```
@@ -204,5 +204,5 @@ Task: "T034 [P] [US3] Add leaderboard ranking test for correct-only filtering an
 - `[P]` tasks touch different files or can be performed before their dependent implementation.
 - User-story labels map directly to the three user stories in `spec.md`.
 - Suggested and official solution SQL must remain hidden from all default API paths.
-- Store all accepted attempts, including invalid, incorrect, failed, and correct submissions.
+- Store all well-formed attempts, including SQL-safety failures, incorrect, failed, and correct submissions.
 - Do not introduce Kafka, background workers, authentication, rate limiting, or public deployment hardening in this MVP.

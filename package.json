@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "dungeon": "tsx src/cli/index.ts",
+    "server": "tsx src/server/index.ts",
     "seed": "tsx src/cli/index.ts seed",
     "list": "tsx src/cli/index.ts list",
     "run-sql": "tsx src/cli/index.ts run-sql",
@@ -24,6 +25,7 @@
   "dependencies": {
     "commander": "^12.1.0",
     "dotenv": "^16.4.7",
+    "fastify": "^5.8.5",
     "pg": "^8.13.1"
   },
   "devDependencies": {
