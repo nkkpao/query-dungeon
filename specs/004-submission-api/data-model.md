@@ -13,6 +13,8 @@ Represents one participant attempt for a challenge and optional variant.
 - `participant_id`: Optional participant identifier.
 - `sql_text`: Submitted participant SQL. Stored for attempt audit and result
   lookup, but never returned by leaderboard responses.
+- `sql_hash`: Stable hash of `sql_text` for duplicate detection, debugging, and
+  leaderboard-safe references without exposing raw SQL.
 - `notes`: Optional participant notes.
 - `status`: `pending`, `running`, `completed`, or `failed`.
 - `validation_error`: Participant-safe validation or SQL safety error, nullable.
@@ -106,6 +108,7 @@ submissions(
   participant_name text null,
   participant_id text null,
   sql_text text not null,
+  sql_hash text not null,
   notes text null,
   status text not null,
   validation_error text null,
