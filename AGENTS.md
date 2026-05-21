@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
 For governing principles, read `.specify/memory/constitution.md`. For the active
 feature's technologies, project structure, shell commands, and implementation
-constraints, read `specs/003-advanced-skew-plans/plan.md`.
+constraints, read `specs/004-submission-api/plan.md`.
 <!-- SPECKIT END -->
