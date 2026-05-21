@@ -13,7 +13,8 @@
 - Q: Which HTTP server framework should be preferred? → A: Prefer Fastify because the project has no strong Express convention.
 - Q: Where should submissions and leaderboard data be persisted? → A: Use the existing PostgreSQL database.
 - Q: Which existing evaluation components should the API reuse? → A: Reuse challenge registry, expected-result parsing, result comparison, benchmark, and explain utilities.
-- Q: How should submission execution, safety, and ranking behave in the MVP? → A: `POST /api/submissions` creates and evaluates a stored attempt synchronously; only one `SELECT` statement is allowed; unsafe statement classes are rejected; SQL size and statement timeout limits are enforced; evaluation always runs in a rolled-back transaction; all attempts are stored; leaderboards rank only correct completed submissions; suggested solution SQL is never returned.
+- Q: How should submission execution, safety, and ranking behave in the MVP? → A: `POST /api/submissions` creates and evaluates a stored attempt synchronously; only one `SELECT` statement is allowed; unsafe statement classes are rejected; SQL size and statement timeout limits are enforced; executable evaluation always runs in a rolled-back transaction; well-formed attempts are stored; leaderboards rank only correct completed submissions; suggested solution SQL is never returned.
+- Q: How should malformed requests differ from unsafe SQL submissions? → A: Malformed JSON or request-schema failures return a standard error without `submissionId`; well-formed submissions that fail SQL safety, size, or timeout checks are stored as failed attempts and return a `SubmissionResponse` with `submissionId`.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -29,7 +30,7 @@ A participant submits their SQL answer for an existing challenge to a local serv
 
 1. **Given** the API server is running and a valid challenge exists, **When** a participant posts `challengeId`, optional `variant`, `participantName` or `participantId`, `sql`, and optional `notes` to `POST /api/submissions`, **Then** the system stores the attempt, evaluates it, and returns a unique `submissionId` with the resulting status.
 2. **Given** a submitted SQL answer produces the expected rows for the challenge, **When** evaluation finishes, **Then** the recorded result is marked `completed` and includes correctness, latency, row count, and any available planning or execution timing evidence.
-3. **Given** a submitted SQL answer is invalid, unsafe for the challenge, exceeds the configured SQL size limit, exceeds the configured statement timeout, or does not match the expected result, **When** evaluation finishes, **Then** the stored attempt is retrievable with a `failed` status or completed incorrect result and includes an explanatory participant-safe error or mismatch message.
+3. **Given** a well-formed submission request contains SQL that is invalid, unsafe for the challenge, exceeds the configured SQL size limit, exceeds the configured statement timeout, or does not match the expected result, **When** evaluation finishes, **Then** the attempt is stored, the response includes a `submissionId`, and the stored result is retrievable with a `failed` status or completed incorrect result plus an explanatory participant-safe error or mismatch message.
 
 ---
 
@@ -69,6 +70,7 @@ A participant or facilitator can list available challenges and view the best cor
 - A submission references an unknown challenge ID or variant.
 - A request omits both participant identity fields or provides empty SQL.
 - A request contains more than one SQL statement.
+- A request contains `SELECT INTO`, a data-modifying CTE, forbidden keywords inside comments or strings, or semicolon/comment tricks intended to bypass single-statement validation.
 - A request contains DDL, DML, transaction control, `COPY`, `CALL`, `DO`, `CREATE`, `ALTER`, `DROP`, `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `GRANT`, or `REVOKE`.
 - A request exceeds the configured SQL size limit.
 - Submitted SQL returns the correct columns in a different row order where the challenge expected result is order-insensitive, or returns the right values but extra rows.
@@ -85,10 +87,10 @@ A participant or facilitator can list available challenges and view the best cor
 
 - **FR-001**: System MUST provide a locally startable HTTP API server for the Query Dungeon training project.
 - **FR-002**: System MUST accept SQL solution submissions through `POST /api/submissions` with `challengeId`, optional `variant`, `participantName` or `participantId`, `sql`, and optional `notes`.
-- **FR-003**: System MUST reject malformed submissions with clear participant-safe validation errors.
+- **FR-003**: System MUST reject malformed JSON or request-schema failures with clear participant-safe validation errors and no `submissionId`.
 - **FR-004**: System MUST evaluate submitted SQL against the expected result fixture for the referenced challenge and variant.
 - **FR-005**: System MUST treat the existing `sql/challenges` structure as the source of truth for challenge metadata, expected results, and variant resolution.
-- **FR-006**: System MUST record every accepted submission attempt and its final result in the existing PostgreSQL database, including failed and incorrect attempts.
+- **FR-006**: System MUST record every well-formed submission attempt and its final result in the existing PostgreSQL database, including SQL-safety failures, size-limit failures, timeout failures, incorrect results, and correct results.
 - **FR-007**: System MUST expose `GET /api/submissions/:id` to retrieve submission status and result details.
 - **FR-008**: Submission results MUST include `submissionId`, `status`, correctness result, `latencyMs`, returned row count, and an error message when evaluation fails.
 - **FR-009**: Submission results MUST include `executionTimeMs` and `planningTimeMs` when those values are available from query analysis.
@@ -107,6 +109,8 @@ A participant or facilitator can list available challenges and view the best cor
 - **FR-022**: Submission evaluation MUST enforce a documented statement timeout.
 - **FR-023**: Submission evaluation MUST run inside a transaction that is rolled back after evaluation.
 - **FR-024**: The API implementation MUST reuse the existing challenge registry, expected-result parsing, result comparison, benchmark, and explain utilities where those utilities already satisfy the API behavior.
+- **FR-025**: Well-formed submission requests rejected by SQL safety, SQL size, or statement timeout controls MUST return a submission result containing `submissionId` and `failed` status; malformed request-schema failures MAY return only the standard error response.
+- **FR-026**: SQL safety validation MUST include tests for `SELECT INTO`, data-modifying CTEs, semicolon/comment bypasses, and forbidden keywords hidden in comments or string literals.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -137,7 +141,7 @@ A participant or facilitator can list available challenges and view the best cor
 - **SC-004**: A client can retrieve a submitted result by ID and receive a terminal status plus result details within a bounded local evaluation window.
 - **SC-005**: After at least three correct completed submissions for one challenge, the leaderboard returns the best correct completed entries in deterministic rank order.
 - **SC-006**: Existing local CLI challenge, validation, and hands-on SQL workflows continue to pass their current smoke tests after the API feature is added.
-- **SC-007**: Attempts containing multiple statements, disallowed SQL classes, SQL above the configured size limit, or statements exceeding the configured timeout are stored and rejected without persisting query side effects.
+- **SC-007**: Well-formed attempts containing multiple statements, disallowed SQL classes, SQL above the configured size limit, or statements exceeding the configured timeout are stored with a `failed` result and rejected without persisting query side effects.
 
 ## Assumptions
 

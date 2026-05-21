@@ -9,12 +9,13 @@ Add a minimal HTTP API service inside the existing TypeScript/Node.js Query
 Dungeon project. The service uses Fastify, shares the current PostgreSQL
 database, reuses the challenge registry, expected-result parsing,
 result-comparison, benchmark, and explain helpers, and persists all submission
-attempts plus evaluation results. The MVP evaluates submissions synchronously in
-`POST /api/submissions`, only accepts a single `SELECT` statement, runs the
-participant SQL inside a rolled-back transaction with statement timeout
-enforcement, and exposes participant-safe challenge, status, and leaderboard
-endpoints without returning raw participant SQL on leaderboards or any suggested
-solution SQL.
+attempts plus evaluation results. The MVP evaluates well-formed submissions
+synchronously in `POST /api/submissions`, only accepts a single `SELECT`
+statement, runs executable participant SQL inside a rolled-back transaction with
+statement timeout enforcement, stores SQL-safety, size, and timeout failures as
+failed submissions, and exposes participant-safe challenge, status, and
+leaderboard endpoints without returning raw participant SQL on leaderboards or
+any suggested solution SQL.
 
 ## Technical Context
 
@@ -25,7 +26,7 @@ solution SQL.
 **Target Platform**: Local developer machine with Docker, Node.js, shell access, and PostgreSQL container  
 **Project Type**: CLI-first local PostgreSQL performance training lab with one additive backend HTTP service  
 **Performance Goals**: Synchronous local evaluation completes within the existing default `QUERY_TIMEOUT_MS=15000`; leaderboard queries use indexes and deterministic ranking without exact timing assertions  
-**Constraints**: Preserve existing CLI commands and manual SQL workflow; keep `sql/challenges` as the source of truth; do not expose official or suggested solution SQL; do not introduce Kafka or external brokers; store all attempts; rank only correct completed submissions; reject unsafe SQL before execution; run evaluation in a rolled-back transaction  
+**Constraints**: Preserve existing CLI commands and manual SQL workflow; keep `sql/challenges` as the source of truth; do not expose official or suggested solution SQL; do not introduce Kafka or external brokers; store every well-formed attempt including SQL-safety failures; rank only correct completed submissions; reject unsafe SQL before execution; run executable evaluation in a rolled-back transaction  
 **Scale/Scope**: Local MVP for small training sessions; no authentication, rate limiting, multi-tenant isolation, distributed workers, public deployment hardening, or challenge-authoring API
 
 ## Constitution Check
@@ -147,19 +148,24 @@ challenge source-of-truth helpers in `src/challenges`. Add persistence SQL under
    `src/server/app.ts`, config loading, `/health`, centralized error handling,
    JSON validation, `npm run server`, and `make server`.
 4. **Add SQL safety service**: Enforce one statement, `SELECT` only, max SQL
-   size of 65,536 bytes by default, disallowed keyword classes, and tests for
-   rejection messages.
-5. **Add repositories**: Persist all attempts and evaluation results in
-   PostgreSQL, including malformed-but-accepted request attempts where
-   applicable after request validation.
+   size of 65,536 bytes by default, disallowed keyword classes, and bypass tests
+   for `SELECT INTO`, data-modifying CTEs, semicolon/comment tricks, and
+   forbidden keywords hidden in comments or strings.
+5. **Add repositories**: Persist all well-formed attempts and evaluation results
+   in PostgreSQL, including SQL-safety, size, timeout, incorrect, and correct
+   outcomes after request-schema validation.
 6. **Add evaluation service**: Validate request, resolve challenge and variant,
-   load `expected-result.json`, insert submission, run participant SQL inside
+   load `expected-result.json`, insert submission, store SQL-safety or size
+   failures as failed results, run executable participant SQL inside
    `BEGIN`/`ROLLBACK`, enforce statement timeout, compare rows with
    `validateRows`, capture latency and `EXPLAIN` timing when available, and
    store the result.
 7. **Add submission routes**: Implement `POST /api/submissions` and
-   `GET /api/submissions/:id` with participant-safe response shapes and no
-   solution SQL exposure.
+   `GET /api/submissions/:id` with participant-safe response shapes. Malformed
+   request-schema failures return the standard error response; well-formed
+   SQL-safety, size, or timeout failures return `SubmissionResponse` with
+   `submissionId` and `failed` status. Neither endpoint exposes raw hidden
+   solution material.
 8. **Add challenge and leaderboard routes**: Implement `GET /api/challenges`
    from registry metadata and `GET /api/challenges/:challengeId/leaderboard`
    with optional `variant`, correct-completed-only filtering, and ranking by
