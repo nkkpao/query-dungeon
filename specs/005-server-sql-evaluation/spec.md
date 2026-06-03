@@ -9,15 +9,16 @@
 
 ### Session 2026-06-03
 
-- Q: Where should Evaluation Runner behavior live? → A: In a dedicated service class or module, not directly inside route handlers.
-- Q: What inputs should Evaluation Runner accept? → A: It must accept either a stored submission identifier or explicit evaluation input.
-- Q: What should Evaluation Runner return? → A: It must return a structured `EvaluationResult`.
-- Q: Which callers must Evaluation Runner support? → A: It must be usable by the API now and a separate evaluator service later.
+- Q: Where should Evaluation Service behavior live? → A: In a dedicated service class or module, not directly inside route handlers.
+- Q: What inputs should SubmissionEvaluator accept? → A: It must accept either a stored submission identifier or explicit evaluation input.
+- Q: What should SubmissionEvaluator return? → A: It must return a structured `EvaluationResult`.
+- Q: Which callers must Evaluation Service support? → A: It must be usable by the API now and a separate evaluator service later.
 - Q: What is the correctness source? → A: The challenge `expected-result.json` file is the correctness source.
 - Q: Should suggested indexes be applied during evaluation? → A: No, evaluation must not apply suggested indexes.
 - Q: Should suggested solution SQL be run during evaluation? → A: No, evaluation must not run suggested solution SQL.
 - Q: What is the first safety layer for submitted SQL? → A: A static SQL guard is the first safety layer.
 - Q: Which execution protections remain mandatory? → A: Transaction rollback and `statement_timeout` remain required.
+- Q: What names should implementation use for the reusable evaluator boundary? → A: Use `Evaluation Service` for the reusable module boundary and `SubmissionEvaluator` for the orchestration component.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -66,7 +67,7 @@ As a maintainer, I want the evaluation behavior to be testable without going thr
 **Acceptance Scenarios**:
 
 1. **Given** stored expected-result data for a challenge, **When** the evaluator checks a submitted SQL statement directly, **Then** it compares normalized results against the stored expected result rather than any suggested or reference solution.
-2. **Given** repeated direct evaluations of the same SQL against the same challenge data, **When** results are compared, **Then** correctness, normalized rows, row count, and metric presence are consistent across runs.
+2. **Given** 10 repeated direct evaluations of the same SQL against the same challenge data, **When** results are compared, **Then** correctness, normalized rows, row count, and metric presence are consistent across all runs.
 3. **Given** evaluator tests covering rejection, timeout, correctness, and ranking eligibility, **When** the test suite runs, **Then** each behavior can be verified through the evaluator service without invoking a request handler.
 4. **Given** the API needs evaluation now and a separate evaluator service may need it later, **When** either caller provides a stored submission identifier or explicit evaluation input, **Then** the same evaluator service returns a structured evaluation result.
 
@@ -111,7 +112,8 @@ As a maintainer, I want the evaluation behavior to be testable without going thr
 ### Key Entities
 
 - **Submission**: A participant's SQL answer for a specific challenge, with submitted text, submission time, evaluation status, failure reason when applicable, and leaderboard eligibility.
-- **Evaluation Runner**: The dedicated service class or module responsible for safety screening, execution controls, correctness comparison, metric capture, rollback, and structured result creation for API callers and future evaluator-service callers.
+- **Evaluation Service**: The reusable module boundary for submission evaluation, used by the API now and by a future evaluator service later.
+- **SubmissionEvaluator**: The orchestration component inside the Evaluation Service responsible for safety screening, execution controls, correctness comparison, metric capture, rollback, and structured result creation.
 - **Evaluation Input**: Either a stored submission identifier or explicit evaluation details containing the submitted SQL and challenge context needed for evaluation.
 - **EvaluationResult**: The structured outcome of running a submission, including correctness, normalized row count, timing measurements, plan metrics when available, error details, and leaderboard eligibility.
 - **Expected Result**: The challenge-owned `expected-result.json` output used as the correctness source of truth for both local validation and server evaluation.

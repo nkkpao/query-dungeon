@@ -20,10 +20,10 @@ separate evaluator service later.
 **Language/Version**: TypeScript on Node.js 20+  
 **Primary Dependencies**: Fastify, node-postgres (`pg`), dotenv, commander, Vitest, Docker Compose, Makefile  
 **Storage**: Existing PostgreSQL 16+ Docker Compose database; extend `submissions` and `evaluation_results` persistence to include structured evaluation status, error classification, row count, latency, planning time, execution time, plan/buffer metrics, and diff summary  
-**Testing**: Vitest unit, repository, service, HTTP route, and smoke tests; direct evaluator tests are mandatory and must not require HTTP handlers  
+**Testing**: Vitest unit, repository, service, HTTP route, and smoke tests; direct evaluator tests are mandatory and must not require HTTP handlers; include full correct evaluator happy-path and 10-run repeatability coverage  
 **Target Platform**: Local developer machine with Docker, Node.js, shell access, and PostgreSQL container  
 **Project Type**: CLI-first local PostgreSQL performance training lab with additive backend HTTP service and reusable server evaluation module  
-**Performance Goals**: Each evaluator run honors configured `QUERY_TIMEOUT_MS`; repeated evaluation of the same SQL yields the same correctness, normalized rows, row count, and metric presence; leaderboard ordering avoids exact timing assertions  
+**Performance Goals**: Each evaluator run honors configured `QUERY_TIMEOUT_MS`; a 10-run repeatability check of the same SQL yields the same correctness, normalized rows, row count, and metric presence; leaderboard ordering avoids exact timing assertions  
 **Constraints**: Preserve existing CLI commands, challenge IDs, `sql/challenges` source-of-truth files, hidden suggested solution policy, and current learner workflow; evaluate correctness from `expected-result.json`; do not run suggested solution SQL; do not apply suggested indexes; static SQL guard runs before execution; every executable evaluation always rolls back  
 **Scale/Scope**: Local training server and future evaluator-service extraction path; no external queue, paid SaaS, authentication, public deployment hardening, or distributed worker pool in this iteration
 
@@ -135,7 +135,8 @@ for normalization, `src/db/explain.ts` for plan parsing, and
 
 ## Component Design
 
-- **SubmissionEvaluator**: Orchestrates the complete evaluation algorithm and
+- **SubmissionEvaluator**: Orchestrates the complete evaluation algorithm within
+  the reusable Evaluation Service module boundary and
   returns structured `EvaluationResult` for both API and future worker callers.
 - **SqlSafetyValidator**: Performs max-size, single-statement, read-only shape,
   destructive keyword, data-modifying CTE, unsafe function, and comment/string
@@ -221,10 +222,11 @@ for normalization, `src/db/explain.ts` for plan parsing, and
 9. **Update leaderboard filtering**: Ensure repository ranking includes only
    correct completed submissions ordered by execution time, latency, then
    submitted time.
-10. **Broaden tests**: Cover correct, mismatch, syntax, safety rejected,
-    timeout, execution error, internal error, rollback, read-only transaction,
-    statement timeout, explain-only-when-correct, no suggested SQL/index use,
-    and API/direct evaluator equivalence.
+10. **Broaden tests**: Cover correct full evaluator happy path, 10-run
+    repeatability, mismatch, syntax, safety rejected, timeout, execution error,
+    internal error, rollback, read-only transaction, statement timeout,
+    explain-only-when-correct, no suggested SQL/index use, and API/direct
+    evaluator equivalence.
 11. **Update docs and quickstart**: Document the local commands and direct
     evaluator verification path without exposing suggested solution material.
 
