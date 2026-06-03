@@ -1,6 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import {buildApp} from '../src/server/app.js';
 import type {ServerConfig} from '../src/server/config.js';
+import {FakePool, fakeCatalog, makeEvaluationService, makeSubmissionEvaluator} from './helpers/evaluation-fakes.js';
 
 const config: ServerConfig = {
   databaseUrl: 'postgresql://example',
@@ -76,6 +77,61 @@ describe('server routes', () => {
     expect(JSON.stringify(leaderboard.json())).not.toContain('SELECT');
     await app.close();
   });
+
+  it('keeps API-triggered evaluation equivalent to direct evaluator results', async () => {
+    const catalog = fakeCatalog();
+    const app = await buildApp(config, {
+      submissions: makeEvaluationService(new FakePool(), catalog),
+      challenges: {list: () => ({challenges: []}), leaderboard: async () => []},
+    });
+    const api = await app.inject({
+      method: 'POST',
+      url: '/api/submissions',
+      payload: {challengeId: '01-user-orders-missing-index', participantName: 'Ada', sql: 'SELECT 1 AS id'},
+    });
+    const direct = await makeSubmissionEvaluator(new FakePool(), catalog).evaluate({
+      challengeId: '01-user-orders-missing-index',
+      participantName: 'Ada',
+      sql: 'SELECT 1 AS id',
+    });
+
+    expect(api.statusCode).toBe(201);
+    expect(api.json()).toMatchObject({
+      status: direct.status,
+      correctness: direct.correct,
+      errorCode: direct.errorCode,
+      rowsReturned: direct.rowCount,
+    });
+    await app.close();
+  });
+
+  it('submission routes delegate to services for submit and lookup', async () => {
+    const calls = {submit: 0, findById: 0};
+    const services = fakeServices();
+    const app = await buildApp(config, {
+      ...services,
+      submissions: {
+        async submit(request: any) {
+          calls.submit += 1;
+          return (services.submissions.submit as any)(request);
+        },
+        async findById(id: string) {
+          calls.findById += 1;
+          return services.submissions.findById(id);
+        },
+      },
+    });
+
+    await app.inject({
+      method: 'POST',
+      url: '/api/submissions',
+      payload: {challengeId: '01-user-orders-missing-index', participantName: 'Ada', sql: 'SELECT 1'},
+    });
+    await app.inject({method: 'GET', url: '/api/submissions/00000000-0000-4000-8000-000000000002'});
+
+    expect(calls).toEqual({submit: 1, findById: 1});
+    await app.close();
+  });
 });
 
 function fakeServices() {
@@ -86,6 +142,7 @@ function fakeServices() {
           submissionId: '00000000-0000-4000-8000-000000000001',
           status: 'completed',
           correctness: true,
+          errorCode: null,
           latencyMs: 1,
           executionTimeMs: 1,
           planningTimeMs: 0.1,
@@ -99,6 +156,7 @@ function fakeServices() {
           submissionId: id,
           status: 'failed',
           correctness: false,
+          errorCode: 'safety_rejected',
           latencyMs: null,
           executionTimeMs: null,
           planningTimeMs: null,

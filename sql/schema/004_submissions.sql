@@ -23,10 +23,32 @@ CREATE TABLE IF NOT EXISTS evaluation_results (
   latency_ms double precision NULL,
   execution_time_ms double precision NULL,
   planning_time_ms double precision NULL,
+  error_code text NULL,
   error_message text NULL,
   diff_summary jsonb NULL,
+  explain_metrics jsonb NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+
+ALTER TABLE evaluation_results
+  ADD COLUMN IF NOT EXISTS error_code text NULL;
+
+ALTER TABLE evaluation_results
+  ADD COLUMN IF NOT EXISTS explain_metrics jsonb NULL;
+
+ALTER TABLE evaluation_results
+  DROP CONSTRAINT IF EXISTS evaluation_results_error_code_check;
+
+ALTER TABLE evaluation_results
+  ADD CONSTRAINT evaluation_results_error_code_check
+  CHECK (error_code IS NULL OR error_code IN (
+    'syntax_error',
+    'safety_rejected',
+    'timeout',
+    'result_mismatch',
+    'execution_error',
+    'internal_error'
+  ));
 
 CREATE INDEX IF NOT EXISTS idx_submissions_challenge_variant_submitted
   ON submissions (challenge_id, variant, submitted_at);

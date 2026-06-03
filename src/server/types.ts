@@ -1,5 +1,13 @@
 export type SubmissionStatus = 'pending' | 'running' | 'completed' | 'failed';
 
+export type EvaluationErrorCode =
+  | 'syntax_error'
+  | 'safety_rejected'
+  | 'timeout'
+  | 'result_mismatch'
+  | 'execution_error'
+  | 'internal_error';
+
 export interface SubmissionCreateRequest {
   challengeId: string;
   variant?: string;
@@ -13,6 +21,7 @@ export interface SubmissionResponse {
   submissionId: string;
   status: SubmissionStatus;
   correctness: boolean | null;
+  errorCode: EvaluationErrorCode | null;
   latencyMs: number | null;
   executionTimeMs: number | null;
   planningTimeMs: number | null;
@@ -64,16 +73,59 @@ export interface SubmissionRecord {
   completedAt: string | null;
 }
 
+export interface EvaluateStoredSubmissionInput {
+  submissionId: string;
+}
+
+export interface EvaluateExplicitInput {
+  challengeId: string;
+  variant?: string | null;
+  submissionId?: string;
+  sql: string;
+  participantName?: string | null;
+  participantId?: string | null;
+}
+
+export type EvaluationInput = EvaluateStoredSubmissionInput | EvaluateExplicitInput;
+
+export interface ExplainMetrics {
+  planningTimeMs: number | null;
+  executionTimeMs: number | null;
+  actualRows: number | null;
+  sharedHitBlocks: number;
+  sharedReadBlocks: number;
+  tempReadBlocks: number;
+  tempWrittenBlocks: number;
+  planText?: string;
+}
+
+export interface EvaluationResult {
+  submissionId: string;
+  status: SubmissionStatus;
+  correct: boolean | null;
+  errorCode: EvaluationErrorCode | null;
+  errorMessage: string | null;
+  latencyMs: number | null;
+  executionTimeMs: number | null;
+  planningTimeMs: number | null;
+  rowCount: number | null;
+  diffSummary: unknown | null;
+  explainMetrics: ExplainMetrics | null;
+  leaderboardEligible: boolean;
+}
+
 export interface EvaluationResultRecord {
   id: string;
   submissionId: string;
   correct: boolean;
+  errorCode: EvaluationErrorCode | null;
   rowCount: number | null;
   latencyMs: number | null;
   executionTimeMs: number | null;
   planningTimeMs: number | null;
   errorMessage: string | null;
   diffSummary: unknown | null;
+  explainMetrics: ExplainMetrics | null;
   createdAt: string;
 }
 

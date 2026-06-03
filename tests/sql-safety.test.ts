@@ -10,6 +10,7 @@ describe('SQL safety validation', () => {
 
   it.each([
     'SELECT 1; SELECT 2',
+    'EXPLAIN SELECT 1',
     'CREATE TABLE x(id int)',
     'INSERT INTO users(id) VALUES (1)',
     'UPDATE users SET email = email',
@@ -34,10 +35,14 @@ describe('SQL safety validation', () => {
     "SELECT pg_catalog.set_config('statement_timeout', '0', false)",
     "SELECT pg_read_file('/etc/passwd')",
   ])('rejects unsafe SQL: %s', (sql) => {
-    expect(validateSqlSafety(sql, 1000).ok).toBe(false);
+    const result = validateSqlSafety(sql, 1000);
+    expect(result.ok).toBe(false);
+    expect(result.errorCode).toBe('safety_rejected');
   });
 
   it('enforces max SQL size', () => {
-    expect(validateSqlSafety(`SELECT '${'x'.repeat(120)}'`, maxBytes).ok).toBe(false);
+    const result = validateSqlSafety(`SELECT '${'x'.repeat(120)}'`, maxBytes);
+    expect(result.ok).toBe(false);
+    expect(result.errorCode).toBe('safety_rejected');
   });
 });

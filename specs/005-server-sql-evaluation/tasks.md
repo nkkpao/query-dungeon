@@ -15,9 +15,9 @@
 
 **Purpose**: Prepare the existing server codebase for the Evaluation Service refactor without changing behavior yet.
 
-- [ ] T001 Create Evaluation Runner documentation outline with purpose, safety guarantees, and service boundary in docs/evaluation-runner.md
-- [ ] T002 [P] Document the existing API-facing EvaluationService facade and planned SubmissionEvaluator dependency in src/server/services/evaluation-service.ts
-- [ ] T003 [P] Add task-specific test fixture helpers for evaluator fake clients in tests/helpers/evaluation-fakes.ts
+- [X] T001 Create Evaluation Runner documentation outline with purpose, safety guarantees, and service boundary in docs/evaluation-runner.md
+- [X] T002 [P] Document the existing API-facing EvaluationService facade and planned SubmissionEvaluator dependency in src/server/services/evaluation-service.ts
+- [X] T003 [P] Add task-specific test fixture helpers for evaluator fake clients in tests/helpers/evaluation-fakes.ts
 
 ---
 
@@ -27,12 +27,12 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Add EvaluationInput, EvaluationResult, EvaluationErrorCode, ExplainMetrics, and leaderboardEligible types in src/server/types.ts
-- [ ] T005 Add error_code and explain_metrics columns to evaluation_results in sql/schema/004_submissions.sql
-- [ ] T006 [P] Add repository tests for errorCode and explainMetrics persistence in tests/submission-repository.test.ts
-- [ ] T007 Update EvaluationResultRepository create/find mapping for errorCode and explainMetrics in src/server/repositories/evaluation-result-repository.ts
-- [ ] T008 Update SubmissionRepository status helpers for markRunning, markCompleted, and markFailed in src/server/repositories/submission-repository.ts
-- [ ] T009 Update submission response schema to include stable errorCode when present in src/server/routes/schemas.ts
+- [X] T004 Add EvaluationInput, EvaluationResult, EvaluationErrorCode, ExplainMetrics, and leaderboardEligible types in src/server/types.ts
+- [X] T005 Add error_code and explain_metrics columns to evaluation_results in sql/schema/004_submissions.sql
+- [X] T006 [P] Add repository tests for errorCode and explainMetrics persistence in tests/submission-repository.test.ts
+- [X] T007 Update EvaluationResultRepository create/find mapping for errorCode and explainMetrics in src/server/repositories/evaluation-result-repository.ts
+- [X] T008 Update SubmissionRepository status helpers for markRunning, markCompleted, and markFailed in src/server/repositories/submission-repository.ts
+- [X] T009 Update submission response schema to include stable errorCode when present in src/server/routes/schemas.ts
 
 **Checkpoint**: Foundation ready. User story implementation can now begin.
 
@@ -46,26 +46,26 @@
 
 ### Tests for User Story 1
 
-- [ ] T010 [P] [US1] Add SqlSafetyValidator tests for SQL size limit, non-SELECT SQL, DDL/DML keywords, and multi-statement rejection in tests/sql-safety.test.ts
-- [ ] T011 [P] [US1] Add correctness-validator tests for expected-result.json loading and validateRows reuse in tests/result-validation.test.ts
-- [ ] T012 [P] [US1] Add full correct SubmissionEvaluator happy-path test with persisted metrics and leaderboardEligible=true in tests/submission-evaluation.test.ts
-- [ ] T013 [P] [US1] Add 10-run repeatability test for same SQL correctness, normalized rows, row count, and metric presence in tests/submission-evaluation.test.ts
-- [ ] T014 [P] [US1] Add benchmark and explain runner tests for latencyMs, rowsReturned, planningTimeMs, and executionTimeMs in tests/submission-evaluation.test.ts
-- [ ] T015 [P] [US1] Add evaluator failure classification tests for syntax_error, safety_rejected, timeout, result_mismatch, execution_error, and internal_error in tests/submission-evaluation.test.ts
-- [ ] T016 [P] [US1] Add rollback and statement_timeout tests for every executable evaluator path in tests/submission-evaluation.test.ts
+- [X] T010 [P] [US1] Add SqlSafetyValidator tests for SQL size limit, non-SELECT SQL, DDL/DML keywords, and multi-statement rejection in tests/sql-safety.test.ts
+- [X] T011 [P] [US1] Add correctness-validator tests for expected-result.json loading and validateRows reuse in tests/result-validation.test.ts
+- [X] T012 [P] [US1] Add full correct SubmissionEvaluator happy-path test with persisted metrics and leaderboardEligible=true in tests/submission-evaluation.test.ts
+- [X] T013 [P] [US1] Add 10-run repeatability test for same SQL correctness, normalized rows, row count, and metric presence in tests/submission-evaluation.test.ts
+- [X] T014 [P] [US1] Add benchmark and explain runner tests for latencyMs, rowsReturned, planningTimeMs, and executionTimeMs in tests/submission-evaluation.test.ts
+- [X] T015 [P] [US1] Add evaluator failure classification tests for syntax_error, safety_rejected, timeout, result_mismatch, execution_error, and internal_error in tests/submission-evaluation.test.ts
+- [X] T016 [P] [US1] Add rollback and statement_timeout tests for every executable evaluator path in tests/submission-evaluation.test.ts
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement SqlSafetyValidator wrapper around existing SQL guard behavior in src/server/services/sql-safety-validator.ts
-- [ ] T018 [US1] Preserve sqlHash and compatibility exports from existing SQL safety module in src/server/services/sql-safety.ts
-- [ ] T019 [US1] Implement CorrectnessValidator using loadExpectedResult and validateRows in src/server/services/correctness-validator.ts
-- [ ] T020 [US1] Implement BenchmarkRunner for participant SQL execution, latencyMs, rowsReturned, and execution error mapping in src/server/services/benchmark-runner.ts
-- [ ] T021 [US1] Implement ExplainRunner for correct-only EXPLAIN (ANALYZE, BUFFERS) metrics in src/server/services/explain-runner.ts
-- [ ] T022 [US1] Implement transaction wrapper with BEGIN, SET LOCAL statement_timeout, optional read-only mode, rollback, and pooled-session reset in src/server/services/submission-evaluator.ts
-- [ ] T023 [US1] Implement SubmissionEvaluator orchestration for stored submission and explicit input evaluation in src/server/services/submission-evaluator.ts
-- [ ] T024 [US1] Persist structured EvaluationResult for correct, mismatch, rejected, timeout, syntax, execution, and internal outcomes in src/server/services/submission-evaluator.ts
-- [ ] T025 [US1] Refactor EvaluationService.submit to create submissions and delegate evaluation to SubmissionEvaluator in src/server/services/evaluation-service.ts
-- [ ] T026 [US1] Update submission route response mapping for structured errorCode and metrics in src/server/services/evaluation-service.ts
+- [X] T017 [US1] Implement SqlSafetyValidator wrapper around existing SQL guard behavior in src/server/services/sql-safety-validator.ts
+- [X] T018 [US1] Preserve sqlHash and compatibility exports from existing SQL safety module in src/server/services/sql-safety.ts
+- [X] T019 [US1] Implement CorrectnessValidator using loadExpectedResult and validateRows in src/server/services/correctness-validator.ts
+- [X] T020 [US1] Implement BenchmarkRunner for participant SQL execution, latencyMs, rowsReturned, and execution error mapping in src/server/services/benchmark-runner.ts
+- [X] T021 [US1] Implement ExplainRunner for correct-only EXPLAIN (ANALYZE, BUFFERS) metrics in src/server/services/explain-runner.ts
+- [X] T022 [US1] Implement transaction wrapper with BEGIN, SET LOCAL statement_timeout, optional read-only mode, rollback, and pooled-session reset in src/server/services/submission-evaluator.ts
+- [X] T023 [US1] Implement SubmissionEvaluator orchestration for stored submission and explicit input evaluation in src/server/services/submission-evaluator.ts
+- [X] T024 [US1] Persist structured EvaluationResult for correct, mismatch, rejected, timeout, syntax, execution, and internal outcomes in src/server/services/submission-evaluator.ts
+- [X] T025 [US1] Refactor EvaluationService.submit to create submissions and delegate evaluation to SubmissionEvaluator in src/server/services/evaluation-service.ts
+- [X] T026 [US1] Update submission route response mapping for structured errorCode and metrics in src/server/services/evaluation-service.ts
 
 **Checkpoint**: User Story 1 is independently functional and testable as the MVP.
 
@@ -79,15 +79,15 @@
 
 ### Tests for User Story 2
 
-- [ ] T027 [P] [US2] Add repository leaderboard tests for correct-only filtering and ranking ties in tests/submission-repository.test.ts
-- [ ] T028 [P] [US2] Add route-level leaderboard tests excluding failed and incorrect submissions in tests/server-routes.test.ts
-- [ ] T029 [P] [US2] Add API contract expectations for leaderboard metrics and ordering in tests/server-contract.test.ts
+- [X] T027 [P] [US2] Add repository leaderboard tests for correct-only filtering and ranking ties in tests/submission-repository.test.ts
+- [X] T028 [P] [US2] Add route-level leaderboard tests excluding failed and incorrect submissions in tests/server-routes.test.ts
+- [X] T029 [P] [US2] Add API contract expectations for leaderboard metrics and ordering in tests/server-contract.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T030 [US2] Update SubmissionRepository.leaderboard to use structured result fields and correct-completed-only filtering in src/server/repositories/submission-repository.ts
-- [ ] T031 [US2] Update LeaderboardService response mapping for structured metrics and null-safe ordering in src/server/services/leaderboard-service.ts
-- [ ] T032 [US2] Update leaderboard response schema if structured metric fields changed in src/server/routes/schemas.ts
+- [X] T030 [US2] Update SubmissionRepository.leaderboard to use structured result fields and correct-completed-only filtering in src/server/repositories/submission-repository.ts
+- [X] T031 [US2] Update LeaderboardService response mapping for structured metrics and null-safe ordering in src/server/services/leaderboard-service.ts
+- [X] T032 [US2] Update leaderboard response schema if structured metric fields changed in src/server/routes/schemas.ts
 
 **Checkpoint**: User Story 2 works independently after US1 and excludes incorrect or failed submissions from ranking.
 
@@ -101,17 +101,17 @@
 
 ### Tests for User Story 3
 
-- [ ] T033 [P] [US3] Add direct SubmissionEvaluator tests for stored submissionId input in tests/submission-evaluation.test.ts
-- [ ] T034 [P] [US3] Add direct SubmissionEvaluator tests for explicit evaluation input in tests/submission-evaluation.test.ts
-- [ ] T035 [P] [US3] Add API-versus-direct evaluator equivalence tests in tests/server-routes.test.ts
-- [ ] T036 [P] [US3] Add route handler test proving routes delegate services without evaluator logic in tests/server-routes.test.ts
+- [X] T033 [P] [US3] Add direct SubmissionEvaluator tests for stored submissionId input in tests/submission-evaluation.test.ts
+- [X] T034 [P] [US3] Add direct SubmissionEvaluator tests for explicit evaluation input in tests/submission-evaluation.test.ts
+- [X] T035 [P] [US3] Add API-versus-direct evaluator equivalence tests in tests/server-routes.test.ts
+- [X] T036 [P] [US3] Add route handler test proving routes delegate services without evaluator logic in tests/server-routes.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T037 [US3] Expose stable SubmissionEvaluator construction dependencies for API and future worker callers in src/server/services/submission-evaluator.ts
-- [ ] T038 [US3] Update EvaluationService constructor to accept an injectable SubmissionEvaluator in src/server/services/evaluation-service.ts
-- [ ] T039 [US3] Ensure registerSubmissionRoutes depends only on submit/findById service methods in src/server/routes/submissions.ts
-- [ ] T040 [US3] Document direct evaluator usage, API usage, and future evaluator-service boundary in docs/evaluation-runner.md
+- [X] T037 [US3] Expose stable SubmissionEvaluator construction dependencies for API and future worker callers in src/server/services/submission-evaluator.ts
+- [X] T038 [US3] Update EvaluationService constructor to accept an injectable SubmissionEvaluator in src/server/services/evaluation-service.ts
+- [X] T039 [US3] Ensure registerSubmissionRoutes depends only on submit/findById service methods in src/server/routes/submissions.ts
+- [X] T040 [US3] Document direct evaluator usage, API usage, and future evaluator-service boundary in docs/evaluation-runner.md
 
 **Checkpoint**: User Story 3 works independently after US1 and proves evaluator behavior without HTTP handlers.
 
@@ -121,12 +121,12 @@
 
 **Purpose**: Documentation, regression protection, and final verification across all user stories.
 
-- [ ] T041 [P] Update quickstart verification notes for evaluator tests in specs/005-server-sql-evaluation/quickstart.md
-- [ ] T042 [P] Update server API documentation to mention structured evaluation errors in docs/server-api.md
-- [ ] T043 [P] Add regression test proving suggested solution SQL and suggested indexes are not read, run, or applied during evaluation in tests/suggested-solution-gating.test.ts
-- [ ] T044 Run TypeScript build and record any required fixes in package.json
-- [ ] T045 Run full Vitest suite and record any required test stabilization in tests/submission-evaluation.test.ts
-- [ ] T046 Verify all evaluator timing assertions avoid exact timing equality in tests/submission-evaluation.test.ts
+- [X] T041 [P] Update quickstart verification notes for evaluator tests in specs/005-server-sql-evaluation/quickstart.md
+- [X] T042 [P] Update server API documentation to mention structured evaluation errors in docs/server-api.md
+- [X] T043 [P] Add regression test proving suggested solution SQL and suggested indexes are not read, run, or applied during evaluation in tests/suggested-solution-gating.test.ts
+- [X] T044 Run TypeScript build and record any required fixes in package.json
+- [X] T045 Run full Vitest suite and record any required test stabilization in tests/submission-evaluation.test.ts
+- [X] T046 Verify all evaluator timing assertions avoid exact timing equality in tests/submission-evaluation.test.ts
 
 ---
 
