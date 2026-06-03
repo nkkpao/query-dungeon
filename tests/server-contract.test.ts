@@ -13,6 +13,7 @@ describe('server API contract', () => {
             submissionId: '00000000-0000-4000-8000-000000000010',
             status: 'failed',
             correctness: false,
+            errorCode: 'safety_rejected',
             latencyMs: null,
             executionTimeMs: null,
             planningTimeMs: null,

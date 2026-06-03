@@ -13,13 +13,19 @@ export const errorResponseSchema = {
   },
 } as const;
 
+export const evaluationErrorCodeSchema = {
+  type: ['string', 'null'],
+  enum: ['syntax_error', 'safety_rejected', 'timeout', 'result_mismatch', 'execution_error', 'internal_error', null],
+} as const;
+
 export const submissionResponseSchema = {
   type: 'object',
-  required: ['submissionId', 'status', 'correctness', 'latencyMs', 'executionTimeMs', 'planningTimeMs', 'rowsReturned', 'errorMessage'],
+  required: ['submissionId', 'status', 'correctness', 'errorCode', 'latencyMs', 'executionTimeMs', 'planningTimeMs', 'rowsReturned', 'errorMessage'],
   properties: {
     submissionId: {type: 'string'},
     status: {type: 'string', enum: ['pending', 'running', 'completed', 'failed']},
     correctness: {type: ['boolean', 'null']},
+    errorCode: evaluationErrorCodeSchema,
     latencyMs: {type: ['number', 'null']},
     executionTimeMs: {type: ['number', 'null']},
     planningTimeMs: {type: ['number', 'null']},

@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import type pg from 'pg';
-import type {LeaderboardEntryResponse, SubmissionRecord, SubmissionStatus, SubmissionWithResult} from '../types.js';
+import type {EvaluationErrorCode, ExplainMetrics, LeaderboardEntryResponse, SubmissionRecord, SubmissionStatus, SubmissionWithResult} from '../types.js';
 
 interface SubmissionRow {
   id: string;
@@ -25,8 +25,10 @@ interface JoinedSubmissionRow extends SubmissionRow {
   latency_ms: number | null;
   execution_time_ms: number | null;
   planning_time_ms: number | null;
+  error_code: EvaluationErrorCode | null;
   error_message: string | null;
   diff_summary: unknown | null;
+  explain_metrics: ExplainMetrics | null;
   result_created_at: Date | string | null;
 }
 
@@ -77,6 +79,18 @@ export class SubmissionRepository {
     return mapSubmission(result.rows[0]!);
   }
 
+  async markRunning(id: string): Promise<SubmissionRecord> {
+    return this.updateStatus(id, 'running');
+  }
+
+  async markCompleted(id: string): Promise<SubmissionRecord> {
+    return this.updateStatus(id, 'completed');
+  }
+
+  async markFailed(id: string, validationError?: string | null): Promise<SubmissionRecord> {
+    return this.updateStatus(id, 'failed', validationError ?? null);
+  }
+
   async findById(id: string): Promise<SubmissionWithResult | null> {
     const result = await this.client.query<JoinedSubmissionRow>(
       `SELECT
@@ -87,8 +101,10 @@ export class SubmissionRepository {
          er.latency_ms,
          er.execution_time_ms,
          er.planning_time_ms,
+         er.error_code,
          er.error_message,
          er.diff_summary,
+         er.explain_metrics,
          er.created_at AS result_created_at
        FROM submissions s
        LEFT JOIN evaluation_results er ON er.submission_id = s.id
@@ -104,12 +120,14 @@ export class SubmissionRepository {
             id: row.result_id,
             submissionId: row.id,
             correct: Boolean(row.correct),
+            errorCode: row.error_code,
             rowCount: row.row_count,
             latencyMs: row.latency_ms,
             executionTimeMs: row.execution_time_ms,
             planningTimeMs: row.planning_time_ms,
             errorMessage: row.error_message,
             diffSummary: row.diff_summary,
+            explainMetrics: row.explain_metrics,
             createdAt: toIso(row.result_created_at),
           }
         : null,

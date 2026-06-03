@@ -81,9 +81,13 @@ curl http://localhost:3000/api/submissions/<submissionId>
 ```
 
 The response includes status, correctness, latency, returned rows, available
-`EXPLAIN ANALYZE` timing, and a participant-safe error message when applicable.
+`EXPLAIN ANALYZE` timing, a stable `errorCode`, and a participant-safe error
+message when applicable.
 It does not include suggested solution SQL, official solution SQL, raw SQL, or
 notes.
+
+Structured evaluation error codes are `syntax_error`, `safety_rejected`,
+`timeout`, `result_mismatch`, `execution_error`, and `internal_error`.
 
 ### `GET /api/challenges/:challengeId/leaderboard`
 

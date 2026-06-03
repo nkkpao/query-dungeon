@@ -7,6 +7,7 @@ import {diffResultsCommand} from '../src/cli/commands/diff-results.js';
 import {explainFileCommand} from '../src/cli/commands/explain-file.js';
 import {runSqlCommand} from '../src/cli/commands/run-sql.js';
 import {validateFileCommand} from '../src/cli/commands/validate-file.js';
+import {FakePool, makeSubmissionEvaluator} from './helpers/evaluation-fakes.js';
 
 describe('suggested solution gating', () => {
   it('keeps suggested paths out of active challenge metadata', () => {
@@ -49,5 +50,29 @@ describe('suggested solution gating', () => {
     expect(docs).toContain('explain-file');
     expect(docs).toContain('benchmark-file');
     expect(docs).not.toContain('apply-solution');
+  });
+
+  it('does not read suggested solution fields during server evaluation', async () => {
+    const challenge = {
+      id: '01-user-orders-missing-index',
+      expectedResultPath: 'expected-result.json',
+      get optionalOfficialSolutionSqlPath() {
+        throw new Error('suggested solution SQL must not be read');
+      },
+      get optionalOfficialIndexesSqlPath() {
+        throw new Error('suggested indexes must not be read');
+      },
+    };
+    const catalog = {
+      resolve: () => challenge,
+      expectedResult: async () => ({columns: ['id'], rows: [{id: 1}], orderSensitive: true}),
+    };
+    const result = await makeSubmissionEvaluator(new FakePool(), catalog as any).evaluate({
+      challengeId: '01-user-orders-missing-index',
+      participantName: 'Ada',
+      sql: 'SELECT 1 AS id',
+    });
+
+    expect(result.correct).toBe(true);
   });
 });
