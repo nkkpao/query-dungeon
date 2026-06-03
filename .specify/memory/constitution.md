@@ -136,4 +136,17 @@ implementation review. Any exception MUST be documented in the implementation
 plan with a measurable reason, an explicit trade-off, and a follow-up path back
 to compliance.
 
+- Preserve the existing local hands-on SQL optimization workflow.
+- Do not break existing CLI commands.
+- Do not expose suggested solutions by default.
+- Do not make the system auto-solve challenges for the participant.
+- Keep sql/challenges as the educational source of truth.
+- Preserve existing challenge IDs and challenge file structure unless explicitly required.
+- Prefer additive changes over rewrites.
+- Every server-side feature must validate correctness against expected-result.json.
+- Leaderboard results must include only correct submissions.
+- Avoid exact timing assertions in tests.
+- Do not require paid SaaS tools.
+- Keep every iteration independently shippable.
+
 **Version**: 1.0.0 | **Ratified**: 2026-05-17 | **Last Amended**: 2026-05-17

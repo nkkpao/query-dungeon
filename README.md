@@ -72,6 +72,38 @@ Suggested solutions live under each challenge's `optional/` directory and are
 not part of the default workflow. Use `compare-with-suggested-solution` only
 when you intentionally want to leave the exercise flow.
 
+## Local Submission API
+
+An optional local HTTP API can receive participant SQL submissions, validate
+them against `expected-result.json`, store results in PostgreSQL, and expose a
+correct-only leaderboard. It does not replace the CLI workflow and does not
+expose suggested solution SQL.
+
+```bash
+npm run build
+make seed
+npm run server
+```
+
+Useful examples:
+
+```bash
+curl http://localhost:3000/health
+
+curl http://localhost:3000/api/challenges
+
+curl -X POST http://localhost:3000/api/submissions \
+  -H 'content-type: application/json' \
+  -d '{"challengeId":"01-user-orders-missing-index","participantName":"Ada","sql":"SELECT * FROM orders WHERE user_id = 42 ORDER BY created_at DESC LIMIT 20"}'
+
+curl http://localhost:3000/api/submissions/<submissionId>
+
+curl 'http://localhost:3000/api/challenges/01-user-orders-missing-index/leaderboard'
+```
+
+See [Server API](docs/server-api.md) for the endpoint contract, SQL safety
+rules, environment variables, and leaderboard ranking.
+
 ## Challenge Catalog
 
 The catalog contains 13 PostgreSQL optimization challenges covering missing
@@ -112,6 +144,7 @@ make validate-recorded-plans
 - [Challenge Authoring Guide](docs/challenge-authoring-guide.md)
 - [Data Skew Profiles](docs/data-skew.md)
 - [Recorded Plans](docs/recorded-plans.md)
+- [Server API](docs/server-api.md)
 - [Contributor Workflow](docs/contributor-workflow.md)
 - [Migration Notes](docs/migration-notes.md)
 - [Roadmap](docs/roadmap.md)
